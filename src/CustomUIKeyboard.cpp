@@ -24,7 +24,7 @@ using namespace UnityEngine;
 using namespace UnityEngine::UI;
 
 struct OnTextKeyWasPressedEventData {
-    CustomUITest::CustomUIKeyboard* customUIKeyboard;
+    QuestUI::CustomUIKeyboard* customUIKeyboard;
     char key;
 };
 
@@ -33,22 +33,22 @@ void OnTextKeyWasPressedEvent(OnTextKeyWasPressedEventData* data, Button* button
         data->customUIKeyboard->textKeyWasPressedEvent->Invoke(data->key);
 }
 
-void OnDeleteButtonWasPressedEvent(CustomUITest::CustomUIKeyboard* customUIKeyboard, Button* button) {
+void OnDeleteButtonWasPressedEvent(QuestUI::CustomUIKeyboard* customUIKeyboard, Button* button) {
     if(customUIKeyboard->deleteButtonWasPressedEvent)
         customUIKeyboard->deleteButtonWasPressedEvent->Invoke();
 }
 
-void OnCancelButtonWasPressedEvent(CustomUITest::CustomUIKeyboard* customUIKeyboard, Button* button) {
+void OnCancelButtonWasPressedEvent(QuestUI::CustomUIKeyboard* customUIKeyboard, Button* button) {
     if(customUIKeyboard->cancelButtonWasPressedEvent)
         customUIKeyboard->cancelButtonWasPressedEvent->Invoke();
 }
 
-void OnOkButtonWasPressedEvent(CustomUITest::CustomUIKeyboard* customUIKeyboard, Button* button) {
+void OnOkButtonWasPressedEvent(QuestUI::CustomUIKeyboard* customUIKeyboard, Button* button) {
     if(customUIKeyboard->okButtonWasPressedEvent)
         customUIKeyboard->okButtonWasPressedEvent->Invoke();
 }
 
-void CustomUITest::CustomUIKeyboard::Awake() {
+void QuestUI::CustomUIKeyboard::Awake() {
     set_name(il2cpp_utils::createcsstr("CustomUIKeyboard"));
     keyButtonPrefab = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TextMeshProButton*>(), [](TextMeshProButton* x){ return to_utf8(csstrtostr(x->get_name())) == "KeyboardButton"; });
     std::string array[] = { "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "<-", "space", "OK", "Cancel" };

@@ -13,7 +13,7 @@ using namespace UnityEngine;
 using namespace UnityEngine::UI;
 using namespace TMPro;
 
-namespace BeatSaberUI {
+namespace QuestUI::BeatSaberUI {
     
     GlobalNamespace::MainFlowCoordinator* getMainFlowCoordinator() {
         static GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator = nullptr;

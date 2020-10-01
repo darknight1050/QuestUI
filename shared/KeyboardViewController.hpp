@@ -45,11 +45,11 @@ void namespace::remove_##name(type action) { \
         name = (type)System::Delegate::Remove(name, action); \
 }
 
-DECLARE_CLASS_CODEGEN(CustomUITest, KeyboardViewController, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(QuestUI, KeyboardViewController, HMUI::ViewController,
 
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, keyboardGO);
 
-    DECLARE_INSTANCE_FIELD(CustomUITest::CustomUIKeyboard*, keyboard);
+    DECLARE_INSTANCE_FIELD(QuestUI::CustomUIKeyboard*, keyboard);
 
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, inputText);
 

@@ -3,7 +3,7 @@
 
 #include "custom-types/shared/macros.hpp"
 
-DECLARE_CLASS_CODEGEN(CustomUITest, CustomUIKeyboard, GlobalNamespace::UIKeyboard,
+DECLARE_CLASS_CODEGEN(QuestUI, CustomUIKeyboard, GlobalNamespace::UIKeyboard,
 
     DECLARE_METHOD(void, Awake);
 

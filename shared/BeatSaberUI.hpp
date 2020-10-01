@@ -15,7 +15,7 @@
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
 
-namespace BeatSaberUI {
+namespace QuestUI::BeatSaberUI {
 
     GlobalNamespace::MainFlowCoordinator* getMainFlowCoordinator();
 

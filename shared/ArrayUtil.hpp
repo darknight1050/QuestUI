@@ -1,7 +1,7 @@
 #pragma once
 #include "beatsaber-hook/shared/utils/typedefs.h"
 
-namespace ArrayUtil {
+namespace QuestUI::ArrayUtil {
 
     template <class T, class Predicate>
     inline T* First(Array<T*>* array, Predicate pred)
