@@ -66,7 +66,10 @@ DECLARE_CLASS_CODEGEN(QuestUI, KeyboardViewController, HMUI::ViewController,
     DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidActivate", 2), bool firstActivation, HMUI::ViewController::ActivationType activationType);
     
     DECLARE_METHOD(void, UpdateInputText);
+
     DECLARE_METHOD(void, ClearInputText);
+    
+    DECLARE_METHOD(void, SetInputText, Il2CppString* text);
 
     REGISTER_FUNCTION(KeyboardViewController,
         REGISTER_FIELD(keyboardGO);
@@ -81,5 +84,6 @@ DECLARE_CLASS_CODEGEN(QuestUI, KeyboardViewController, HMUI::ViewController,
         REGISTER_METHOD(DidActivate);
         REGISTER_METHOD(UpdateInputText);
         REGISTER_METHOD(ClearInputText);
+        REGISTER_METHOD(SetInputText);
     )
 )

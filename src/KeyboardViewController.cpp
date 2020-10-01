@@ -74,3 +74,9 @@ void QuestUI::KeyboardViewController::ClearInputText() {
     UpdateInputText();
 }
 
+
+void QuestUI::KeyboardViewController::SetInputText(Il2CppString* text) {
+    inputString = text;
+    UpdateInputText();
+}
+
