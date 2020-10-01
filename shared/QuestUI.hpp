@@ -1,0 +1,5 @@
+namespace QuestUI {
+
+    void Init();
+    
+}
