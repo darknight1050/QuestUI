@@ -3,7 +3,8 @@
     {
       "defines": [
         "__GNUC__",
-        "__aarch64__"
+        "__aarch64__",
+        "VERSION=\"0.1.1\""
       ],
       "includePath": [
         "${workspaceFolder}/**",

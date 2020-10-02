@@ -1,1 +1,1 @@
-call adb logcat | findstr questui-test
+call adb logcat | findstr questui

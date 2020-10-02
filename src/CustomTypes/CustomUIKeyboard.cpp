@@ -2,7 +2,7 @@
 #include <string>
 
 #include "beatsaber-hook/shared/utils/utils.h"
-#include "CustomUIKeyboard.hpp"
+#include "CustomTypes/CustomUIKeyboard.hpp"
 #include "ArrayUtil.hpp"
 
 #include "GlobalNamespace/TextMeshProButton.hpp"
@@ -22,6 +22,8 @@
 using namespace GlobalNamespace;
 using namespace UnityEngine;
 using namespace UnityEngine::UI;
+
+DEFINE_CLASS(QuestUI::CustomUIKeyboard);
 
 struct OnTextKeyWasPressedEventData {
     QuestUI::CustomUIKeyboard* customUIKeyboard;
@@ -72,9 +74,7 @@ void QuestUI::CustomUIKeyboard::Awake() {
         textMeshProButton->get_button()->set_onClick(Button::ButtonClickedEvent::New_ctor());
         if (i < arrayLength - 4)
         {
-            OnTextKeyWasPressedEventData* data = new OnTextKeyWasPressedEventData();
-            data->customUIKeyboard = this;
-            data->key = array[i].front();
+            OnTextKeyWasPressedEventData* data = new OnTextKeyWasPressedEventData{ this, array[i].front() };
             textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), data, OnTextKeyWasPressedEvent));
         }
         else if (i == arrayLength - 4)
@@ -98,13 +98,11 @@ void QuestUI::CustomUIKeyboard::Awake() {
         else
         {
             rectTransform->set_anchoredPosition(UnityEngine::Vector2(10.0f, 0.0f));
-            OnTextKeyWasPressedEventData* data = new OnTextKeyWasPressedEventData();
-            data->customUIKeyboard = this;
-            data->key = ' ';
+            OnTextKeyWasPressedEventData* data = new OnTextKeyWasPressedEventData{ this, ' ' };
             textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), data, OnTextKeyWasPressedEvent));
         }
     }
-    for (int i = 1; i <= 11; i++)
+    for (int i = 1; i <= 11; i++) 
     {
         TextMeshProButton* textButton = Object::Instantiate(keyButtonPrefab);
         std::string key = {i == 11 ? '_' : std::to_string(i).back()};
@@ -134,6 +132,5 @@ void QuestUI::CustomUIKeyboard::Awake() {
         buttonRect->set_anchorMax(UnityEngine::Vector2::get_one());
         buttonRect->set_offsetMin(UnityEngine::Vector2::get_zero());
         buttonRect->set_offsetMax(UnityEngine::Vector2::get_zero());
-
     }
 }

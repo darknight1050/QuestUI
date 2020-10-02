@@ -29,7 +29,19 @@ namespace QuestUI::BeatSaberUI {
         }
         return mainTextFont;
     }
+    
+    HMUI::ViewController* CreateViewController(System::Type* type) {
+        HMUI::ViewController* viewController = (HMUI::ViewController*)UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("BSMLViewController"))->AddComponent(type);
+        UnityEngine::Object::DontDestroyOnLoad(viewController->get_gameObject());
 
+        UnityEngine::RectTransform* rectTransform = viewController->get_rectTransform();
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
+        rectTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
+        return viewController;
+    }
+    
     TextMeshProUGUI* CreateText(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition) {
         return CreateText(parent, text, anchoredPosition, UnityEngine::Vector2(60.0f, 10.0f));
     }

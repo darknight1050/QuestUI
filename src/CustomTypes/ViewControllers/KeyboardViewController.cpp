@@ -1,9 +1,11 @@
-#include "KeyboardViewController.hpp"
+#include "CustomTypes/ViewControllers/KeyboardViewController.hpp"
 
 #include "GlobalNamespace/UIKeyboard.hpp"
 #include "UnityEngine/Resources.hpp"
 
 #include "BeatSaberUI.hpp"
+
+DEFINE_CLASS(QuestUI::KeyboardViewController);
 
 DEFINE_EVENT(QuestUI::KeyboardViewController, System::Action_1<Il2CppString*>*, confirmPressed);
 
@@ -45,7 +47,7 @@ void QuestUI::KeyboardViewController::DidActivate(bool firstActivation, HMUI::Vi
         UnityEngine::Object::Destroy(keyboardGO->GetComponent<GlobalNamespace::UIKeyboard*>());
 
         keyboard = keyboardGO->AddComponent<QuestUI::CustomUIKeyboard*>();
-        keyboard->add_textKeyWasPressedEvent(il2cpp_utils::MakeAction<System::Action_1<::Il2CppChar>>(il2cpp_functions::class_get_type(classof(System::Action_1<::Il2CppChar>*)), this, TextKeyWasPressedEvent));
+        keyboard->add_textKeyWasPressedEvent(il2cpp_utils::MakeAction<System::Action_1<Il2CppChar>>(il2cpp_functions::class_get_type(classof(System::Action_1<Il2CppChar>*)), this, TextKeyWasPressedEvent));
         keyboard->add_deleteButtonWasPressedEvent(il2cpp_utils::MakeAction<System::Action>(il2cpp_functions::class_get_type(classof(System::Action*)), this, DeleteButtonWasPressedEvent));
         keyboard->add_okButtonWasPressedEvent(il2cpp_utils::MakeAction<System::Action>(il2cpp_functions::class_get_type(classof(System::Action*)), this, OkButtonWasPressedEvent));
         keyboard->add_cancelButtonWasPressedEvent (il2cpp_utils::MakeAction<System::Action>(il2cpp_functions::class_get_type(classof(System::Action*)), this, CancelButtonWasPressedEvent));
@@ -56,7 +58,7 @@ void QuestUI::KeyboardViewController::DidActivate(bool firstActivation, HMUI::Vi
 }
 
 void QuestUI::KeyboardViewController::UpdateInputText() {
-    if(inputText){
+    if(inputText) {
         inputText->set_text(inputString->ToUpper());
         if (System::String::IsNullOrEmpty(inputString)) {
             keyboard->set_enableOkButtonInteractivity(false);

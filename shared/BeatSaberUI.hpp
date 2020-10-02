@@ -21,6 +21,8 @@ namespace QuestUI::BeatSaberUI {
 
     TMPro::TMP_FontAsset* getMainTextFont();
 
+    HMUI::ViewController* CreateViewController(System::Type* type);
+
     template<class T = HMUI::ViewController*>
     T CreateViewController() {
         T viewController = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("BSMLViewController"))->AddComponent<T>();
