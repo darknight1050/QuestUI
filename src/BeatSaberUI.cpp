@@ -42,6 +42,12 @@ namespace QuestUI::BeatSaberUI {
         return viewController;
     }
     
+    HMUI::FlowCoordinator* CreateFlowCoordinator(System::Type* type) {
+        HMUI::FlowCoordinator* flowCoordinator = (HMUI::FlowCoordinator*)UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("BSMLFlowCoordinator"))->AddComponent(type);
+        flowCoordinator->baseInputModule = getMainFlowCoordinator()->baseInputModule;
+        return flowCoordinator;
+    }
+
     TextMeshProUGUI* CreateText(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition) {
         return CreateText(parent, text, anchoredPosition, UnityEngine::Vector2(60.0f, 10.0f));
     }

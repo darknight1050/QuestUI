@@ -2,15 +2,17 @@
 #include "beatsaber-hook/shared/utils/utils.h"
 #include "beatsaber-hook/shared/utils/typedefs.h"
 
-#include "UnityEngine/UI/Button.hpp"
-#include "HMUI/ViewController.hpp"
+#include "QuestUI.hpp"
 
 namespace QuestUI::ModSettingsInfos {
     
     typedef struct ModSettingsInfo {
         ModInfo modInfo;
-        Il2CppReflectionType* viewControllerType;
+        std::string title;
+        Register::Type type;
+        Il2CppReflectionType* il2cpp_type;
         HMUI::ViewController* viewController;
+        HMUI::FlowCoordinator* flowCoordinator;
     } ModSettingsInfo;
 
     std::vector<ModSettingsInfo>& get();

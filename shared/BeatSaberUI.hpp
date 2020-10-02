@@ -36,6 +36,8 @@ namespace QuestUI::BeatSaberUI {
         return viewController;
     }
 
+    HMUI::FlowCoordinator* CreateFlowCoordinator(System::Type* type);
+
     template<class T = HMUI::FlowCoordinator*>
     T CreateFlowCoordinator() {
         T flowCoordinator = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("BSMLFlowCoordinator"))->AddComponent<T>();

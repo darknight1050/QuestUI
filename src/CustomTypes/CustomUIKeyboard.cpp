@@ -3,6 +3,7 @@
 
 #include "beatsaber-hook/shared/utils/utils.h"
 #include "CustomTypes/CustomUIKeyboard.hpp"
+#include "CustomTypes/TextKeyWasPressedEventData.hpp"
 #include "ArrayUtil.hpp"
 
 #include "GlobalNamespace/TextMeshProButton.hpp"
@@ -25,12 +26,7 @@ using namespace UnityEngine::UI;
 
 DEFINE_CLASS(QuestUI::CustomUIKeyboard);
 
-struct OnTextKeyWasPressedEventData {
-    QuestUI::CustomUIKeyboard* customUIKeyboard;
-    char key;
-};
-
-void OnTextKeyWasPressedEvent(OnTextKeyWasPressedEventData* data, Button* button) {
+void OnTextKeyWasPressedEvent(QuestUI::TextKeyWasPressedEventData* data, Button* button) {
     if(data->customUIKeyboard->textKeyWasPressedEvent)
         data->customUIKeyboard->textKeyWasPressedEvent->Invoke(data->key);
 }
@@ -48,6 +44,10 @@ void OnCancelButtonWasPressedEvent(QuestUI::CustomUIKeyboard* customUIKeyboard, 
 void OnOkButtonWasPressedEvent(QuestUI::CustomUIKeyboard* customUIKeyboard, Button* button) {
     if(customUIKeyboard->okButtonWasPressedEvent)
         customUIKeyboard->okButtonWasPressedEvent->Invoke();
+}
+
+inline QuestUI::TextKeyWasPressedEventData* CreateTextKeyWasPressedEventData(QuestUI::CustomUIKeyboard* customUIKeyboard, char key) {
+    return *il2cpp_utils::New<QuestUI::TextKeyWasPressedEventData*>(classof(QuestUI::TextKeyWasPressedEventData*), customUIKeyboard, (Il2CppChar)key);
 }
 
 void QuestUI::CustomUIKeyboard::Awake() {
@@ -74,8 +74,7 @@ void QuestUI::CustomUIKeyboard::Awake() {
         textMeshProButton->get_button()->set_onClick(Button::ButtonClickedEvent::New_ctor());
         if (i < arrayLength - 4)
         {
-            OnTextKeyWasPressedEventData* data = new OnTextKeyWasPressedEventData{ this, array[i].front() };
-            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), data, OnTextKeyWasPressedEvent));
+            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), CreateTextKeyWasPressedEventData(this, array[i].front()), OnTextKeyWasPressedEvent));
         }
         else if (i == arrayLength - 4)
         {
@@ -98,8 +97,7 @@ void QuestUI::CustomUIKeyboard::Awake() {
         else
         {
             rectTransform->set_anchoredPosition(UnityEngine::Vector2(10.0f, 0.0f));
-            OnTextKeyWasPressedEventData* data = new OnTextKeyWasPressedEventData{ this, ' ' };
-            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), data, OnTextKeyWasPressedEvent));
+            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), CreateTextKeyWasPressedEventData(this, ' '), OnTextKeyWasPressedEvent));
         }
     }
     for (int i = 1; i <= 11; i++) 
@@ -108,10 +106,7 @@ void QuestUI::CustomUIKeyboard::Awake() {
         std::string key = {i == 11 ? '_' : std::to_string(i).back()};
 
         textButton->get_text()->set_text(il2cpp_utils::createcsstr(key));
-        OnTextKeyWasPressedEventData* data = new OnTextKeyWasPressedEventData();
-        data->customUIKeyboard = this;
-        data->key = key.front();
-        textButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), data, OnTextKeyWasPressedEvent));
+        textButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), CreateTextKeyWasPressedEventData(this, key.front()), OnTextKeyWasPressedEvent));
         
         RectTransform* buttonRect = textButton->GetComponent<RectTransform*>();
         RectTransform* component2 = get_transform()->GetChild(i == 11 ? 9 : i - 1)->get_gameObject()->GetComponent<RectTransform*>();

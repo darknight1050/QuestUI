@@ -11,6 +11,6 @@ std::vector<ModSettingsInfo>& QuestUI::ModSettingsInfos::get() {
 }
 
 void QuestUI::ModSettingsInfos::add(ModSettingsInfo info) {
-    getLogger().info("Added ModSettingsInfo(%s|v%s, %p)", info.modInfo.id.c_str(), info.modInfo.version.c_str(), info.viewControllerType);
+    getLogger().info("Added ModSettingsInfo(%s|v%s, %d)", info.modInfo.id.c_str(), info.modInfo.version.c_str(), info.type);
     modSettingsInfos.push_back(info);
 }

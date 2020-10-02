@@ -4,6 +4,7 @@
 #include "QuestUI.hpp"
 #include "ModSettingsInfos.hpp"
 #include "CustomTypes/CustomUIKeyboard.hpp"
+#include "CustomTypes/TextKeyWasPressedEventData.hpp"
 #include "CustomTypes/ViewControllers/KeyboardViewController.hpp"
 #include "CustomTypes/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
 
@@ -22,9 +23,13 @@ const Logger& getLogger() {
     return logger;
 }
 
-void OnModSettingsButtonClick(UnityEngine::UI::Button* button) {
-    getLogger().info("ModSettingsButtonClick");
-    static ModSettingsFlowCoordinator* flowCoordinator = nullptr;
+ModSettingsFlowCoordinator* flowCoordinator = nullptr;
+HMUI::FlowCoordinator* QuestUI::getModSettingsFlowCoordinator(){
+    return flowCoordinator;
+}
+
+void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
+    getLogger().info("MenuModSettingsButtonClick");
     if(!flowCoordinator){
         flowCoordinator = BeatSaberUI::CreateFlowCoordinator<ModSettingsFlowCoordinator*>();
     }
@@ -40,7 +45,7 @@ MAKE_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, void, GlobalNamespace::
             button->set_name(il2cpp_utils::createcsstr("Mod Settings"));
             button->get_transform()->SetParent(settingsButton->get_transform()->GetParent(), false);
             button->get_transform()->SetAsFirstSibling();
-            button->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), (Il2CppObject*)nullptr, OnModSettingsButtonClick));
+            button->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), (Il2CppObject*)nullptr, OnMenuModSettingsButtonClick));
             BeatSaberUI::SetButtonText(button, "Mod Settings");
         }
     }
@@ -52,13 +57,15 @@ void QuestUI::Init() {
         init = true;
         il2cpp_functions::Init();
         custom_types::Register::RegisterType<CustomUIKeyboard>();
+        custom_types::Register::RegisterType<TextKeyWasPressedEventData>();
         custom_types::Register::RegisterType<KeyboardViewController>();
+        custom_types::Register::RegisterType<ModSettingsButtonClickData>();
         custom_types::Register::RegisterType<ModSettingsButtonsViewController>();
         custom_types::Register::RegisterType<ModSettingsFlowCoordinator>();
         INSTALL_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "MainMenuViewController", "DidActivate", 2));
     }
 }
 
-void Register::RegisterModSettings(ModInfo modInfo, Il2CppReflectionType* viewController) {
-    ModSettingsInfos::add(ModSettingsInfos::ModSettingsInfo{ modInfo, viewController, nullptr });
+void Register::RegisterModSettings(ModInfo modInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type) {
+    ModSettingsInfos::add(ModSettingsInfos::ModSettingsInfo{ modInfo, title, type, il2cpp_type, nullptr });
 }
