@@ -1,11 +1,14 @@
 #include "BeatSaberUI.hpp"
 
+#include "CustomTypes/Components/Backgroundable.hpp"
+
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/SpriteMeshType.hpp"
 #include "UnityEngine/Texture2D.hpp"
 #include "UnityEngine/TextureFormat.hpp"
 #include "UnityEngine/ImageConversion.hpp"
+#include "HMUI/HoverHintController.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
 
@@ -160,7 +163,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     UnityEngine::UI::GridLayoutGroup* CreateGridLayoutGroup(UnityEngine::Transform* parent) {
-        UnityEngine::RectTransform* rectTransform = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIGridLayoutGroup"), typeof(UnityEngine::UI::GridLayoutGroup*), typeof(UnityEngine::UI::ContentSizeFitter*))->GetComponent<UnityEngine::RectTransform*>();
+        UnityEngine::RectTransform* rectTransform = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIGridLayoutGroup"), typeof(UnityEngine::UI::GridLayoutGroup*), typeof(UnityEngine::UI::ContentSizeFitter*), typeof(QuestUI::Backgroundable*))->GetComponent<UnityEngine::RectTransform*>();
         rectTransform->SetParent(parent, false);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
@@ -169,7 +172,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent) {
-        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup"), typeof(UnityEngine::UI::HorizontalLayoutGroup*));
+        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup"), typeof(UnityEngine::UI::HorizontalLayoutGroup*), typeof(QuestUI::Backgroundable*));
         
         UnityEngine::UI::ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<UnityEngine::UI::ContentSizeFitter*>();
         contentSizeFitter->set_verticalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
@@ -185,7 +188,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent) {
-        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup"), typeof(UnityEngine::UI::VerticalLayoutGroup*));
+        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup"), typeof(UnityEngine::UI::VerticalLayoutGroup*), typeof(QuestUI::Backgroundable*));
         
         UnityEngine::UI::ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<UnityEngine::UI::ContentSizeFitter*>();
         contentSizeFitter->set_horizontalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
@@ -219,6 +222,7 @@ namespace QuestUI::BeatSaberUI {
         else
         {
             hoverHint->set_text(il2cpp_utils::createcsstr(hoverHintText, il2cpp_utils::StringType::Permanent));
+            hoverHint->hoverHintController = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HoverHintController*>());
         }
         
         Toggle* toggle = gameObject->GetComponent<Toggle*>();

@@ -3,6 +3,7 @@
 
 #include "QuestUI.hpp"
 #include "ModSettingsInfos.hpp"
+#include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/CustomUIKeyboard.hpp"
 #include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
 #include "CustomTypes/Components/ViewControllers/KeyboardViewController.hpp"
@@ -56,6 +57,7 @@ void QuestUI::Init() {
     if(!init) {
         init = true;
         il2cpp_functions::Init();
+        custom_types::Register::RegisterType<Backgroundable>();
         custom_types::Register::RegisterType<CustomUIKeyboard>();
         custom_types::Register::RegisterType<TextKeyWasPressedEventData>();
         custom_types::Register::RegisterType<KeyboardViewController>();
