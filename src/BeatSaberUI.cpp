@@ -199,5 +199,48 @@ namespace QuestUI::BeatSaberUI {
         gameObject->AddComponent<UnityEngine::UI::LayoutElement*>();
         return rectTransform->GetComponent<UnityEngine::UI::VerticalLayoutGroup*>();
     }
+    
+    GameObject* CreateToggle(Transform* Parent, std::string Text, UnityEngine::Vector2 AnchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint, std::string hoverHintText)
+    {
+        GameplayModifierToggle* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameplayModifierToggle*>(), [](GameplayModifierToggle* x){ return to_utf8(csstrtostr(x->get_name())) == "InstaFail"; }), Parent, false);
+        baseSetting->set_name(il2cpp_utils::createcsstr("BSMLCheckboxSetting"));
 
+        GameObject* gameObject = baseSetting->get_gameObject();
+        gameObject->SetActive(false);
+
+        Object::Destroy(baseSetting);
+        Object::Destroy(gameObject->get_transform()->GetChild(0)->get_gameObject());
+        HoverHint* hvrHint = gameObject->GetComponent<HoverHint*>();
+        if(!hoverHint && hoverHintText == "")
+        {
+            Object::Destroy(hvrHint); 
+        }
+        else
+        {
+            hvrHint->set_text(il2cpp_utils::createcsstr(hoverHintText, il2cpp_utils::StringType::Permanent));
+        }
+        
+        Toggle* tgle = gameObject->GetComponent<Toggle*>();
+        tgle->onValueChanged = onToggle;
+        TextMeshProUGUI* text = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
+        text->set_fontSize(5); //Change some settings to conform more to the List Dropdown/IncDec settings controllers
+        text->SetText(il2cpp_utils::createcsstr(Text));
+        RectTransform* RT = text->get_rectTransform();
+        RT->set_localPosition(UnityEngine::Vector3(0.0f, 0.0f, 0.0f));
+        RT->set_anchoredPosition(AnchoredPosition);
+        RT->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));;
+
+        LayoutElement* layout = gameObject->GetComponent<LayoutElement*>(); //If Beat Games decides to add one later down the road.
+        if (layout == nullptr) layout = gameObject->AddComponent<LayoutElement*>(); //For the time being, they dont have one, so time to add one myself!
+        layout->set_preferredWidth(90); //Again, to conform to List Dropdown/IncDec settings controllers
+        layout->set_preferredHeight(8);
+
+        gameObject->SetActive(true);
+        return gameObject;
+    }
+
+    GameObject* CreateToggle(Transform* Parent, std::string Text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint, std::string hoverHintText)
+    {
+        return CreateToggle(Parent, Text, UnityEngine::Vector2(0.0f, 0.0f), onToggle);
+    }
 }
