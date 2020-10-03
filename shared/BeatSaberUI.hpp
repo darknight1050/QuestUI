@@ -10,13 +10,19 @@
 #include "UnityEngine/UI/Button.hpp"
 #include "UnityEngine/UI/Button_ButtonClickedEvent.hpp"
 #include "UnityEngine/UI/Image.hpp"
-#include "UnityEngine/UI/GridLayoutGroup.hpp"
-#include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
-#include "UnityEngine/UI/VerticalLayoutGroup.hpp"
 #include "HMUI/ViewController.hpp"
 #include "HMUI/FlowCoordinator.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
+#include "UnityEngine/UI/Toggle.hpp"
+#include "UnityEngine/UI/LayoutElement.hpp"
+#include "UnityEngine/UI/Toggle_ToggleEvent.hpp"
+#include "HMUI/HoverHint.hpp"
+#include "GlobalNamespace/GameplayModifierToggle.hpp"
+#include "UnityEngine/UI/GridLayoutGroup.hpp"
+#include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
+#include "UnityEngine/UI/VerticalLayoutGroup.hpp"
+#include "UnityEngine/UI/ContentSizeFitter.hpp"
 
 namespace QuestUI::BeatSaberUI {
 
@@ -77,4 +83,8 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent);
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
+    
+    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* Parent, std::string Text, UnityEngine::Vector2 AnchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
+
+    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* Parent, std::string Text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
 }
