@@ -6,14 +6,14 @@
 #include "UnityEngine/Texture2D.hpp"
 #include "UnityEngine/TextureFormat.hpp"
 #include "UnityEngine/ImageConversion.hpp"
-#include "UnityEngine/UI/ContentSizeFitter.hpp"
-#include "UnityEngine/UI/LayoutElement.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
 
+using namespace GlobalNamespace;
 using namespace UnityEngine;
 using namespace UnityEngine::UI;
 using namespace TMPro;
+using namespace HMUI;
 
 namespace QuestUI::BeatSaberUI {
     
