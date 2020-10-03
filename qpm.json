@@ -6,7 +6,11 @@
     "id": "questui",
     "version": "0.1.1",
     "url": "https://github.com/darknight1050/questui",
-    "additionalData": {}
+    "additionalData": {
+      "branchName": "version-v0.1.1",
+      "soLink": "https://github.com/darknight1050/questui/releases/download/v0.1.1/libquestui_0_1_1.so",
+      "debugSoLink": "https://github.com/darknight1050/questui/releases/download/v0.1.1/debug_libquestui_0_1_1.so"
+    }
   },
   "dependencies": [
     {
