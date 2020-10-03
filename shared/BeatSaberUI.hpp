@@ -22,6 +22,7 @@
 #include "UnityEngine/UI/GridLayoutGroup.hpp"
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "UnityEngine/UI/VerticalLayoutGroup.hpp"
+#include "UnityEngine/UI/ContentSizeFitter.hpp"
 
 namespace QuestUI::BeatSaberUI {
 
