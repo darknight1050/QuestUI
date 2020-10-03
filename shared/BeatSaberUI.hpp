@@ -10,6 +10,9 @@
 #include "UnityEngine/UI/Button.hpp"
 #include "UnityEngine/UI/Button_ButtonClickedEvent.hpp"
 #include "UnityEngine/UI/Image.hpp"
+#include "UnityEngine/UI/GridLayoutGroup.hpp"
+#include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
+#include "UnityEngine/UI/VerticalLayoutGroup.hpp"
 #include "HMUI/ViewController.hpp"
 #include "HMUI/FlowCoordinator.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
@@ -68,4 +71,10 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::UI::Image* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
     UnityEngine::Sprite* Base64ToSprite(std::string base64, int width, int height);
+
+    UnityEngine::UI::GridLayoutGroup* CreateGridLayoutGroup(UnityEngine::Transform* parent);
+
+    UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent);
+
+    UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
 }

@@ -6,6 +6,8 @@
 #include "UnityEngine/Texture2D.hpp"
 #include "UnityEngine/TextureFormat.hpp"
 #include "UnityEngine/ImageConversion.hpp"
+#include "UnityEngine/UI/ContentSizeFitter.hpp"
+#include "UnityEngine/UI/LayoutElement.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
 
@@ -31,7 +33,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     HMUI::ViewController* CreateViewController(System::Type* type) {
-        HMUI::ViewController* viewController = (HMUI::ViewController*)UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("BSMLViewController"))->AddComponent(type);
+        HMUI::ViewController* viewController = (HMUI::ViewController*)UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIViewController"))->AddComponent(type);
         UnityEngine::Object::DontDestroyOnLoad(viewController->get_gameObject());
 
         UnityEngine::RectTransform* rectTransform = viewController->get_rectTransform();
@@ -43,7 +45,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     HMUI::FlowCoordinator* CreateFlowCoordinator(System::Type* type) {
-        HMUI::FlowCoordinator* flowCoordinator = (HMUI::FlowCoordinator*)UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("BSMLFlowCoordinator"))->AddComponent(type);
+        HMUI::FlowCoordinator* flowCoordinator = (HMUI::FlowCoordinator*)UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIFlowCoordinator"))->AddComponent(type);
         flowCoordinator->baseInputModule = getMainFlowCoordinator()->baseInputModule;
         return flowCoordinator;
     }
@@ -53,7 +55,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     TextMeshProUGUI* CreateText(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
-        GameObject* gameObj = GameObject::New_ctor(il2cpp_utils::createcsstr("CustomUIText"));
+        GameObject* gameObj = GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIText"));
         gameObj->SetActive(false);
 
         TextMeshProUGUI* textMesh = gameObj->AddComponent<TextMeshProUGUI*>();
@@ -124,7 +126,7 @@ namespace QuestUI::BeatSaberUI {
         if(onClick)
             button->get_onClick()->AddListener(onClick);
     
-        button->set_name(il2cpp_utils::createcsstr("CustomUIButton"));
+        button->set_name(il2cpp_utils::createcsstr("QuestUIButton"));
 
         RectTransform* rectTransform = (RectTransform*)button->get_transform();
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
@@ -137,7 +139,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     Image* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
-        Image* image = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("CustomImage"))->AddComponent<Image*>();
+        Image* image = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIImage"))->AddComponent<Image*>();
         image->get_transform()->SetParent(parent, false);
         image->set_sprite(sprite);
         RectTransform* rectTransform = (RectTransform*)image->get_transform();
@@ -155,6 +157,47 @@ namespace QuestUI::BeatSaberUI {
         if(ImageConversion::LoadImage(texture, bytes, false))
             return Sprite::Create(texture, UnityEngine::Rect(0.0f, 0.0f, (float)width, (float)height), UnityEngine::Vector2(0.5f,0.5f), 1024.0f, 1u, SpriteMeshType::FullRect, UnityEngine::Vector4(0.0f, 0.0f, 0.0f, 0.0f), false);
         return nullptr;
+    }
+    
+    UnityEngine::UI::GridLayoutGroup* CreateGridLayoutGroup(UnityEngine::Transform* parent) {
+        UnityEngine::RectTransform* rectTransform = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIGridLayoutGroup"), typeof(UnityEngine::UI::GridLayoutGroup*), typeof(UnityEngine::UI::ContentSizeFitter*))->GetComponent<UnityEngine::RectTransform*>();
+        rectTransform->SetParent(parent, false);
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
+        return rectTransform->GetComponent<UnityEngine::UI::GridLayoutGroup*>();
+    }
+    
+    UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent) {
+        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup"), typeof(UnityEngine::UI::HorizontalLayoutGroup*));
+        
+        UnityEngine::UI::ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<UnityEngine::UI::ContentSizeFitter*>();
+        contentSizeFitter->set_verticalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
+
+        UnityEngine::RectTransform* rectTransform = gameObject->GetComponent<UnityEngine::RectTransform*>();
+        rectTransform->SetParent(parent, false);
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
+        
+        gameObject->AddComponent<UnityEngine::UI::LayoutElement*>();
+        return rectTransform->GetComponent<UnityEngine::UI::HorizontalLayoutGroup*>();
+    }
+    
+    UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent) {
+        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup"), typeof(UnityEngine::UI::VerticalLayoutGroup*));
+        
+        UnityEngine::UI::ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<UnityEngine::UI::ContentSizeFitter*>();
+        contentSizeFitter->set_horizontalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
+
+        UnityEngine::RectTransform* rectTransform = gameObject->GetComponent<UnityEngine::RectTransform*>();
+        rectTransform->SetParent(parent, false);
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
+        
+        gameObject->AddComponent<UnityEngine::UI::LayoutElement*>();
+        return rectTransform->GetComponent<UnityEngine::UI::VerticalLayoutGroup*>();
     }
 
 }
