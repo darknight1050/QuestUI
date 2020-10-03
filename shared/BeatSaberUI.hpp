@@ -1,6 +1,6 @@
 #pragma once
 #include "beatsaber-hook/shared/utils/utils.h"
-#include "ArrayUtil.hpp"
+#include "./ArrayUtil.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "UnityEngine/GameObject.hpp"
@@ -87,4 +87,6 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* Parent, std::string Text, UnityEngine::Vector2 AnchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
 
     UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* Parent, std::string Text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
+
+    UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* Parent, UnityEngine::Vector2 AnchoredPosition);
 }

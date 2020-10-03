@@ -15,6 +15,12 @@ namespace QuestUI::ArrayUtil {
         return nullptr;
     }
 
+    template <class T>
+    inline T* First(Array<T*>* array)
+    {
+        return array->values[0];
+    }
+
     template <class T, class Predicate>
     inline T* Last(Array<T*>* array, Predicate pred)
     {
