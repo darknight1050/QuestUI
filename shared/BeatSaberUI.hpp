@@ -84,7 +84,10 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
     
-    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* Parent, std::string Text, UnityEngine::Vector2 AnchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
+    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 AnchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
+    
+    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
 
-    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* Parent, std::string Text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
+    UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
+
 }

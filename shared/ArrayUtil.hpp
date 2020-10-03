@@ -3,6 +3,12 @@
 
 namespace QuestUI::ArrayUtil {
 
+    template <class T>
+    inline T* First(Array<T*>* array)
+    {
+        return array->values[0];
+    }
+
     template <class T, class Predicate>
     inline T* First(Array<T*>* array, Predicate pred)
     {

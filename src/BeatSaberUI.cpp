@@ -200,35 +200,36 @@ namespace QuestUI::BeatSaberUI {
         return rectTransform->GetComponent<UnityEngine::UI::VerticalLayoutGroup*>();
     }
     
-    GameObject* CreateToggle(Transform* Parent, std::string Text, UnityEngine::Vector2 AnchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint, std::string hoverHintText)
+    GameObject* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool useHoverHint, std::string hoverHintText)
     {
-        GameplayModifierToggle* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameplayModifierToggle*>(), [](GameplayModifierToggle* x){ return to_utf8(csstrtostr(x->get_name())) == "InstaFail"; }), Parent, false);
-        baseSetting->set_name(il2cpp_utils::createcsstr("BSMLCheckboxSetting"));
+        GameplayModifierToggle* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameplayModifierToggle*>(), [](GameplayModifierToggle* x){ return to_utf8(csstrtostr(x->get_name())) == "InstaFail"; }), parent, false);
+        baseSetting->set_name(il2cpp_utils::createcsstr("QuestUICheckboxSetting"));
 
         GameObject* gameObject = baseSetting->get_gameObject();
         gameObject->SetActive(false);
 
         Object::Destroy(baseSetting);
         Object::Destroy(gameObject->get_transform()->GetChild(0)->get_gameObject());
-        HoverHint* hvrHint = gameObject->GetComponent<HoverHint*>();
-        if(!hoverHint && hoverHintText == "")
+        Object::Destroy(gameObject->GetComponent<HoverHint*>()); 
+        HoverHint* hoverHint = gameObject->AddComponent<HoverHint*>();
+        if(!useHoverHint || hoverHintText == "")
         {
-            Object::Destroy(hvrHint); 
+            Object::Destroy(hoverHint); 
         }
         else
         {
-            hvrHint->set_text(il2cpp_utils::createcsstr(hoverHintText, il2cpp_utils::StringType::Permanent));
+            hoverHint->set_text(il2cpp_utils::createcsstr(hoverHintText, il2cpp_utils::StringType::Permanent));
         }
         
-        Toggle* tgle = gameObject->GetComponent<Toggle*>();
-        tgle->onValueChanged = onToggle;
-        TextMeshProUGUI* text = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
-        text->set_fontSize(5); //Change some settings to conform more to the List Dropdown/IncDec settings controllers
-        text->SetText(il2cpp_utils::createcsstr(Text));
-        RectTransform* RT = text->get_rectTransform();
-        RT->set_localPosition(UnityEngine::Vector3(0.0f, 0.0f, 0.0f));
-        RT->set_anchoredPosition(AnchoredPosition);
-        RT->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));;
+        Toggle* toggle = gameObject->GetComponent<Toggle*>();
+        toggle->onValueChanged = onToggle;
+        TextMeshProUGUI* textMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
+        textMesh->set_fontSize(5); //Change some settings to conform more to the List Dropdown/IncDec settings controllers
+        textMesh->SetText(il2cpp_utils::createcsstr(text));
+        RectTransform* rectTransform = textMesh->get_rectTransform();
+        rectTransform->set_localPosition(UnityEngine::Vector3(0.0f, 0.0f, 0.0f));
+        rectTransform->set_anchoredPosition(anchoredPosition);
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));;
 
         LayoutElement* layout = gameObject->GetComponent<LayoutElement*>(); //If Beat Games decides to add one later down the road.
         if (layout == nullptr) layout = gameObject->AddComponent<LayoutElement*>(); //For the time being, they dont have one, so time to add one myself!
@@ -239,8 +240,23 @@ namespace QuestUI::BeatSaberUI {
         return gameObject;
     }
 
-    GameObject* CreateToggle(Transform* Parent, std::string Text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint, std::string hoverHintText)
+    GameObject* CreateToggle(Transform* parent, std::string text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool useHoverHint, std::string hoverHintText)
     {
-        return CreateToggle(Parent, Text, UnityEngine::Vector2(0.0f, 0.0f), onToggle);
+        return CreateToggle(parent, text, UnityEngine::Vector2(0.0f, 0.0f), onToggle);
     }
+
+    GameObject* CreateLoadingIndicator(Transform* parent, UnityEngine::Vector2 anchoredPosition)
+    {
+        GameObject* loadingIndicator = GameObject::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameObject*>(), [](GameObject* x){ return to_utf8(csstrtostr(x->get_name())) == "LoadingIndicator"; }), parent, false);
+        loadingIndicator->set_name(il2cpp_utils::createcsstr("QuestUILoadingIndicator"));
+
+        loadingIndicator->AddComponent<LayoutElement*>();
+
+        RectTransform* rectTransform = loadingIndicator->AddComponent<RectTransform*>();
+
+        rectTransform->set_anchoredPosition(anchoredPosition);
+
+        return loadingIndicator;
+    }
+
 }
