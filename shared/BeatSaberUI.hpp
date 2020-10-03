@@ -14,6 +14,11 @@
 #include "HMUI/FlowCoordinator.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
+#include "UnityEngine/UI/Toggle.hpp"
+#include "UnityEngine/UI/LayoutElement.hpp"
+#include "UnityEngine/UI/Toggle_ToggleEvent.hpp"
+#include "HMUI/HoverHint.hpp"
+#include "GlobalNamespace/GameplayModifierToggle.hpp"
 
 namespace QuestUI::BeatSaberUI {
 
@@ -68,4 +73,8 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::UI::Image* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
     UnityEngine::Sprite* Base64ToSprite(std::string base64, int width, int height);
+
+    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* Parent, std::string Text, UnityEngine::Vector2 AnchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
+
+    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* Parent, std::string Text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
 }
