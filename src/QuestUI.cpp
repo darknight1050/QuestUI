@@ -3,10 +3,10 @@
 
 #include "QuestUI.hpp"
 #include "ModSettingsInfos.hpp"
-#include "CustomTypes/CustomUIKeyboard.hpp"
-#include "CustomTypes/TextKeyWasPressedEventData.hpp"
-#include "CustomTypes/ViewControllers/KeyboardViewController.hpp"
-#include "CustomTypes/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Components/CustomUIKeyboard.hpp"
+#include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
+#include "CustomTypes/Components/ViewControllers/KeyboardViewController.hpp"
+#include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
 
 #include "BeatSaberUI.hpp"
 

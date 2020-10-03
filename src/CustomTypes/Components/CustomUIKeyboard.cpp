@@ -2,8 +2,8 @@
 #include <string>
 
 #include "beatsaber-hook/shared/utils/utils.h"
-#include "CustomTypes/CustomUIKeyboard.hpp"
-#include "CustomTypes/TextKeyWasPressedEventData.hpp"
+#include "CustomTypes/Components/CustomUIKeyboard.hpp"
+#include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
 #include "ArrayUtil.hpp"
 
 #include "GlobalNamespace/TextMeshProButton.hpp"
@@ -129,3 +129,4 @@ void QuestUI::CustomUIKeyboard::Awake() {
         buttonRect->set_offsetMax(UnityEngine::Vector2::get_zero());
     }
 }
+

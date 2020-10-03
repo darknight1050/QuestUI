@@ -1,5 +1,4 @@
-
-#include "CustomTypes/TextKeyWasPressedEventData.hpp"
+#include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
 
 DEFINE_CLASS(QuestUI::TextKeyWasPressedEventData);
 

@@ -1,4 +1,4 @@
-#include "CustomTypes/ViewControllers/KeyboardViewController.hpp"
+#include "CustomTypes/Components/ViewControllers/KeyboardViewController.hpp"
 
 #include "GlobalNamespace/UIKeyboard.hpp"
 #include "UnityEngine/Resources.hpp"
@@ -81,4 +81,3 @@ void QuestUI::KeyboardViewController::SetInputText(Il2CppString* text) {
     inputString = text;
     UpdateInputText();
 }
-

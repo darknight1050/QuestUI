@@ -11,7 +11,7 @@
 
 #include "custom-types/shared/macros.hpp"
 
-#include "../../eventmacros.hpp"
+#include "../../../eventmacros.hpp"
 
 DECLARE_CLASS_CODEGEN(QuestUI, KeyboardViewController, HMUI::ViewController,
 

@@ -1,5 +1,6 @@
 
-#include "CustomTypes/ModSettingsButtonClickData.hpp"
+
+#include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
 
 DEFINE_CLASS(QuestUI::ModSettingsButtonClickData);
 

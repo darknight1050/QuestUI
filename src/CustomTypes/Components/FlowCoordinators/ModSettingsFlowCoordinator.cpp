@@ -1,5 +1,5 @@
-#include "CustomTypes/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
-#include "CustomTypes/ModSettingsButtonClickData.hpp"
+#include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
 
 #include "ModSettingsInfos.hpp"
 
@@ -63,4 +63,5 @@ void QuestUI::ModSettingsFlowCoordinator::BackButtonWasPressed(HMUI::ViewControl
     }else {
         BeatSaberUI::getMainFlowCoordinator()->DismissFlowCoordinator(this, nullptr, false);
     }
+
 }

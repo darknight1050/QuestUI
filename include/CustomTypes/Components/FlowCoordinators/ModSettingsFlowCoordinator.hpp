@@ -4,7 +4,7 @@
 #include "HMUI/FlowCoordinator.hpp"
 #include "HMUI/FlowCoordinator_ActivationType.hpp"
 
-#include "CustomTypes/ViewControllers/ModSettingsButtonsViewController.hpp"
+#include "CustomTypes/Components/ViewControllers/ModSettingsButtonsViewController.hpp"
 
 #include "custom-types/shared/macros.hpp"
 
