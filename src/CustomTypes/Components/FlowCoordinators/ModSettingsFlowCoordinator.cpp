@@ -1,5 +1,5 @@
-#include "CustomTypes/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
-#include "CustomTypes/ModSettingsButtonClickData.hpp"
+#include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
 
 #include "ModSettingsInfos.hpp"
 

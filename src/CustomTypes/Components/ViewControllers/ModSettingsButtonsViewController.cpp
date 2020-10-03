@@ -1,5 +1,5 @@
-#include "CustomTypes/ViewControllers/ModSettingsButtonsViewController.hpp"
-#include "CustomTypes/ModSettingsButtonClickData.hpp"
+#include "CustomTypes/Components/ViewControllers/ModSettingsButtonsViewController.hpp"
+#include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
 
 #include "ModSettingsInfos.hpp"
 

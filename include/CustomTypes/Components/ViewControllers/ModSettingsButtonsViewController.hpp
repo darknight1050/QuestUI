@@ -2,7 +2,7 @@
 
 #include "ModSettingsInfos.hpp"
 
-#include "CustomTypes/ModSettingsButtonClickData.hpp"
+#include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
 
 #include "UnityEngine/GameObject.hpp"
 #include "HMUI/ViewController.hpp"
