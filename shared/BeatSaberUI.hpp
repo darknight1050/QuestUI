@@ -19,6 +19,9 @@
 #include "UnityEngine/UI/Toggle_ToggleEvent.hpp"
 #include "HMUI/HoverHint.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
+#include "UnityEngine/UI/GridLayoutGroup.hpp"
+#include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
+#include "UnityEngine/UI/VerticalLayoutGroup.hpp"
 
 namespace QuestUI::BeatSaberUI {
 
