@@ -1,3 +1,4 @@
+#include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ViewControllers/ModSettingsButtonsViewController.hpp"
 #include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
 

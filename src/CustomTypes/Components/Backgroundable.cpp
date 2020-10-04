@@ -28,13 +28,14 @@ std::map<std::string, std::string> objectNames =  {
 };
 
 void QuestUI::Backgroundable::ApplyBackground(Il2CppString* name) {
-    if(!background)
+    if(background)
         return;
-    UnityEngine::UI::Image* search = ArrayUtil::Last(UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::UI::Image*>(), [&name](UnityEngine::UI::Image* x){ 
+    std::string stringName = to_utf8(csstrtostr(name));
+    UnityEngine::UI::Image* search = ArrayUtil::Last(UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::UI::Image*>(), [&stringName](UnityEngine::UI::Image* x){ 
         UnityEngine::Sprite* sprite = x->get_sprite();
-        if(sprite && to_utf8(csstrtostr(sprite->get_name())) != backgrounds[to_utf8(csstrtostr(name))])
+        if(sprite && to_utf8(csstrtostr(sprite->get_name())) != backgrounds[stringName])
             return false;
-        return to_utf8(csstrtostr(x->get_name())) == objectNames[to_utf8(csstrtostr(name))]; 
+        return to_utf8(csstrtostr(x->get_name())) == objectNames[stringName]; 
     });
     if(!search)
         return;
