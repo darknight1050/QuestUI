@@ -3,6 +3,7 @@
 #include "ArrayUtil.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
+#include "GlobalNamespace/GameplayModifierToggle.hpp"
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/RectTransform.hpp"
 #include "UnityEngine/Vector2.hpp"
@@ -10,19 +11,18 @@
 #include "UnityEngine/UI/Button.hpp"
 #include "UnityEngine/UI/Button_ButtonClickedEvent.hpp"
 #include "UnityEngine/UI/Image.hpp"
-#include "HMUI/ViewController.hpp"
-#include "HMUI/FlowCoordinator.hpp"
-#include "TMPro/TextMeshProUGUI.hpp"
-#include "TMPro/TMP_FontAsset.hpp"
 #include "UnityEngine/UI/Toggle.hpp"
 #include "UnityEngine/UI/LayoutElement.hpp"
 #include "UnityEngine/UI/Toggle_ToggleEvent.hpp"
-#include "HMUI/HoverHint.hpp"
-#include "GlobalNamespace/GameplayModifierToggle.hpp"
 #include "UnityEngine/UI/GridLayoutGroup.hpp"
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "UnityEngine/UI/VerticalLayoutGroup.hpp"
 #include "UnityEngine/UI/ContentSizeFitter.hpp"
+#include "HMUI/ViewController.hpp"
+#include "HMUI/FlowCoordinator.hpp"
+#include "HMUI/HoverHint.hpp"
+#include "TMPro/TextMeshProUGUI.hpp"
+#include "TMPro/TMP_FontAsset.hpp"
 
 namespace QuestUI::BeatSaberUI {
 
@@ -84,10 +84,12 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
     
-    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 AnchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
-    
-    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool hoverHint = false, std::string hoverHintText = "");
+    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Events::UnityAction_1<bool>* onToggle);
 
+    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<bool>* onToggle);
+    
     UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
+
+    HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
 
 }

@@ -8,6 +8,7 @@
 #include "UnityEngine/Texture2D.hpp"
 #include "UnityEngine/TextureFormat.hpp"
 #include "UnityEngine/ImageConversion.hpp"
+#include "UnityEngine/Events/UnityAction_1.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
@@ -15,15 +16,16 @@
 using namespace GlobalNamespace;
 using namespace UnityEngine;
 using namespace UnityEngine::UI;
+using namespace UnityEngine::Events;
 using namespace TMPro;
 using namespace HMUI;
 
 namespace QuestUI::BeatSaberUI {
     
-    GlobalNamespace::MainFlowCoordinator* getMainFlowCoordinator() {
-        static GlobalNamespace::MainFlowCoordinator* mainFlowCoordinator = nullptr;
+    MainFlowCoordinator* getMainFlowCoordinator() {
+        static MainFlowCoordinator* mainFlowCoordinator = nullptr;
         if(!mainFlowCoordinator)
-            mainFlowCoordinator = Object::FindObjectOfType<GlobalNamespace::MainFlowCoordinator*>();
+            mainFlowCoordinator = Object::FindObjectOfType<MainFlowCoordinator*>();
         return mainFlowCoordinator;
     }
 
@@ -35,11 +37,11 @@ namespace QuestUI::BeatSaberUI {
         return mainTextFont;
     }
     
-    HMUI::ViewController* CreateViewController(System::Type* type) {
-        HMUI::ViewController* viewController = (HMUI::ViewController*)UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIViewController"))->AddComponent(type);
-        UnityEngine::Object::DontDestroyOnLoad(viewController->get_gameObject());
+    ViewController* CreateViewController(System::Type* type) {
+        ViewController* viewController = (ViewController*)GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIViewController"))->AddComponent(type);
+        Object::DontDestroyOnLoad(viewController->get_gameObject());
 
-        UnityEngine::RectTransform* rectTransform = viewController->get_rectTransform();
+        RectTransform* rectTransform = viewController->get_rectTransform();
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
@@ -47,8 +49,8 @@ namespace QuestUI::BeatSaberUI {
         return viewController;
     }
     
-    HMUI::FlowCoordinator* CreateFlowCoordinator(System::Type* type) {
-        HMUI::FlowCoordinator* flowCoordinator = (HMUI::FlowCoordinator*)UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIFlowCoordinator"))->AddComponent(type);
+    FlowCoordinator* CreateFlowCoordinator(System::Type* type) {
+        FlowCoordinator* flowCoordinator = (FlowCoordinator*)GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIFlowCoordinator"))->AddComponent(type);
         flowCoordinator->baseInputModule = getMainFlowCoordinator()->baseInputModule;
         return flowCoordinator;
     }
@@ -111,19 +113,19 @@ namespace QuestUI::BeatSaberUI {
             array->values[0]->set_sprite(background);
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, Events::UnityAction* onClick, std::string buttonText, Sprite* icon){
+    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityAction* onClick, std::string buttonText, Sprite* icon){
         Button* button = CreateUIButton(parent, buttonTemplate, anchoredPosition, onClick, buttonText, icon);
         ((RectTransform*)button->get_transform())->set_sizeDelta(sizeDelta);
         return button;
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, Events::UnityAction* onClick, std::string buttonText, Sprite* icon){
+    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityAction* onClick, std::string buttonText, Sprite* icon){
         Button* button = CreateUIButton(parent, buttonTemplate, onClick, buttonText, icon);
         ((RectTransform*)button->get_transform())->set_anchoredPosition(anchoredPosition);
         return button;
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, Events::UnityAction* onClick, std::string buttonText, Sprite* icon){
+    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, UnityAction* onClick, std::string buttonText, Sprite* icon){
         Button* button = Object::Instantiate(ArrayUtil::Last(Resources::FindObjectsOfTypeAll<Button*>(), [&buttonTemplate](Button* x) { return to_utf8(csstrtostr(x->get_name())) == buttonTemplate; }), parent, false);
         button->set_onClick(Button::ButtonClickedEvent::New_ctor());
         if(onClick)
@@ -142,7 +144,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     Image* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
-        Image* image = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIImage"))->AddComponent<Image*>();
+        Image* image = GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIImage"))->AddComponent<Image*>();
         image->get_transform()->SetParent(parent, false);
         image->set_sprite(sprite);
         RectTransform* rectTransform = (RectTransform*)image->get_transform();
@@ -162,48 +164,53 @@ namespace QuestUI::BeatSaberUI {
         return nullptr;
     }
     
-    UnityEngine::UI::GridLayoutGroup* CreateGridLayoutGroup(UnityEngine::Transform* parent) {
-        UnityEngine::RectTransform* rectTransform = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIGridLayoutGroup"), typeof(UnityEngine::UI::GridLayoutGroup*), typeof(UnityEngine::UI::ContentSizeFitter*), typeof(QuestUI::Backgroundable*))->GetComponent<UnityEngine::RectTransform*>();
+    GridLayoutGroup* CreateGridLayoutGroup(Transform* parent) {
+        RectTransform* rectTransform = GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIGridLayoutGroup"), typeof(GridLayoutGroup*), typeof(ContentSizeFitter*), typeof(QuestUI::Backgroundable*))->GetComponent<RectTransform*>();
         rectTransform->SetParent(parent, false);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-        return rectTransform->GetComponent<UnityEngine::UI::GridLayoutGroup*>();
+        return rectTransform->GetComponent<GridLayoutGroup*>();
     }
     
-    UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent) {
-        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup"), typeof(UnityEngine::UI::HorizontalLayoutGroup*), typeof(QuestUI::Backgroundable*));
+    HorizontalLayoutGroup* CreateHorizontalLayoutGroup(Transform* parent) {
+        GameObject* gameObject = GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup"), typeof(HorizontalLayoutGroup*), typeof(QuestUI::Backgroundable*));
         
-        UnityEngine::UI::ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<UnityEngine::UI::ContentSizeFitter*>();
-        contentSizeFitter->set_verticalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
+        ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<ContentSizeFitter*>();
+        contentSizeFitter->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
 
-        UnityEngine::RectTransform* rectTransform = gameObject->GetComponent<UnityEngine::RectTransform*>();
+        RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
         rectTransform->SetParent(parent, false);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
         
-        gameObject->AddComponent<UnityEngine::UI::LayoutElement*>();
-        return rectTransform->GetComponent<UnityEngine::UI::HorizontalLayoutGroup*>();
+        gameObject->AddComponent<LayoutElement*>();
+        return rectTransform->GetComponent<HorizontalLayoutGroup*>();
     }
     
-    UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent) {
-        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup"), typeof(UnityEngine::UI::VerticalLayoutGroup*), typeof(QuestUI::Backgroundable*));
+    VerticalLayoutGroup* CreateVerticalLayoutGroup(Transform* parent) {
+        GameObject* gameObject = GameObject::New_ctor(il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup"), typeof(VerticalLayoutGroup*), typeof(QuestUI::Backgroundable*));
         
-        UnityEngine::UI::ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<UnityEngine::UI::ContentSizeFitter*>();
-        contentSizeFitter->set_horizontalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
+        ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<ContentSizeFitter*>();
+        contentSizeFitter->set_horizontalFit(ContentSizeFitter::FitMode::PreferredSize);
 
-        UnityEngine::RectTransform* rectTransform = gameObject->GetComponent<UnityEngine::RectTransform*>();
+        RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
         rectTransform->SetParent(parent, false);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
         
-        gameObject->AddComponent<UnityEngine::UI::LayoutElement*>();
-        return rectTransform->GetComponent<UnityEngine::UI::VerticalLayoutGroup*>();
+        gameObject->AddComponent<LayoutElement*>();
+        return rectTransform->GetComponent<VerticalLayoutGroup*>();
+    }
+
+    GameObject* CreateToggle(Transform* parent, std::string text, UnityAction_1<bool>* onToggle)
+    {
+        return CreateToggle(parent, text, UnityEngine::Vector2(0.0f, 0.0f), onToggle);
     }
     
-    GameObject* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool useHoverHint, std::string hoverHintText)
+    GameObject* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityAction_1<bool>* onToggle)
     {
         GameplayModifierToggle* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameplayModifierToggle*>(), [](GameplayModifierToggle* x){ return to_utf8(csstrtostr(x->get_name())) == "InstaFail"; }), parent, false);
         baseSetting->set_name(il2cpp_utils::createcsstr("QuestUICheckboxSetting"));
@@ -214,19 +221,11 @@ namespace QuestUI::BeatSaberUI {
         Object::Destroy(baseSetting);
         Object::Destroy(gameObject->get_transform()->GetChild(0)->get_gameObject());
         Object::Destroy(gameObject->GetComponent<HoverHint*>()); 
-        HoverHint* hoverHint = gameObject->AddComponent<HoverHint*>();
-        if(!useHoverHint || hoverHintText == "")
-        {
-            Object::Destroy(hoverHint); 
-        }
-        else
-        {
-            hoverHint->set_text(il2cpp_utils::createcsstr(hoverHintText, il2cpp_utils::StringType::Permanent));
-            hoverHint->hoverHintController = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HoverHintController*>());
-        }
         
         Toggle* toggle = gameObject->GetComponent<Toggle*>();
-        toggle->onValueChanged = onToggle;
+        toggle->onValueChanged = Toggle::ToggleEvent::New_ctor();
+        if(onToggle)
+            toggle->onValueChanged->AddListener(onToggle);
         TextMeshProUGUI* textMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
         textMesh->set_fontSize(5); //Change some settings to conform more to the List Dropdown/IncDec settings controllers
         textMesh->SetText(il2cpp_utils::createcsstr(text));
@@ -244,11 +243,6 @@ namespace QuestUI::BeatSaberUI {
         return gameObject;
     }
 
-    GameObject* CreateToggle(Transform* parent, std::string text, UnityEngine::UI::Toggle::ToggleEvent* onToggle, bool useHoverHint, std::string hoverHintText)
-    {
-        return CreateToggle(parent, text, UnityEngine::Vector2(0.0f, 0.0f), onToggle);
-    }
-
     GameObject* CreateLoadingIndicator(Transform* parent, UnityEngine::Vector2 anchoredPosition)
     {
         GameObject* loadingIndicator = GameObject::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameObject*>(), [](GameObject* x){ return to_utf8(csstrtostr(x->get_name())) == "LoadingIndicator"; }), parent, false);
@@ -256,11 +250,17 @@ namespace QuestUI::BeatSaberUI {
 
         loadingIndicator->AddComponent<LayoutElement*>();
 
-        RectTransform* rectTransform = loadingIndicator->AddComponent<RectTransform*>();
-
+        RectTransform* rectTransform = loadingIndicator->GetComponent<RectTransform*>();
         rectTransform->set_anchoredPosition(anchoredPosition);
 
         return loadingIndicator;
+    }
+
+    HoverHint* AddHoverHint(GameObject* gameObject, std::string text){
+        HoverHint* hoverHint = gameObject->AddComponent<HoverHint*>();
+        hoverHint->set_text(il2cpp_utils::createcsstr(text, il2cpp_utils::StringType::Permanent));
+        hoverHint->hoverHintController = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HoverHintController*>());
+        return hoverHint;
     }
 
 }
