@@ -11,6 +11,14 @@ namespace QuestUI::ArrayUtil {
         return nullptr;
     }
 
+    template <class T>
+    inline T* Last(Array<T*>* array)
+    {
+        if(array->Length() > 0)
+            return array->values[array->Length() - 1];
+        return nullptr;
+    }
+
     template <class T, class Predicate>
     inline T* First(Array<T*>* array, Predicate pred)
     {

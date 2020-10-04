@@ -34,7 +34,8 @@ namespace QuestUI::BeatSaberUI {
 
     template<class T = HMUI::ViewController*>
     T CreateViewController() {
-        T viewController = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("BSMLViewController"))->AddComponent<T>();
+        static auto name = il2cpp_utils::createcsstr("BSMLViewController", il2cpp_utils::StringType::Permanent);
+        T viewController = UnityEngine::GameObject::New_ctor(name)->AddComponent<T>();
         UnityEngine::Object::DontDestroyOnLoad(viewController->get_gameObject());
 
         UnityEngine::RectTransform* rectTransform = viewController->get_rectTransform();
@@ -49,7 +50,8 @@ namespace QuestUI::BeatSaberUI {
 
     template<class T = HMUI::FlowCoordinator*>
     T CreateFlowCoordinator() {
-        T flowCoordinator = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("BSMLFlowCoordinator"))->AddComponent<T>();
+        static auto name = il2cpp_utils::createcsstr("BSMLFlowCoordinator", il2cpp_utils::StringType::Permanent);
+        T flowCoordinator = UnityEngine::GameObject::New_ctor(name)->AddComponent<T>();
         flowCoordinator->baseInputModule = getMainFlowCoordinator()->baseInputModule;
         return flowCoordinator;
     }
