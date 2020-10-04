@@ -6,7 +6,9 @@ namespace QuestUI::ArrayUtil {
     template <class T>
     inline T* First(Array<T*>* array)
     {
-        return array->values[0];
+        if(array->Length() > 0)
+            return array->values[0];
+        return nullptr;
     }
 
     template <class T, class Predicate>
