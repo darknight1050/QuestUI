@@ -277,7 +277,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     GameObject* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue) {
-        CreateIncrementSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), text, decimals, increment, currentValue);
+        return CreateIncrementSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), text, decimals, increment, currentValue);
     }
 
     GameObject* CreateIncrementSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue){
