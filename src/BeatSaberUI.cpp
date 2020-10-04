@@ -1,6 +1,7 @@
 #include "BeatSaberUI.hpp"
 
 #include "CustomTypes/Components/Backgroundable.hpp"
+#include "CustomTypes/Components/IncrementSetting.hpp"
 
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/Rect.hpp"
@@ -9,7 +10,9 @@
 #include "UnityEngine/TextureFormat.hpp"
 #include "UnityEngine/ImageConversion.hpp"
 #include "UnityEngine/Events/UnityAction_1.hpp"
+#include "UnityEngine/Events/UnityAction.hpp"
 #include "HMUI/HoverHintController.hpp"
+#include "GlobalNamespace/BoolSettingsController.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
 
@@ -271,6 +274,48 @@ namespace QuestUI::BeatSaberUI {
         hoverHint->set_text(il2cpp_utils::createcsstr(text));
         hoverHint->hoverHintController = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HoverHintController*>());
         return hoverHint;
+    }
+
+    GameObject* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue) {
+        CreateIncrementSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), text, decimals, increment, currentValue);
+    }
+
+    GameObject* CreateIncrementSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue){
+        BoolSettingsController* baseSetting  = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<BoolSettingsController*>(), [](BoolSettingsController* x){ return to_utf8(csstrtostr(x->get_name())) == "Fullscreen";}), parent, false);
+        static auto name = il2cpp_utils::createcsstr("QuestUIIncDecSetting", il2cpp_utils::StringType::Permanent);
+        baseSetting->set_name(name);
+        
+        GameObject* gameObject = baseSetting->get_gameObject();
+        Object::Destroy(baseSetting);
+        gameObject->SetActive(false);
+
+        QuestUI::IncrementSetting* setting = gameObject->AddComponent<QuestUI::IncrementSetting*>();
+        setting->Decimals = decimals;
+        setting->Increment = increment;
+        setting->CurrentValue = currentValue;
+        Transform* child = gameObject->get_transform()->GetChild(1);
+        setting->Text = child->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
+        setting->Text->SetText(setting->GetRoundedString());
+        Button* decButton = ArrayUtil::First(child->GetComponentsInChildren<Button*>());
+        Button* incButton = ArrayUtil::Last(child->GetComponentsInChildren<Button*>());
+        decButton->set_interactable(true);
+        incButton->set_interactable(true);
+        decButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), setting, +[](QuestUI::IncrementSetting* setting){ setting->DecButtonPressed(); }));
+        incButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), setting, +[](QuestUI::IncrementSetting* setting){ setting->IncButtonPressed(); }));
+        
+        child->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(40, 0));
+        TextMeshProUGUI* textMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
+        textMesh->SetText(il2cpp_utils::createcsstr(text));
+
+        LayoutElement* layoutElement = gameObject->AddComponent<LayoutElement*>();
+        layoutElement->set_preferredWidth(90);
+
+        RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
+        rectTransform->set_anchoredPosition(anchoredPosition);
+
+        gameObject->SetActive(true);    
+
+        return gameObject;
     }
 
 }

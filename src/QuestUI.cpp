@@ -5,6 +5,7 @@
 #include "ModSettingsInfos.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/CustomUIKeyboard.hpp"
+#include "CustomTypes/Components/IncrementSetting.hpp"
 #include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
 #include "CustomTypes/Components/ViewControllers/KeyboardViewController.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
@@ -57,6 +58,7 @@ void QuestUI::Init() {
     if(!init) {
         init = true;
         il2cpp_functions::Init();
+        custom_types::Register::RegisterType<IncrementSetting>();
         custom_types::Register::RegisterType<Backgroundable>();
         custom_types::Register::RegisterType<CustomUIKeyboard>();
         custom_types::Register::RegisterType<TextKeyWasPressedEventData>();

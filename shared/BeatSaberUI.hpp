@@ -94,4 +94,8 @@ namespace QuestUI::BeatSaberUI {
 
     HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
 
+    UnityEngine::GameObject* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue);
+    
+    UnityEngine::GameObject* CreateIncrementSetting(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue);
+
 }
