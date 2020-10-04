@@ -26,12 +26,6 @@ LOCAL_SRC_FILES := extern/libcodegen_0_2_6.so
 LOCAL_CPP_FEATURES += rtti exceptions 
 include $(PREBUILT_SHARED_LIBRARY)
 
-# Creating prebuilt for dependency: bs-utils - version: 0.4.4
-include $(CLEAR_VARS)
-LOCAL_MODULE := bs-utils
-LOCAL_EXPORT_C_INCLUDES := extern/bs-utils
-LOCAL_SRC_FILES := extern/libbs-utils.so
-include $(PREBUILT_SHARED_LIBRARY)
 # Creating prebuilt for dependency: beatsaber-hook - version: 0.7.1
 include $(CLEAR_VARS)
 LOCAL_MODULE := beatsaber-hook_0_7_1
@@ -53,16 +47,15 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 # If you would like to use more shared libraries (such as custom UI, utils, or more) add them here, following the format above. # In addition, ensure that you add them to the shared library build below. 
 include $(CLEAR_VARS) 
-LOCAL_MODULE := questui_0_1_1
+LOCAL_MODULE := questui
 LOCAL_SRC_FILES += $(call rwildcard,src/**,*.cpp)
 LOCAL_SRC_FILES += $(call rwildcard,extern/beatsaber-hook/src/inline-hook,*.cpp)
 LOCAL_SRC_FILES += $(call rwildcard,extern/beatsaber-hook/src/inline-hook,*.c)
 LOCAL_SHARED_LIBRARIES += modloader
 LOCAL_SHARED_LIBRARIES += beatsaber-hook_0_7_1
 LOCAL_SHARED_LIBRARIES += codegen_0_2_6
-LOCAL_SHARED_LIBRARIES += bs-utils
 LOCAL_SHARED_LIBRARIES += custom-types_0_2_4
 LOCAL_LDLIBS += -llog 
-LOCAL_CFLAGS += -I"include" -I"shared" -I"./extern/libil2cpp/il2cpp/libil2cpp" -I"extern" -I"extern/codegen/include" -DVERSION='"0.1.1"'
+LOCAL_CFLAGS += -I"include" -I"shared" -I"./extern/libil2cpp/il2cpp/libil2cpp" -I"extern" -I"extern/codegen/include" -DVERSION='"0.1.2"'
 LOCAL_C_INCLUDES += ./include ./src 
 include $(BUILD_SHARED_LIBRARY)

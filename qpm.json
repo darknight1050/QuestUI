@@ -4,9 +4,11 @@
   "info": {
     "name": "questui",
     "id": "questui",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "url": "https://github.com/darknight1050/questui",
-    "additionalData": {}
+    "additionalData": {
+      "overrideSoName": "libquestui.so"
+    }
   },
   "dependencies": [
     {
@@ -21,11 +23,6 @@
     {
       "id": "codegen",
       "versionRange": "^0.2.6",
-      "additionalData": {}
-    },
-    {
-      "id": "bs-utils",
-      "versionRange": "^0.4.4",
       "additionalData": {}
     },
     {
