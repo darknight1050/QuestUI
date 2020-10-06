@@ -3,9 +3,12 @@
 
 #include "QuestUI.hpp"
 #include "ModSettingsInfos.hpp"
+#include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
-#include "CustomTypes/Components/CustomUIKeyboard.hpp"
+#include "CustomTypes/Components/ScrollViewContent.hpp"
+#include "CustomTypes/Components/QuestUIScrollView.hpp"
 #include "CustomTypes/Components/IncrementSetting.hpp"
+#include "CustomTypes/Components/CustomUIKeyboard.hpp"
 #include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
 #include "CustomTypes/Components/ViewControllers/KeyboardViewController.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
@@ -41,7 +44,7 @@ void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
 MAKE_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, HMUI::ViewController::ActivationType activationType) {
     MainMenuViewController_DidActivate(self, firstActivation, activationType);
     if(firstActivation) {
-        if(ModSettingsInfos::get().size() > 0) {
+         if(ModSettingsInfos::get().size() > 0) {
             UnityEngine::UI::Button* settingsButton = (UnityEngine::UI::Button*)RET_V_UNLESS(il2cpp_utils::GetFieldValue(self, "_settingsButton"));
             UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(settingsButton);
             button->set_name(il2cpp_utils::createcsstr("Mod Settings"));
@@ -58,8 +61,11 @@ void QuestUI::Init() {
     if(!init) {
         init = true;
         il2cpp_functions::Init();
-        custom_types::Register::RegisterType<IncrementSetting>();
+        custom_types::Register::RegisterType<ExternalComponents>();
         custom_types::Register::RegisterType<Backgroundable>();
+        custom_types::Register::RegisterType<ScrollViewContent>();
+        custom_types::Register::RegisterType<QuestUIScrollView>();
+        custom_types::Register::RegisterType<IncrementSetting>();
         custom_types::Register::RegisterType<CustomUIKeyboard>();
         custom_types::Register::RegisterType<TextKeyWasPressedEventData>();
         custom_types::Register::RegisterType<KeyboardViewController>();

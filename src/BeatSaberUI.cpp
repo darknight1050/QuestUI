@@ -1,6 +1,9 @@
 #include "BeatSaberUI.hpp"
 
+#include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
+#include "CustomTypes/Components/ScrollViewContent.hpp"
+#include "CustomTypes/Components/QuestUIScrollView.hpp"
 #include "CustomTypes/Components/IncrementSetting.hpp"
 
 #include "UnityEngine/Resources.hpp"
@@ -10,11 +13,17 @@
 #include "UnityEngine/TextureFormat.hpp"
 #include "UnityEngine/ImageConversion.hpp"
 #include "UnityEngine/Events/UnityAction_1.hpp"
+#include "UnityEngine/Material.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "HMUI/HoverHintController.hpp"
+#include "HMUI/ModalView.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
+#include "GlobalNamespace/ReleaseInfoViewController.hpp"
+#include "HMUI/TextPageScrollView.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
+
+#include "customlogger.hpp"
 
 using namespace GlobalNamespace;
 using namespace UnityEngine;
@@ -22,6 +31,7 @@ using namespace UnityEngine::UI;
 using namespace UnityEngine::Events;
 using namespace TMPro;
 using namespace HMUI;
+using namespace Polyglot;
 
 namespace QuestUI::BeatSaberUI {
     
@@ -87,7 +97,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     void SetButtonText(Button* button, std::string text) {
-        Polyglot::LocalizedTextMeshProUGUI* localizer = button->GetComponentInChildren<Polyglot::LocalizedTextMeshProUGUI*>();
+        LocalizedTextMeshProUGUI* localizer = button->GetComponentInChildren<LocalizedTextMeshProUGUI*>();
         if (localizer)
             Object::Destroy(localizer);
         TextMeshProUGUI* textMesh = button->GetComponentInChildren<TextMeshProUGUI*>();
@@ -152,7 +162,8 @@ namespace QuestUI::BeatSaberUI {
 
     Image* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
         static auto name = il2cpp_utils::createcsstr("QuestUIImage", il2cpp_utils::StringType::Permanent);
-        Image* image = GameObject::New_ctor(name)->AddComponent<Image*>();
+        GameObject* gameObj = GameObject::New_ctor(name);
+        Image* image = gameObj->AddComponent<Image*>();
         image->get_transform()->SetParent(parent, false);
         image->set_sprite(sprite);
         RectTransform* rectTransform = (RectTransform*)image->get_transform();
@@ -160,6 +171,8 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchoredPosition(anchoredPosition);
         rectTransform->set_sizeDelta(sizeDelta);
+        
+        gameObj->AddComponent<LayoutElement*>();
         return image;
     }
 
@@ -174,7 +187,7 @@ namespace QuestUI::BeatSaberUI {
     
     GridLayoutGroup* CreateGridLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIGridLayoutGroup", il2cpp_utils::StringType::Permanent);
-        RectTransform* rectTransform = GameObject::New_ctor(name, typeof(GridLayoutGroup*), typeof(ContentSizeFitter*), typeof(QuestUI::Backgroundable*))->GetComponent<RectTransform*>();
+        RectTransform* rectTransform = GameObject::New_ctor(name, typeof(GridLayoutGroup*), typeof(ContentSizeFitter*), typeof(Backgroundable*))->GetComponent<RectTransform*>();
         rectTransform->SetParent(parent, false);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
@@ -184,7 +197,7 @@ namespace QuestUI::BeatSaberUI {
     
     HorizontalLayoutGroup* CreateHorizontalLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup", il2cpp_utils::StringType::Permanent);
-        GameObject* gameObject = GameObject::New_ctor(name, typeof(HorizontalLayoutGroup*), typeof(QuestUI::Backgroundable*));
+        GameObject* gameObject = GameObject::New_ctor(name, typeof(HorizontalLayoutGroup*), typeof(Backgroundable*));
         
         ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<ContentSizeFitter*>();
         contentSizeFitter->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
@@ -201,7 +214,7 @@ namespace QuestUI::BeatSaberUI {
     
     VerticalLayoutGroup* CreateVerticalLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup", il2cpp_utils::StringType::Permanent);
-        GameObject* gameObject = GameObject::New_ctor(name, typeof(VerticalLayoutGroup*), typeof(QuestUI::Backgroundable*));
+        GameObject* gameObject = GameObject::New_ctor(name, typeof(VerticalLayoutGroup*), typeof(Backgroundable*));
         
         ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<ContentSizeFitter*>();
         contentSizeFitter->set_horizontalFit(ContentSizeFitter::FitMode::PreferredSize);
@@ -289,7 +302,7 @@ namespace QuestUI::BeatSaberUI {
         Object::Destroy(baseSetting);
         gameObject->SetActive(false);
 
-        QuestUI::IncrementSetting* setting = gameObject->AddComponent<QuestUI::IncrementSetting*>();
+        IncrementSetting* setting = gameObject->AddComponent<IncrementSetting*>();
         setting->Decimals = decimals;
         setting->Increment = increment;
         setting->CurrentValue = currentValue;
@@ -300,12 +313,15 @@ namespace QuestUI::BeatSaberUI {
         Button* incButton = ArrayUtil::Last(child->GetComponentsInChildren<Button*>());
         decButton->set_interactable(true);
         incButton->set_interactable(true);
-        decButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), setting, +[](QuestUI::IncrementSetting* setting){ setting->DecButtonPressed(); }));
-        incButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), setting, +[](QuestUI::IncrementSetting* setting){ setting->IncButtonPressed(); }));
+        decButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), setting, +[](IncrementSetting* setting){ setting->DecButtonPressed(); }));
+        incButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), setting, +[](IncrementSetting* setting){ setting->IncButtonPressed(); }));
         
         child->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(40, 0));
         TextMeshProUGUI* textMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
         textMesh->SetText(il2cpp_utils::createcsstr(text));
+        gameObject->AddComponent<ExternalComponents*>()->Add(textMesh);
+
+        Object::Destroy(textMesh->GetComponent<LocalizedTextMeshProUGUI*>());
 
         LayoutElement* layoutElement = gameObject->AddComponent<LayoutElement*>();
         layoutElement->set_preferredWidth(90);
@@ -318,4 +334,126 @@ namespace QuestUI::BeatSaberUI {
         return gameObject;
     }
 
+    GameObject* CreateScrollView(Transform* parent) {
+        ReleaseInfoViewController* releaseInfoViewController = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<ReleaseInfoViewController*>()), parent);
+        releaseInfoViewController->get_gameObject()->SetActive(true);
+        TextPageScrollView* textScrollView = releaseInfoViewController->textPageScrollView;
+        static auto textScrollViewName = il2cpp_utils::createcsstr("QuestUIScrollView", il2cpp_utils::StringType::Permanent);
+        textScrollView->set_name(textScrollViewName);
+        Button* pageUpButton = textScrollView->pageUpButton;
+        Button* pageDownButton = textScrollView->pageDownButton;
+        VerticalScrollIndicator* verticalScrollIndicator = textScrollView->verticalScrollIndicator; 
+        RectTransform* viewport = textScrollView->viewport;
+        GameObject::Destroy(textScrollView->text->get_gameObject());
+        GameObject* gameObject = textScrollView->get_gameObject();
+        GameObject::Destroy(textScrollView);
+        gameObject->SetActive(false);
+
+        QuestUIScrollView* scrollView = gameObject->AddComponent<QuestUIScrollView*>();
+        scrollView->pageDownButton = pageDownButton;
+        scrollView->pageUpButton = pageUpButton;
+        scrollView->verticalScrollIndicator = verticalScrollIndicator;
+        scrollView->viewport = viewport;
+
+        viewport->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        viewport->set_anchorMin(UnityEngine::Vector2(1.0f, 1.0f));
+        scrollView->SetReserveButtonSpace(false);
+
+        static auto parentObjName = il2cpp_utils::createcsstr("QuestUIScrollViewContent", il2cpp_utils::StringType::Permanent);
+        GameObject* parentObj = GameObject::New_ctor(parentObjName);
+        parentObj->get_transform()->SetParent(viewport, false);
+
+        VerticalLayoutGroup* verticalLayout = parentObj->AddComponent<VerticalLayoutGroup*>();
+        verticalLayout->set_childForceExpandHeight(false);
+        verticalLayout->set_childForceExpandWidth(false);
+
+        RectTransform* rectTransform = parentObj->GetComponent<RectTransform*>();
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
+
+        parentObj->AddComponent<ScrollViewContent*>()->scrollView = scrollView;
+
+        static auto childName = il2cpp_utils::createcsstr("QuestUIScrollViewContentContainer", il2cpp_utils::StringType::Permanent);
+        GameObject* child = GameObject::New_ctor(childName);
+        child->get_transform()->SetParent(rectTransform, false);
+
+        VerticalLayoutGroup* layoutGroup = child->AddComponent<VerticalLayoutGroup*>();
+        layoutGroup->set_childControlHeight(false);
+        layoutGroup->set_childForceExpandHeight(false);
+        layoutGroup->set_childAlignment(TextAnchor::MiddleCenter);
+        layoutGroup->set_spacing(0.5f);
+
+        child->AddComponent<ContentSizeFitter*>();
+        child->AddComponent<LayoutElement*>();
+
+        ExternalComponents* externalComponents = child->AddComponent<ExternalComponents*>();
+        externalComponents->Add(scrollView);
+        externalComponents->Add(child->get_transform());
+        externalComponents->Add(gameObject->AddComponent<LayoutElement*>());
+
+        RectTransform* childRectTransform = child->GetComponent<RectTransform*>();
+        childRectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, -1.0f));
+
+        scrollView->contentRectTransform = rectTransform;
+        gameObject->SetActive(true);
+        return child;
+    }
+
+    GameObject* CreateScrollableSettingsContainer(Transform* parent) {
+        GameObject* content = CreateScrollView(parent);
+        ExternalComponents* externalComponents = content->GetComponent<ExternalComponents*>();
+        RectTransform* scrollTransform = externalComponents->Get<RectTransform*>();
+        scrollTransform->set_anchoredPosition(UnityEngine::Vector2(2, 6));
+        scrollTransform->set_sizeDelta(UnityEngine::Vector2(0, 20));
+        static auto name = il2cpp_utils::createcsstr("QuestUIScrollableSettingsContainer", il2cpp_utils::StringType::Permanent);
+        scrollTransform->get_gameObject()->set_name(name);
+        externalComponents->Get<QuestUIScrollView*>()->SetReserveButtonSpace(true);
+        return content;
+    }
+
+    GameObject* CreateModalView(Transform* parent) {
+        GameObject* gameObject = GameObject::New_ctor();
+        static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Permanent);
+        gameObject->set_name(name);
+        gameObject->SetActive(false);
+
+        RectTransform* rectTransform = gameObject->AddComponent<RectTransform*>();
+        rectTransform->SetParent(parent, false);
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0, 0));
+
+        ModalView* modalView = gameObject->AddComponent<ModalView*>();
+        ModalView* yoinkFromView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ModalView*>(), [](ModalView* x){ return to_utf8(csstrtostr(x->get_name())) == "TableView";});
+        modalView->presentPanelAnimations = yoinkFromView->presentPanelAnimations;
+        modalView->dismissPanelAnimation = yoinkFromView->dismissPanelAnimation;
+
+        GameObject* child = GameObject::New_ctor();
+        child->get_transform()->SetParent(rectTransform, false);
+        RectTransform* shadowTransform = child->get_gameObject()->AddComponent<RectTransform*>();
+        shadowTransform->set_anchorMin(UnityEngine::Vector2(0, 0));
+        shadowTransform->set_anchorMax(UnityEngine::Vector2(1, 1));
+        shadowTransform->set_sizeDelta(UnityEngine::Vector2(10, 10));
+        child->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel-shadow"));
+
+        child = GameObject::New_ctor();
+        child->get_transform()->SetParent(rectTransform, false);
+        RectTransform* backgroundTransform = child->get_gameObject()->AddComponent<RectTransform*>();
+        backgroundTransform->set_anchorMin(UnityEngine::Vector2(0, 0));
+        backgroundTransform->set_anchorMax(UnityEngine::Vector2(1, 1));
+        backgroundTransform->set_sizeDelta(UnityEngine::Vector2(0, 0));
+
+        Backgroundable* backgroundable = child->get_gameObject()->AddComponent<Backgroundable*>();
+        backgroundable->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
+        auto background = backgroundable->background;
+        background->set_color(UnityEngine::Color(0.706f, 0.706f, 0.706f, 1));
+        background->set_material(ArrayUtil::First(Resources::FindObjectsOfTypeAll<Material*>(), [](Material* x){ return to_utf8(csstrtostr(x->get_name())) == "UIFogBG"; }));
+
+        ExternalComponents* externalComponents = child->AddComponent<ExternalComponents*>();
+        externalComponents->Add(modalView);
+        externalComponents->Add(rectTransform);
+
+        return child;
+    }
 }

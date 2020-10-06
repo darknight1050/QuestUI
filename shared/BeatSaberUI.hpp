@@ -22,6 +22,7 @@
 #include "HMUI/FlowCoordinator.hpp"
 #include "HMUI/HoverHint.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
+#include "CustomTypes/Components/QuestUIScrollView.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
 
 namespace QuestUI::BeatSaberUI {
@@ -97,5 +98,11 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::GameObject* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue);
     
     UnityEngine::GameObject* CreateIncrementSetting(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue);
+
+    UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);
+
+    UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
+
+    UnityEngine::GameObject* CreateModalView(UnityEngine::Transform* parent);
 
 }
