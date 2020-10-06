@@ -39,7 +39,7 @@ void QuestUI::QuestUIScrollView::Setup() {
         verticalScrollIndicator->get_gameObject()->SetActive(active);
         verticalScrollIndicator->set_normalizedPageHeight(viewPortHeight / contentHeight);
     }
-    ComputeScrollFocusPosY();   
+    ComputeScrollFocusPosY();
 
     RectTransform* handle = verticalScrollIndicator->handle;
     handle->set_sizeDelta(UnityEngine::Vector2(handle->get_sizeDelta().x, abs(handle->get_sizeDelta().y)));

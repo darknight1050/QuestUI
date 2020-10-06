@@ -14,19 +14,10 @@ DEFINE_CLASS(QuestUI::ScrollViewContent);
 
 void QuestUI::ScrollViewContent::Start() {
     LayoutRebuilder::ForceRebuildLayoutImmediate(GetComponent<RectTransform*>());
-    inSetup = true;
 }
 
 void QuestUI::ScrollViewContent::OnEnable() {
     UpdateScrollView();
-}
-
-void QuestUI::ScrollViewContent::Update() {
-    RectTransform* rectTransform = (RectTransform*)get_transform();
-    if(inSetup && rectTransform->get_sizeDelta().y != -1.0f){
-        inSetup = false;
-        UpdateScrollView();
-    } 
 }
 
 void QuestUI::ScrollViewContent::OnRectTransformDimensionsChange() {

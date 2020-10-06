@@ -350,8 +350,8 @@ namespace QuestUI::BeatSaberUI {
         gameObject->SetActive(false);
 
         QuestUIScrollView* scrollView = gameObject->AddComponent<QuestUIScrollView*>();
-        scrollView->pageDownButton = pageDownButton;
         scrollView->pageUpButton = pageUpButton;
+        scrollView->pageDownButton = pageDownButton;
         scrollView->verticalScrollIndicator = verticalScrollIndicator;
         scrollView->viewport = viewport;
 
@@ -370,8 +370,8 @@ namespace QuestUI::BeatSaberUI {
         RectTransform* rectTransform = parentObj->GetComponent<RectTransform*>();
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
-        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, -1.0f));
+        
         parentObj->AddComponent<ScrollViewContent*>()->scrollView = scrollView;
 
         static auto childName = il2cpp_utils::createcsstr("QuestUIScrollViewContentContainer", il2cpp_utils::StringType::Permanent);
@@ -389,13 +389,11 @@ namespace QuestUI::BeatSaberUI {
 
         ExternalComponents* externalComponents = child->AddComponent<ExternalComponents*>();
         externalComponents->Add(scrollView);
-        externalComponents->Add(child->get_transform());
+        externalComponents->Add(scrollView->get_transform());
         externalComponents->Add(gameObject->AddComponent<LayoutElement*>());
 
-        RectTransform* childRectTransform = child->GetComponent<RectTransform*>();
-        childRectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, -1.0f));
-
         scrollView->contentRectTransform = rectTransform;
+
         gameObject->SetActive(true);
         return child;
     }
