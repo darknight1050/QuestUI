@@ -3,11 +3,11 @@
 
 #include "custom-types/shared/macros.hpp"
 
-DECLARE_CLASS_CODEGEN(QuestUI, CustomUIKeyboard, GlobalNamespace::UIKeyboard,
+DECLARE_CLASS_CODEGEN(QuestUI, QuestUIKeyboard, GlobalNamespace::UIKeyboard,
 
     DECLARE_METHOD(void, Awake);
 
-    REGISTER_FUNCTION(CustomUIKeyboard,
+    REGISTER_FUNCTION(QuestUIKeyboard,
         REGISTER_METHOD(Awake);
     )
 )

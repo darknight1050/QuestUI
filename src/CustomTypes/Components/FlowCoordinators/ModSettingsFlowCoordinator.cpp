@@ -33,7 +33,7 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, HMUI
                 case Register::Type::VIEW_CONTROLLER: {
                     if(!info.viewController) {
                         info.viewController = BeatSaberUI::CreateViewController(info.il2cpp_type);
-                        BeatSaberUI::CreateText(info.viewController->get_transform(), "v" + info.modInfo.version, UnityEngine::Vector2(44.0f, -32.0f))->set_alignment(TMPro::TextAlignmentOptions::BottomRight);
+                        BeatSaberUI::CreateText(info.viewController->get_transform(), info.modInfo.id + "|v" + info.modInfo.version, UnityEngine::Vector2(44.0f, -32.0f))->set_alignment(TMPro::TextAlignmentOptions::BottomRight);
                     }
                     break;
                 }

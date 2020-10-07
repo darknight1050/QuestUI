@@ -104,5 +104,6 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
 
     UnityEngine::GameObject* CreateModalView(UnityEngine::Transform* parent);
-
+    
+    UnityEngine::GameObject* CreateKeyboard(UnityEngine::Transform* parent);
 }

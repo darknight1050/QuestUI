@@ -4,6 +4,7 @@
 
 #include "ModSettingsInfos.hpp"
 
+#include "UnityEngine/TextAnchor.hpp"
 #include "UnityEngine/RectOffset.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 
@@ -29,8 +30,8 @@ void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation
         layoutGroup->set_constraint(UnityEngine::UI::GridLayoutGroup::Constraint::Flexible);
         layoutGroup->set_cellSize(UnityEngine::Vector2(48.0f, 10.0f));
         layoutGroup->set_spacing(UnityEngine::Vector2(3.0f, 3.0f));
+        layoutGroup->set_childAlignment(UnityEngine::TextAnchor::MiddleCenter);
         UnityEngine::RectTransform* rectTransform = layoutGroup->GetComponent<UnityEngine::RectTransform*>();
-        rectTransform->set_anchoredPosition(UnityEngine::Vector2(5.0f, -2.5f));
         for(ModSettingsInfos::ModSettingsInfo& info : ModSettingsInfos::get()) {
             BeatSaberUI::CreateUIButton(rectTransform, "OkButton", UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(0.0f, 0.0f), il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), *il2cpp_utils::New<QuestUI::ModSettingsButtonClickData*>(classof(QuestUI::ModSettingsButtonClickData*), this, (void*)&info), OnModSettingsButtonClick), info.modInfo.id, nullptr);
         }

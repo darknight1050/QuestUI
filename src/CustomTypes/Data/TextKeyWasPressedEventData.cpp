@@ -3,7 +3,7 @@
 
 DEFINE_CLASS(QuestUI::TextKeyWasPressedEventData);
 
-void QuestUI::TextKeyWasPressedEventData::ctor(QuestUI::CustomUIKeyboard* customUIKeyboard, Il2CppChar key) {
-    this->customUIKeyboard = customUIKeyboard;
+void QuestUI::TextKeyWasPressedEventData::ctor(QuestUI::QuestUIKeyboard* questUIKeyboard, Il2CppChar key) {
+    this->questUIKeyboard = questUIKeyboard;
     this->key = key;
 }

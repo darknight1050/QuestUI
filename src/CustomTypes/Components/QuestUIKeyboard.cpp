@@ -2,7 +2,7 @@
 #include <string>
 
 #include "beatsaber-hook/shared/utils/utils.h"
-#include "CustomTypes/Components/CustomUIKeyboard.hpp"
+#include "CustomTypes/Components/QuestUIKeyboard.hpp"
 #include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
 #include "ArrayUtil.hpp"
 
@@ -24,40 +24,26 @@ using namespace GlobalNamespace;
 using namespace UnityEngine;
 using namespace UnityEngine::UI;
 
-DEFINE_CLASS(QuestUI::CustomUIKeyboard);
+DEFINE_CLASS(QuestUI::QuestUIKeyboard);
 
 void OnTextKeyWasPressedEvent(QuestUI::TextKeyWasPressedEventData* data, Button* button) {
-    if(data->customUIKeyboard->textKeyWasPressedEvent)
-        data->customUIKeyboard->textKeyWasPressedEvent->Invoke(data->key);
+    if(data->questUIKeyboard->textKeyWasPressedEvent)
+        data->questUIKeyboard->textKeyWasPressedEvent->Invoke(data->key);
 }
 
-void OnDeleteButtonWasPressedEvent(QuestUI::CustomUIKeyboard* customUIKeyboard, Button* button) {
-    if(customUIKeyboard->deleteButtonWasPressedEvent)
-        customUIKeyboard->deleteButtonWasPressedEvent->Invoke();
+inline QuestUI::TextKeyWasPressedEventData* CreateTextKeyWasPressedEventData(QuestUI::QuestUIKeyboard* questUIKeyboard, char key) {
+    return *il2cpp_utils::New<QuestUI::TextKeyWasPressedEventData*>(classof(QuestUI::TextKeyWasPressedEventData*), questUIKeyboard, (Il2CppChar)key);
 }
 
-void OnCancelButtonWasPressedEvent(QuestUI::CustomUIKeyboard* customUIKeyboard, Button* button) {
-    if(customUIKeyboard->cancelButtonWasPressedEvent)
-        customUIKeyboard->cancelButtonWasPressedEvent->Invoke();
-}
-
-void OnOkButtonWasPressedEvent(QuestUI::CustomUIKeyboard* customUIKeyboard, Button* button) {
-    if(customUIKeyboard->okButtonWasPressedEvent)
-        customUIKeyboard->okButtonWasPressedEvent->Invoke();
-}
-
-inline QuestUI::TextKeyWasPressedEventData* CreateTextKeyWasPressedEventData(QuestUI::CustomUIKeyboard* customUIKeyboard, char key) {
-    return *il2cpp_utils::New<QuestUI::TextKeyWasPressedEventData*>(classof(QuestUI::TextKeyWasPressedEventData*), customUIKeyboard, (Il2CppChar)key);
-}
-
-void QuestUI::CustomUIKeyboard::Awake() {
-    set_name(il2cpp_utils::createcsstr("CustomUIKeyboard"));
+void QuestUI::QuestUIKeyboard::Awake() {
+    set_name(il2cpp_utils::createcsstr("QuestUIKeyboard"));
     keyButtonPrefab = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TextMeshProButton*>(), [](TextMeshProButton* x){ return to_utf8(csstrtostr(x->get_name())) == "KeyboardButton"; });
     std::string array[] = { "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "<-", "space", "OK", "Cancel" };
     unsigned long arrayLength = sizeof(array)/sizeof(std::string);
     for (int i = 0; i < arrayLength; i++)
     {
         RectTransform* parent = (RectTransform*)get_transform()->GetChild(i);
+        //TextMeshProButton* textMeshProButton = Object::Instantiate(keyButtonPrefab, parent);
         TextMeshProButton* textMeshProButton = parent->GetComponentInChildren<TextMeshProButton*>();
         textMeshProButton->get_text()->set_text(il2cpp_utils::createcsstr(array[i]));
         RectTransform* rectTransform = (RectTransform*)textMeshProButton->get_transform();
@@ -78,13 +64,13 @@ void QuestUI::CustomUIKeyboard::Awake() {
         }
         else if (i == arrayLength - 4)
         {
-            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), this, OnDeleteButtonWasPressedEvent));
+            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), this, +[](QuestUI::QuestUIKeyboard* self, Button* button){ if(self->deleteButtonWasPressedEvent) self->deleteButtonWasPressedEvent->Invoke(); }));
         }
         else if (i == arrayLength - 1)
         {   
             rectTransform->set_sizeDelta(UnityEngine::Vector2(16.0f, 0.0f));
             rectTransform->set_anchoredPosition(UnityEngine::Vector2(11.0f, 0.0f));
-            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), this, OnCancelButtonWasPressedEvent));
+            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), this, +[](QuestUI::QuestUIKeyboard* self, Button* button){ if(self->cancelButtonWasPressedEvent) self->cancelButtonWasPressedEvent->Invoke(); }));
         }
         else if (i == arrayLength - 2)
         {   
@@ -92,7 +78,7 @@ void QuestUI::CustomUIKeyboard::Awake() {
             rectTransform->set_anchoredPosition(UnityEngine::Vector2(14.0f, 0.0f));
             okButton = textMeshProButton->get_button();
             okButton->set_interactable(okButtonInteractivity);
-            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), this, OnOkButtonWasPressedEvent));
+            textMeshProButton->get_button()->get_onClick()->AddListener(il2cpp_utils::MakeAction<Events::UnityAction>(il2cpp_functions::class_get_type(classof(Events::UnityAction*)), this, +[](QuestUI::QuestUIKeyboard* self, Button* button){ if(self->okButtonWasPressedEvent) self->okButtonWasPressedEvent->Invoke(); }));
         }
         else
         {

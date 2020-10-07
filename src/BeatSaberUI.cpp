@@ -5,6 +5,7 @@
 #include "CustomTypes/Components/ScrollViewContent.hpp"
 #include "CustomTypes/Components/QuestUIScrollView.hpp"
 #include "CustomTypes/Components/IncrementSetting.hpp"
+#include "CustomTypes/Components/KeyboardController.hpp"
 
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/Rect.hpp"
@@ -411,9 +412,8 @@ namespace QuestUI::BeatSaberUI {
     }
 
     GameObject* CreateModalView(Transform* parent) {
-        GameObject* gameObject = GameObject::New_ctor();
         static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Permanent);
-        gameObject->set_name(name);
+        GameObject* gameObject = GameObject::New_ctor(name);
         gameObject->SetActive(false);
 
         RectTransform* rectTransform = gameObject->AddComponent<RectTransform*>();
@@ -454,4 +454,33 @@ namespace QuestUI::BeatSaberUI {
 
         return child;
     }
+
+    GameObject* CreateKeyboard(Transform* parent) {
+        GameObject* gameObject = CreateModalView(parent);
+
+        ExternalComponents* externalComponents = gameObject->GetComponent<ExternalComponents*>();
+
+        RectTransform* windowTransform = externalComponents->Get<RectTransform*>();
+        static auto name = il2cpp_utils::createcsstr("BSMLModalKeyboard", il2cpp_utils::StringType::Permanent);
+        windowTransform->set_name(name);
+        windowTransform->set_sizeDelta(UnityEngine::Vector2(135.0f, 75.0f));
+
+        static auto parentName = il2cpp_utils::createcsstr("KeyboardParent", il2cpp_utils::StringType::Permanent);
+        RectTransform* parentTransform = GameObject::New_ctor(parentName)->AddComponent<RectTransform*>();
+        parentTransform->SetParent(gameObject->get_transform(), false);
+
+        /*UIKeyboard* kb = QuestUI::ArrayUtil::First(UnityEngine::Resources::FindObjectsOfTypeAll<UIKeyboard*>(), [](UIKeyboard* x) { return to_utf8(csstrtostr(x->get_name())) != "CustomUIKeyboard"; });
+        
+        GameObject* keyboardGO = Object::Instantiate(kb, parentTransform, false)->get_gameObject();
+
+        UnityEngine::Object::Destroy(keyboardGO->GetComponent<UIKeyboard*>());
+
+        QuestUI::CustomUIKeyboard* keyboard = keyboardGO->AddComponent<QuestUI::CustomUIKeyboard*>();*/
+
+        parentTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 12.0f));
+        parentTransform->get_gameObject()->AddComponent<QuestUI::KeyboardController*>();
+        
+        return gameObject;
+    }
+
 }
