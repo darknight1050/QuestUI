@@ -341,7 +341,7 @@ namespace QuestUI::BeatSaberUI {
         return setting;
     }
 
-    GameObject* CreateScrollView(Transform* parent) {
+    /*GameObject* CreateScrollView(Transform* parent) {
         ReleaseInfoViewController* releaseInfoViewController = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<ReleaseInfoViewController*>()), parent);
         releaseInfoViewController->get_gameObject()->SetActive(true);
         TextPageScrollView* textScrollView = releaseInfoViewController->textPageScrollView;
@@ -415,7 +415,7 @@ namespace QuestUI::BeatSaberUI {
         scrollTransform->get_gameObject()->set_name(name);
         externalComponents->Get<QuestUIScrollView*>()->SetReserveButtonSpace(true);
         return content;
-    }
+    }*/
 
     GameObject* CreateModalView(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Permanent);

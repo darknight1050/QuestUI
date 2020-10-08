@@ -103,9 +103,9 @@ namespace QuestUI::BeatSaberUI {
     
     QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue, UnityEngine::Events::UnityAction_1<float>* onValueChange);
 
-    UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);
+    //UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);
 
-    UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
+    //UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
 
     UnityEngine::GameObject* CreateModalView(UnityEngine::Transform* parent);
 
