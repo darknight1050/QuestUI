@@ -33,7 +33,7 @@ namespace QuestUI::BeatSaberUI {
 
     TMPro::TMP_FontAsset* getMainTextFont();
 
-    Sprite* getEditIcon();
+    UnityEngine::Sprite* getEditIcon();
 
     HMUI::ViewController* CreateViewController(System::Type* type);
 
