@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "beatsaber-hook/shared/utils/utils.h"
-#include "CustomTypes/Components/IncrementSetting.hpp"
+#include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "ArrayUtil.hpp"
 
 #include "UnityEngine/GameObject.hpp"
@@ -21,11 +21,17 @@ Il2CppString* QuestUI::IncrementSetting::GetRoundedString() {
 
 void QuestUI::IncrementSetting::DecButtonPressed() {
     CurrentValue -= Increment;
-	Text->SetText(GetRoundedString());
+	UpdateValue();
 }
 
 void QuestUI::IncrementSetting::IncButtonPressed() {
     CurrentValue += Increment;
+	UpdateValue();
+}
+
+void QuestUI::IncrementSetting::UpdateValue() {
 	Text->SetText(GetRoundedString());
+    if(OnValueChange)
+        OnValueChange->Invoke(CurrentValue);
 }
 

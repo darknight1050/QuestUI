@@ -4,7 +4,6 @@
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
 #include "CustomTypes/Components/QuestUIScrollView.hpp"
-#include "CustomTypes/Components/IncrementSetting.hpp"
 #include "CustomTypes/Components/KeyboardController.hpp"
 
 #include "UnityEngine/Resources.hpp"
@@ -13,14 +12,14 @@
 #include "UnityEngine/Texture2D.hpp"
 #include "UnityEngine/TextureFormat.hpp"
 #include "UnityEngine/ImageConversion.hpp"
-#include "UnityEngine/Events/UnityAction_1.hpp"
 #include "UnityEngine/Material.hpp"
+#include "UnityEngine/Events/UnityAction_1.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "HMUI/ModalView.hpp"
+#include "HMUI/TextPageScrollView.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
 #include "GlobalNamespace/ReleaseInfoViewController.hpp"
-#include "HMUI/TextPageScrollView.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
 
@@ -45,10 +44,16 @@ namespace QuestUI::BeatSaberUI {
 
     TMP_FontAsset* getMainTextFont() {
         static TMP_FontAsset* mainTextFont = nullptr;
-        if(!mainTextFont){
+        if(!mainTextFont)
             mainTextFont = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TMP_FontAsset*>(), [](TMP_FontAsset* x) { return to_utf8(csstrtostr(x->get_name())) == "Teko-Medium SDF No Glow"; });
-        }
         return mainTextFont;
+    }
+
+    Sprite* getEditIcon() {
+        static Sprite* editIcon = nullptr;
+        if(!editIcon)
+            editIcon = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Image*>(), [](Image* x) { return x->get_sprite() && to_utf8(csstrtostr(x->get_sprite()->get_name())) == "EditIcon"; })->get_sprite();
+        return editIcon;
     }
     
     ViewController* CreateViewController(System::Type* type) {
@@ -230,12 +235,12 @@ namespace QuestUI::BeatSaberUI {
         return rectTransform->GetComponent<VerticalLayoutGroup*>();
     }
 
-    GameObject* CreateToggle(Transform* parent, std::string text, UnityAction_1<bool>* onToggle)
+    Toggle* CreateToggle(Transform* parent, std::string text, UnityAction_1<bool>* onToggle)
     {
         return CreateToggle(parent, text, UnityEngine::Vector2(0.0f, 0.0f), onToggle);
     }
     
-    GameObject* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityAction_1<bool>* onToggle)
+    Toggle* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityAction_1<bool>* onToggle)
     {
         GameplayModifierToggle* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameplayModifierToggle*>(), [](GameplayModifierToggle* x){ return to_utf8(csstrtostr(x->get_name())) == "InstaFail"; }), parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUICheckboxSetting", il2cpp_utils::StringType::Permanent);
@@ -266,7 +271,7 @@ namespace QuestUI::BeatSaberUI {
         layout->set_preferredHeight(8);
 
         gameObject->SetActive(true);
-        return gameObject;
+        return toggle;
     }
 
     GameObject* CreateLoadingIndicator(Transform* parent, UnityEngine::Vector2 anchoredPosition)
@@ -290,11 +295,11 @@ namespace QuestUI::BeatSaberUI {
         return hoverHint;
     }
 
-    GameObject* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue) {
-        return CreateIncrementSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), text, decimals, increment, currentValue);
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityAction_1<float>* onValueChange) {
+        return CreateIncrementSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), text, decimals, increment, currentValue, onValueChange);
     }
 
-    GameObject* CreateIncrementSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue){
+    IncrementSetting* CreateIncrementSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue, UnityAction_1<float>* onValueChange){
         BoolSettingsController* baseSetting  = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<BoolSettingsController*>(), [](BoolSettingsController* x){ return to_utf8(csstrtostr(x->get_name())) == "Fullscreen";}), parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUIIncDecSetting", il2cpp_utils::StringType::Permanent);
         baseSetting->set_name(name);
@@ -307,6 +312,7 @@ namespace QuestUI::BeatSaberUI {
         setting->Decimals = decimals;
         setting->Increment = increment;
         setting->CurrentValue = currentValue;
+        setting->OnValueChange = onValueChange;
         Transform* child = gameObject->get_transform()->GetChild(1);
         setting->Text = child->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
         setting->Text->SetText(setting->GetRoundedString());
@@ -314,8 +320,8 @@ namespace QuestUI::BeatSaberUI {
         Button* incButton = ArrayUtil::Last(child->GetComponentsInChildren<Button*>());
         decButton->set_interactable(true);
         incButton->set_interactable(true);
-        decButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), setting, +[](IncrementSetting* setting){ setting->DecButtonPressed(); }));
-        incButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), setting, +[](IncrementSetting* setting){ setting->IncButtonPressed(); }));
+        decButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityAction>(il2cpp_functions::class_get_type(classof(UnityAction*)), setting, +[](IncrementSetting* setting){ setting->DecButtonPressed(); }));
+        incButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityAction>(il2cpp_functions::class_get_type(classof(UnityAction*)), setting, +[](IncrementSetting* setting){ setting->IncButtonPressed(); }));
         
         child->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(40, 0));
         TextMeshProUGUI* textMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
@@ -332,7 +338,7 @@ namespace QuestUI::BeatSaberUI {
 
         gameObject->SetActive(true);    
 
-        return gameObject;
+        return setting;
     }
 
     GameObject* CreateScrollView(Transform* parent) {
@@ -420,7 +426,7 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->SetParent(parent, false);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
-        rectTransform->set_sizeDelta(UnityEngine::Vector2(0, 0));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
 
         ModalView* modalView = gameObject->AddComponent<ModalView*>();
         ModalView* yoinkFromView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ModalView*>(), [](ModalView* x){ return to_utf8(csstrtostr(x->get_name())) == "TableView";});
@@ -430,22 +436,22 @@ namespace QuestUI::BeatSaberUI {
         GameObject* child = GameObject::New_ctor();
         child->get_transform()->SetParent(rectTransform, false);
         RectTransform* shadowTransform = child->get_gameObject()->AddComponent<RectTransform*>();
-        shadowTransform->set_anchorMin(UnityEngine::Vector2(0, 0));
-        shadowTransform->set_anchorMax(UnityEngine::Vector2(1, 1));
-        shadowTransform->set_sizeDelta(UnityEngine::Vector2(10, 10));
+        shadowTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        shadowTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
+        shadowTransform->set_sizeDelta(UnityEngine::Vector2(10.0f, 10.0f));
         child->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel-shadow"));
 
         child = GameObject::New_ctor();
         child->get_transform()->SetParent(rectTransform, false);
         RectTransform* backgroundTransform = child->get_gameObject()->AddComponent<RectTransform*>();
-        backgroundTransform->set_anchorMin(UnityEngine::Vector2(0, 0));
-        backgroundTransform->set_anchorMax(UnityEngine::Vector2(1, 1));
-        backgroundTransform->set_sizeDelta(UnityEngine::Vector2(0, 0));
+        backgroundTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        backgroundTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
+        backgroundTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
 
         Backgroundable* backgroundable = child->get_gameObject()->AddComponent<Backgroundable*>();
         backgroundable->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
         auto background = backgroundable->background;
-        background->set_color(UnityEngine::Color(0.706f, 0.706f, 0.706f, 1));
+        background->set_color(UnityEngine::Color(0.706f, 0.706f, 0.706f, 1.0f));
         background->set_material(ArrayUtil::First(Resources::FindObjectsOfTypeAll<Material*>(), [](Material* x){ return to_utf8(csstrtostr(x->get_name())) == "UIFogBG"; }));
 
         ExternalComponents* externalComponents = child->AddComponent<ExternalComponents*>();
@@ -461,7 +467,7 @@ namespace QuestUI::BeatSaberUI {
         ExternalComponents* externalComponents = gameObject->GetComponent<ExternalComponents*>();
 
         RectTransform* windowTransform = externalComponents->Get<RectTransform*>();
-        static auto name = il2cpp_utils::createcsstr("BSMLModalKeyboard", il2cpp_utils::StringType::Permanent);
+        static auto name = il2cpp_utils::createcsstr("QuestUIModalKeyboard", il2cpp_utils::StringType::Permanent);
         windowTransform->set_name(name);
         windowTransform->set_sizeDelta(UnityEngine::Vector2(135.0f, 75.0f));
 
@@ -469,18 +475,67 @@ namespace QuestUI::BeatSaberUI {
         RectTransform* parentTransform = GameObject::New_ctor(parentName)->AddComponent<RectTransform*>();
         parentTransform->SetParent(gameObject->get_transform(), false);
 
-        /*UIKeyboard* kb = QuestUI::ArrayUtil::First(UnityEngine::Resources::FindObjectsOfTypeAll<UIKeyboard*>(), [](UIKeyboard* x) { return to_utf8(csstrtostr(x->get_name())) != "CustomUIKeyboard"; });
-        
-        GameObject* keyboardGO = Object::Instantiate(kb, parentTransform, false)->get_gameObject();
-
-        UnityEngine::Object::Destroy(keyboardGO->GetComponent<UIKeyboard*>());
-
-        QuestUI::CustomUIKeyboard* keyboard = keyboardGO->AddComponent<QuestUI::CustomUIKeyboard*>();*/
-
         parentTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 12.0f));
-        parentTransform->get_gameObject()->AddComponent<QuestUI::KeyboardController*>();
-        
+        externalComponents->Add(parentTransform->get_gameObject()->AddComponent<KeyboardController*>());
         return gameObject;
+    }
+
+    StringSetting* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
+        return CreateStringSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), settingsName, currentValue, onValueChange);
+    }
+
+    StringSetting* CreateStringSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
+        BoolSettingsController* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<BoolSettingsController*>(), [](BoolSettingsController* x){ return to_utf8(csstrtostr(x->get_name())) == "Fullscreen"; }), parent, false);
+        static auto name = il2cpp_utils::createcsstr("QuestUIStringSetting", il2cpp_utils::StringType::Permanent);
+        baseSetting->set_name(name);
+        
+        GameObject* gameObject = baseSetting->get_gameObject();
+        RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
+        rectTransform->set_anchoredPosition(anchoredPosition);
+        Object::Destroy(baseSetting);
+        gameObject->SetActive(false);
+
+        static auto valuePickerName = il2cpp_utils::createcsstr("ValuePicker", il2cpp_utils::StringType::Permanent);
+        Transform* valuePick = rectTransform->Find(valuePickerName);
+        Button* decButton = ArrayUtil::First(valuePick->GetComponentsInChildren<Button*>());
+        decButton->set_enabled(false);
+        decButton->set_interactable(true);
+        static auto arrowName = il2cpp_utils::createcsstr("Arrow", il2cpp_utils::StringType::Permanent);
+        GameObject::Destroy(decButton->get_transform()->Find(arrowName)->get_gameObject());
+
+        StringSetting* setting = gameObject->AddComponent<StringSetting*>();
+        setting->Text = ArrayUtil::First(valuePick->GetComponentsInChildren<TextMeshProUGUI*>());
+        setting->Text->set_alignment(TextAlignmentOptions::MidlineRight);
+        setting->Text->set_enableWordWrapping(false);
+        setting->CurrentValue = il2cpp_utils::createcsstr(currentValue);
+        setting->Text->set_text(setting->CurrentValue);
+        setting->OnValueChange = onValueChange;
+        Button* editButton = ArrayUtil::Last(valuePick->GetComponentsInChildren<Button*>());
+        RectTransform* boundingBox = (RectTransform*)valuePick;
+            
+        TextMeshProUGUI* settingsNameMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
+        settingsNameMesh->set_text(il2cpp_utils::createcsstr(settingsName));
+        gameObject->AddComponent<ExternalComponents*>()->Add(settingsNameMesh);
+        GameObject::Destroy(settingsNameMesh->GetComponent<LocalizedTextMeshProUGUI*>());
+            
+        gameObject->GetComponent<LayoutElement*>()->set_preferredWidth(90);
+
+        Image* icon = editButton->get_transform()->Find(arrowName)->GetComponent<Image*>();
+        icon->set_name(il2cpp_utils::createcsstr("EditIcon"));
+        icon->set_sprite(getEditIcon());
+        icon->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(4.0f, 4.0f));
+        editButton->set_interactable(true);
+        editButton->GetComponent<RectTransform*>()->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+
+        ExternalComponents* externalComponents = CreateKeyboard(rectTransform)->GetComponent<ExternalComponents*>();
+        KeyboardController* keyboardController = externalComponents->Get<KeyboardController*>();
+        setting->KeyboardController = keyboardController;
+        setting->ModalView = externalComponents->Get<ModalView*>();
+        keyboardController->add_confirmPressed(il2cpp_utils::MakeAction<System::Action_1<Il2CppString*>>(il2cpp_functions::class_get_type(classof(System::Action_1<Il2CppString*>*)), setting, +[](StringSetting* setting, Il2CppString* text) { setting->ConfirmPressed(text); }));
+        keyboardController->add_cancelPressed(il2cpp_utils::MakeAction<System::Action>(il2cpp_functions::class_get_type(classof(System::Action*)), setting, +[](StringSetting* setting) { setting->CancelPressed(); }));
+        editButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityAction>(il2cpp_functions::class_get_type(classof(UnityAction*)), setting, +[](StringSetting* setting) { setting->ButtonPressed(); }));
+        gameObject->SetActive(true);
+        return setting;
     }
 
 }

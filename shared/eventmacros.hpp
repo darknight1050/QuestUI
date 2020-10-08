@@ -26,7 +26,11 @@ REGISTER_METHOD(remove_##name);
 // Defines the add/remove methods
 #define DEFINE_EVENT(namespace, type, name) \
 void namespace::add_##name(type action) { \
-    name = (type)System::Delegate::Combine(name, action); \
+    if(name){ \
+        name = (type)System::Delegate::Combine(name, action); \
+    }else{ \
+        name = action;\
+    } \
 } \
 void namespace::remove_##name(type action) { \
     if(name) \

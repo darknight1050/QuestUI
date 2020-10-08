@@ -2,6 +2,9 @@
 #include "beatsaber-hook/shared/utils/utils.h"
 #include "ArrayUtil.hpp"
 
+#include "CustomTypes/Components/Settings/IncrementSetting.hpp"
+#include "CustomTypes/Components/Settings/StringSetting.hpp"
+
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
 #include "UnityEngine/GameObject.hpp"
@@ -22,7 +25,6 @@
 #include "HMUI/FlowCoordinator.hpp"
 #include "HMUI/HoverHint.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
-#include "CustomTypes/Components/QuestUIScrollView.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
 
 namespace QuestUI::BeatSaberUI {
@@ -30,6 +32,8 @@ namespace QuestUI::BeatSaberUI {
     GlobalNamespace::MainFlowCoordinator* getMainFlowCoordinator();
 
     TMPro::TMP_FontAsset* getMainTextFont();
+
+    Sprite* getEditIcon();
 
     HMUI::ViewController* CreateViewController(System::Type* type);
 
@@ -87,23 +91,28 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
     
-    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Events::UnityAction_1<bool>* onToggle);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Events::UnityAction_1<bool>* onToggle);
 
-    UnityEngine::GameObject* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<bool>* onToggle);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<bool>* onToggle);
     
     UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
 
     HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
 
-    UnityEngine::GameObject* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Events::UnityAction_1<float>* onValueChange);
     
-    UnityEngine::GameObject* CreateIncrementSetting(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue, UnityEngine::Events::UnityAction_1<float>* onValueChange);
 
     UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);
 
     UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
 
     UnityEngine::GameObject* CreateModalView(UnityEngine::Transform* parent);
-    
+
     UnityEngine::GameObject* CreateKeyboard(UnityEngine::Transform* parent);
+
+    QuestUI::StringSetting* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange);
+
+    QuestUI::StringSetting* CreateStringSetting(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string settingsName, std::string currentValue, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange);
+
 }

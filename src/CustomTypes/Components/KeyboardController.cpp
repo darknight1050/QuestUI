@@ -25,7 +25,8 @@ void DeleteButtonWasPressedEvent(QuestUI::KeyboardController* self) {
 }
 
 void QuestUI::KeyboardController::Awake() {
-    inputString = il2cpp_utils::createcsstr("");
+    if(!inputString)
+        inputString = il2cpp_utils::createcsstr("...");
     inputText = BeatSaberUI::CreateText(get_rectTransform(), "", UnityEngine::Vector2(0.0f, 14.0f));
     inputText->set_alignment(TMPro::TextAlignmentOptions::Center);
     inputText->set_fontSize(8.0f);
@@ -41,7 +42,7 @@ void QuestUI::KeyboardController::Awake() {
     keyboard->add_okButtonWasPressedEvent(il2cpp_utils::MakeAction<System::Action>(il2cpp_functions::class_get_type(classof(System::Action*)), this, +[](QuestUI::KeyboardController* self) { if(self->confirmPressed) self->confirmPressed->Invoke(self->inputString); } ));
     keyboard->add_cancelButtonWasPressedEvent (il2cpp_utils::MakeAction<System::Action>(il2cpp_functions::class_get_type(classof(System::Action*)), this, +[](QuestUI::KeyboardController* self) { if(self->cancelPressed) self->cancelPressed->Invoke(); }));
     
-    inputText->set_text(il2cpp_utils::createcsstr("..."));
+    UpdateInputText();
 }
 
 void QuestUI::KeyboardController::UpdateInputText() {
