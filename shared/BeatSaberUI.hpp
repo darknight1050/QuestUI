@@ -39,7 +39,7 @@ namespace QuestUI::BeatSaberUI {
 
     template<class T = HMUI::ViewController*>
     T CreateViewController() {
-        static auto name = il2cpp_utils::createcsstr("BSMLViewController", il2cpp_utils::StringType::Permanent);
+        static auto name = il2cpp_utils::createcsstr("BSMLViewController", il2cpp_utils::StringType::Manual);
         T viewController = UnityEngine::GameObject::New_ctor(name)->AddComponent<T>();
         UnityEngine::Object::DontDestroyOnLoad(viewController->get_gameObject());
 
@@ -55,7 +55,7 @@ namespace QuestUI::BeatSaberUI {
 
     template<class T = HMUI::FlowCoordinator*>
     T CreateFlowCoordinator() {
-        static auto name = il2cpp_utils::createcsstr("BSMLFlowCoordinator", il2cpp_utils::StringType::Permanent);
+        static auto name = il2cpp_utils::createcsstr("BSMLFlowCoordinator", il2cpp_utils::StringType::Manual);
         T flowCoordinator = UnityEngine::GameObject::New_ctor(name)->AddComponent<T>();
         flowCoordinator->baseInputModule = getMainFlowCoordinator()->baseInputModule;
         return flowCoordinator;
