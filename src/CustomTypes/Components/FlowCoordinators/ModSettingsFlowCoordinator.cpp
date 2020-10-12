@@ -43,7 +43,7 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, HMUI
                     break;
                 }
                 default:
-                break;
+                    break;
             }
             
         }

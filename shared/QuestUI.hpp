@@ -26,8 +26,9 @@ namespace QuestUI {
 
             template<class T = HMUI::ViewController*>
             static void RegisterModSettingsViewController(ModInfo modInfo) {
-                RegisterModSettingsViewController(modInfo, modInfo.id);
+                RegisterModSettingsViewController<T>(modInfo, modInfo.id);
             }
+            
             template<class T = HMUI::FlowCoordinator*>
             static void RegisterModSettingsFlowCoordinator(ModInfo modInfo) {
                 RegisterModSettings(modInfo, modInfo.id, typeof(T), Type::FLOW_COORDINATOR);
