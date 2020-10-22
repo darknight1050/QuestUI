@@ -49,11 +49,7 @@ namespace QuestUI::BeatSaberUI {
 
     template<class T = HMUI::FlowCoordinator*>
     T CreateFlowCoordinator() {
-        static auto name = il2cpp_utils::createcsstr("BSMLFlowCoordinator", il2cpp_utils::StringType::Manual);
-        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(name);
-        T flowCoordinator = gameObject->AddComponent<T>();
-        flowCoordinator->baseInputModule = getMainFlowCoordinator()->baseInputModule;
-        return flowCoordinator;
+        return (T)CreateFlowCoordinator(typeof(T));
     }
 
     TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition);
