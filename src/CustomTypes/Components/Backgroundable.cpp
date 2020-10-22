@@ -7,6 +7,8 @@
 #include "ArrayUtil.hpp"
 
 #include "UnityEngine/GameObject.hpp"
+#include "UnityEngine/Transform.hpp"
+#include "HMUI/ImageView.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/Sprite.hpp"
 #include "UnityEngine/HideFlags.hpp"
@@ -14,32 +16,77 @@
 DEFINE_CLASS(QuestUI::Backgroundable);
 
 std::map<std::string, std::string> backgrounds =  {
-    { "round-rect-panel", "RoundRectPanel" },
-    { "panel-bottom", "PanelBottom" },
-    { "panel-top", "PanelTop" },
-    { "round-rect-panel-shadow", "RoundRectPanelShadow"} 
+    {
+		"round-rect-panel",
+		"RoundRect10"
+	},
+	{
+	    "panel-top",
+	    "RoundRect10"
+	},
+	{
+		"panel-fade-gradient",
+		"RoundRect10Thin"
+	},
+	{
+		"panel-top-gradient",
+		"RoundRect10"
+	}
 };
 
 std::map<std::string, std::string> objectNames =  {
-    { "round-rect-panel", "MinScoreInfo" },
-    { "panel-bottom", "BG" },
-    { "panel-top", "HeaderPanel" },
-    { "round-rect-panel-shadow", "Shadow"}
+    {
+		"round-rect-panel",
+		"KeyboardWrapper"
+	},
+	{
+		"panel-top",
+		"BG"
+	},
+	{
+		"panel-fade-gradient",
+		"Background"
+	},
+	{
+		"panel-top-gradient",
+		"BG"
+	}
+};
+
+std::map<std::string, std::string> objectParentNames =  {
+    {
+		"round-rect-panel",
+		"Wrapper"
+	},
+	{
+		"panel-top",
+		"PracticeButton"
+	},
+	{
+		"panel-fade-gradient",
+		"LevelListTableCell"
+	},
+	{
+		"panel-top-gradient",
+		"ActionButton"
+	}
 };
 
 void QuestUI::Backgroundable::ApplyBackground(Il2CppString* name) {
     if(background)
         return;
     std::string stringName = to_utf8(csstrtostr(name));
-    UnityEngine::UI::Image* search = ArrayUtil::Last(UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::UI::Image*>(), [&stringName](UnityEngine::UI::Image* x){ 
+    HMUI::ImageView* search = ArrayUtil::Last(UnityEngine::Resources::FindObjectsOfTypeAll<HMUI::ImageView*>(), [&stringName](HMUI::ImageView* x){ 
         UnityEngine::Sprite* sprite = x->get_sprite();
         if(sprite && to_utf8(csstrtostr(sprite->get_name())) != backgrounds[stringName])
+            return false;
+		if(sprite && to_utf8(csstrtostr(x->get_transform()->get_parent()->get_name())) != objectParentNames[stringName])
             return false;
         return to_utf8(csstrtostr(x->get_name())) == objectNames[stringName]; 
     });
     if(!search)
         return;
-    background = get_gameObject()->AddComponent<UnityEngine::UI::Image*>();
+    background = get_gameObject()->AddComponent<HMUI::ImageView*>();
     //Copy Image: some methods are probably not needed
     background->set_alphaHitTestMinimumThreshold(search->get_alphaHitTestMinimumThreshold());
     background->set_color(search->get_color());

@@ -5,18 +5,21 @@
 #include "ModSettingsInfos.hpp"
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
-#include "CustomTypes/Components/ScrollViewContent.hpp"
-#include "CustomTypes/Components/QuestUIScrollView.hpp"
+//#include "CustomTypes/Components/ScrollViewContent.hpp"
+//#include "CustomTypes/Components/QuestUIScrollView.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/Settings/StringSetting.hpp"
 #include "CustomTypes/Components/QuestUIKeyboard.hpp"
 #include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
 #include "CustomTypes/Components/KeyboardController.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "HMUI/ViewController_AnimationDirection.hpp"
 
 #include "BeatSaberUI.hpp"
+#include "InternalBeatSaberUI.hpp"
 
 #include "GlobalNamespace/MainMenuViewController.hpp"
+#include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 
@@ -30,29 +33,35 @@ const Logger& getLogger() {
 }
 
 ModSettingsFlowCoordinator* flowCoordinator = nullptr;
+
 HMUI::FlowCoordinator* QuestUI::getModSettingsFlowCoordinator(){
     return flowCoordinator;
 }
 
 void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
     getLogger().info("MenuModSettingsButtonClick");
-    if(!flowCoordinator){
+    if(!flowCoordinator)
         flowCoordinator = BeatSaberUI::CreateFlowCoordinator<ModSettingsFlowCoordinator*>();
-    }
-    BeatSaberUI::getMainFlowCoordinator()->PresentFlowCoordinator(flowCoordinator, nullptr, false, false);
+    BeatSaberUI::getMainFlowCoordinator()->PresentFlowCoordinator(flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
 }
 
-MAKE_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, HMUI::ViewController::ActivationType activationType) {
-    MainMenuViewController_DidActivate(self, firstActivation, activationType);
+MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::OptionsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+    OptionsViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     if(firstActivation) {
-         if(ModSettingsInfos::get().size() > 0) {
-            UnityEngine::UI::Button* settingsButton = (UnityEngine::UI::Button*)RET_V_UNLESS(il2cpp_utils::GetFieldValue(self, "_settingsButton"));
-            UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(settingsButton);
+        flowCoordinator = nullptr;
+        BeatSaberUI::clearCache();
+        if(ModSettingsInfos::get().size() > 0) {
+            UnityEngine::UI::Button* avatarButton = self->settingsButton;
+            UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
             button->set_name(il2cpp_utils::createcsstr("Mod Settings"));
-            button->get_transform()->SetParent(settingsButton->get_transform()->GetParent(), false);
+            UnityEngine::Transform* AvatarParent = self->get_transform()->Find(il2cpp_utils::createcsstr("Wrapper"));
+            button->get_transform()->SetParent(AvatarParent, false);
             button->get_transform()->SetAsFirstSibling();
             button->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), (Il2CppObject*)nullptr, OnMenuModSettingsButtonClick));
-            BeatSaberUI::SetButtonText(button, "Mod Settings");
+            
+            UnityEngine::Object::Destroy(button->GetComponentInChildren<Polyglot::LocalizedTextMeshProUGUI*>());
+
+            button->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr("Mod Settings"));
         }
     }
 }
@@ -64,8 +73,8 @@ void QuestUI::Init() {
         il2cpp_functions::Init();
         custom_types::Register::RegisterType<ExternalComponents>();
         custom_types::Register::RegisterType<Backgroundable>();
-        custom_types::Register::RegisterType<ScrollViewContent>();
-        custom_types::Register::RegisterType<QuestUIScrollView>();
+        //custom_types::Register::RegisterType<ScrollViewContent>();
+        //custom_types::Register::RegisterType<QuestUIScrollView>();
         custom_types::Register::RegisterType<IncrementSetting>();
         custom_types::Register::RegisterType<QuestUIKeyboard>();
         custom_types::Register::RegisterType<TextKeyWasPressedEventData>();
@@ -74,7 +83,7 @@ void QuestUI::Init() {
         custom_types::Register::RegisterType<ModSettingsButtonClickData>();
         custom_types::Register::RegisterType<ModSettingsButtonsViewController>();
         custom_types::Register::RegisterType<ModSettingsFlowCoordinator>();
-        INSTALL_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "MainMenuViewController", "DidActivate", 2));
+        INSTALL_HOOK_OFFSETLESS(OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
     }
 }
 

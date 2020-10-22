@@ -26,6 +26,7 @@
 #include "HMUI/HoverHint.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
+#include "VRUIControls/PhysicsRaycasterWithCache.hpp"
 
 namespace QuestUI::BeatSaberUI {
 
@@ -35,20 +36,13 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::Sprite* getEditIcon();
 
+    VRUIControls::PhysicsRaycasterWithCache* GetPhysicsRaycasterWithCache();
+
     HMUI::ViewController* CreateViewController(System::Type* type);
 
     template<class T = HMUI::ViewController*>
     T CreateViewController() {
-        static auto name = il2cpp_utils::createcsstr("BSMLViewController", il2cpp_utils::StringType::Manual);
-        T viewController = UnityEngine::GameObject::New_ctor(name)->AddComponent<T>();
-        UnityEngine::Object::DontDestroyOnLoad(viewController->get_gameObject());
-
-        UnityEngine::RectTransform* rectTransform = viewController->get_rectTransform();
-        rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
-        rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
-        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-        rectTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
-        return viewController;
+        return (T)CreateViewController(typeof(T));
     }
 
     HMUI::FlowCoordinator* CreateFlowCoordinator(System::Type* type);
@@ -56,7 +50,8 @@ namespace QuestUI::BeatSaberUI {
     template<class T = HMUI::FlowCoordinator*>
     T CreateFlowCoordinator() {
         static auto name = il2cpp_utils::createcsstr("BSMLFlowCoordinator", il2cpp_utils::StringType::Manual);
-        T flowCoordinator = UnityEngine::GameObject::New_ctor(name)->AddComponent<T>();
+        UnityEngine::GameObject* gameObject = UnityEngine::GameObject::New_ctor(name);
+        T flowCoordinator = gameObject->AddComponent<T>();
         flowCoordinator->baseInputModule = getMainFlowCoordinator()->baseInputModule;
         return flowCoordinator;
     }

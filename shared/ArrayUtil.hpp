@@ -30,6 +30,16 @@ namespace QuestUI::ArrayUtil {
         }
         return nullptr;
     }
+    
+    template <class Out, class T, class Predicate>
+    inline Array<Out>* Select(Array<T*>* array, Predicate pred)
+    {
+        Array<Out>* newArray = Array<Out>::NewLength(array->Length());
+        for (int i = 0; i < array->Length(); i++) {
+            newArray->values[i] = pred(array->values[i]);
+        }
+        return newArray;
+    }
 
     template <class T, class Predicate>
     inline T* Last(Array<T*>* array, Predicate pred)

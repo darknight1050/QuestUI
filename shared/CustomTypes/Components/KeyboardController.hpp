@@ -5,7 +5,7 @@
 #include "UnityEngine/GameObject.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "HMUI/ViewController.hpp"
-#include "HMUI/ViewController_ActivationType.hpp"
+#include "HMUI/ViewController_AnimationType.hpp"
 #include "System/Action.hpp"
 #include "System/Action_1.hpp"
 

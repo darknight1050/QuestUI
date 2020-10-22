@@ -24,8 +24,8 @@ void OnModSettingsButtonClick(QuestUI::ModSettingsButtonClickData* data, UnityEn
         viewController->openModSettings->Invoke(data);
 }
 
-void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation, HMUI::ViewController::ActivationType activationType) {
-    if(activationType == HMUI::ViewController::ActivationType::AddedToHierarchy && firstActivation) {
+void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+    if(addedToHierarchy && firstActivation) {
         UnityEngine::UI::GridLayoutGroup* layoutGroup = BeatSaberUI::CreateGridLayoutGroup(get_transform());
         layoutGroup->set_constraint(UnityEngine::UI::GridLayoutGroup::Constraint::Flexible);
         layoutGroup->set_cellSize(UnityEngine::Vector2(48.0f, 10.0f));
