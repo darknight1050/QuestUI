@@ -11,6 +11,18 @@ namespace QuestUI::ArrayUtil {
         return nullptr;
     }
 
+    template <class T, class Predicate>
+    inline T* First(Array<T*>* array, Predicate pred)
+    {
+        for (int i = 0; i < array->Length(); i++) {
+            T* item = array->values[i];
+            if (pred(item)){
+                return item;
+            }
+        }
+        return nullptr;
+    }
+
     template <class T>
     inline T* Last(Array<T*>* array)
     {
@@ -20,9 +32,9 @@ namespace QuestUI::ArrayUtil {
     }
 
     template <class T, class Predicate>
-    inline T* First(Array<T*>* array, Predicate pred)
+    inline T* Last(Array<T*>* array, Predicate pred)
     {
-        for (int i = 0; i < array->Length(); i++) {
+        for (int i = array->Length()-1; i >= 0; i--) {
             T* item = array->values[i];
             if (pred(item)){
                 return item;
@@ -42,15 +54,13 @@ namespace QuestUI::ArrayUtil {
     }
 
     template <class T, class Predicate>
-    inline T* Last(Array<T*>* array, Predicate pred)
+    inline bool Any(Array<T*>* array, Predicate pred)
     {
-        for (int i = array->Length()-1; i >= 0; i--) {
-            T* item = array->values[i];
-            if (pred(item)){
-                return item;
-            }
+        for (int i = 0; i < array->Length(); i++) {
+            if(pred(array->values[i]))
+                return true;
         }
-        return nullptr;
+        return false;
     }
-    
+
 }

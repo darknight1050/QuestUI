@@ -7,6 +7,7 @@
 //#include "CustomTypes/Components/QuestUIScrollView.hpp"
 #include "CustomTypes/Components/KeyboardController.hpp"
 
+#include "GlobalNamespace/UIKeyboardManager.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
 #include "GlobalNamespace/FormattedFloatListSettingsValueController.hpp"
 #include "GlobalNamespace/ReleaseInfoViewController.hpp"
@@ -21,15 +22,22 @@
 #include "UnityEngine/TextureFormat.hpp"
 #include "UnityEngine/ImageConversion.hpp"
 #include "UnityEngine/Material.hpp"
+#include "UnityEngine/UI/ScrollRect.hpp"
 #include "UnityEngine/Events/UnityAction_1.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "HMUI/ModalView.hpp"
+#include "HMUI/TableView.hpp"
+#include "HMUI/TableViewScroller.hpp"
 #include "HMUI/TextPageScrollView.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
+#include "HMUI/TextSegmentedControl.hpp"
+#include "HMUI/InputFieldView.hpp"
+#include "HMUI/UIKeyboard.hpp"
 #include "VRUIControls/VRGraphicRaycaster.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
+#include "Zenject/DiContainer.hpp"
 
 #include "customlogger.hpp"
 
@@ -41,6 +49,7 @@ using namespace TMPro;
 using namespace HMUI;
 using namespace Polyglot;
 using namespace VRUIControls;
+using namespace Zenject;
 
 namespace QuestUI::BeatSaberUI {
     
@@ -73,11 +82,20 @@ namespace QuestUI::BeatSaberUI {
         return physicsRaycaster;
     }
 
+    DiContainer* diContainer = nullptr;
+    DiContainer* GetDiContainer()
+    {
+        if(!diContainer)
+            diContainer = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TextSegmentedControl*>(), [](TextSegmentedControl* x) { return to_utf8(csstrtostr(x->get_transform()->get_parent()->get_name())) == "PlayerStatisticsViewController" && x->container; })->container;
+        return diContainer;
+    }
+
     void clearCache() {
         mainFlowCoordinator = nullptr;
         mainTextFont = nullptr;
         editIcon = nullptr;
         physicsRaycaster = nullptr;
+        diContainer = nullptr;
     }
 
     ViewController* CreateViewController(System::Type* type) {
@@ -358,7 +376,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     IncrementSetting* CreateIncrementSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue, UnityAction_1<float>* onValueChange){
-        FormattedFloatListSettingsValueController* baseSetting  = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](FormattedFloatListSettingsValueController* x){ return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale";}), parent, false);
+        FormattedFloatListSettingsValueController* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](FormattedFloatListSettingsValueController* x){ return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale"; }), parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUIIncDecSetting", il2cpp_utils::StringType::Manual);
         baseSetting->set_name(name);
         
@@ -479,64 +497,55 @@ namespace QuestUI::BeatSaberUI {
 
     GameObject* CreateModalView(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Manual);
-        GameObject* gameObject = GameObject::New_ctor(name);
-        gameObject->SetActive(false);
-
-        RectTransform* rectTransform = gameObject->AddComponent<RectTransform*>();
-        rectTransform->SetParent(parent, false);
-        rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
-        rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
-        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-
-        ModalView* modalView = gameObject->AddComponent<ModalView*>();
-        ModalView* yoinkFromView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ModalView*>(), [](ModalView* x){ return to_utf8(csstrtostr(x->get_name())) == "TableView";});
+        ModalView* yoinkFromView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ModalView*>(), [](ModalView* x){ return to_utf8(csstrtostr(x->get_name())) == "DropdownTableView"; });
+        ModalView* modalView = Object::Instantiate(yoinkFromView, parent);
         modalView->presentPanelAnimations = yoinkFromView->presentPanelAnimations;
         modalView->dismissPanelAnimation = yoinkFromView->dismissPanelAnimation;
+        modalView->container = GetDiContainer();
+        modalView->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
 
-        GameObject* child = GameObject::New_ctor();
-        child->get_transform()->SetParent(rectTransform, false);
-        RectTransform* shadowTransform = child->get_gameObject()->AddComponent<RectTransform*>();
-        shadowTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
-        shadowTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
-        shadowTransform->set_sizeDelta(UnityEngine::Vector2(10.0f, 10.0f));
-        child->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel-shadow"));
+        GameObject::Destroy(modalView->GetComponent<TableView*>());
+        GameObject::Destroy(modalView->GetComponent<TableViewScroller*>());
+        GameObject::Destroy(modalView->GetComponent<ScrollRect*>());
 
-        child = GameObject::New_ctor();
-        child->get_transform()->SetParent(rectTransform, false);
-        RectTransform* backgroundTransform = child->get_gameObject()->AddComponent<RectTransform*>();
-        backgroundTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
-        backgroundTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
-        backgroundTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-
-        Backgroundable* backgroundable = child->get_gameObject()->AddComponent<Backgroundable*>();
-        backgroundable->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
-        auto background = backgroundable->background;
-        background->set_color(UnityEngine::Color(0.706f, 0.706f, 0.706f, 1.0f));
-        background->set_material(ArrayUtil::First(Resources::FindObjectsOfTypeAll<Material*>(), [](Material* x){ return to_utf8(csstrtostr(x->get_name())) == "UIFogBG"; }));
-
-        ExternalComponents* externalComponents = child->AddComponent<ExternalComponents*>();
-        externalComponents->Add(modalView);
-        externalComponents->Add(rectTransform);
-
-        return child;
+        for(int i = 0;i<modalView->get_transform()->get_childCount();i++) {
+            RectTransform* child = (RectTransform*)modalView->get_transform()->GetChild(i);
+            if(to_utf8(csstrtostr(child->get_name())) == "BG") {
+                child->set_anchoredPosition(UnityEngine::Vector2::get_zero());
+                child->set_sizeDelta(UnityEngine::Vector2::get_zero());
+            }
+            else
+            {
+                GameObject::Destroy(child->get_gameObject());
+            }
+        }
+        RectTransform* rectTransform = modalView->GetComponent<RectTransform*>();
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2::get_zero());
+        GameObject* gameObject = modalView->get_gameObject();
+        gameObject->set_name(name);
+        gameObject->AddComponent<ExternalComponents*>()->Add(modalView);
+        return gameObject;
     }
 
-    GameObject* CreateKeyboard(Transform* parent) {
+    /*GameObject* CreateKeyboard(Transform* parent) {
         GameObject* gameObject = CreateModalView(parent);
 
-        ExternalComponents* externalComponents = gameObject->GetComponent<ExternalComponents*>();
-
-        RectTransform* windowTransform = externalComponents->Get<RectTransform*>();
+        RectTransform* windowTransform = gameObject->GetComponent<RectTransform*>();
         static auto name = il2cpp_utils::createcsstr("QuestUIModalKeyboard", il2cpp_utils::StringType::Manual);
         windowTransform->set_name(name);
         windowTransform->set_sizeDelta(UnityEngine::Vector2(135.0f, 75.0f));
 
         static auto parentName = il2cpp_utils::createcsstr("KeyboardParent", il2cpp_utils::StringType::Manual);
-        RectTransform* parentTransform = GameObject::New_ctor(parentName)->AddComponent<RectTransform*>();
+        GameObject* parentGameObject = GameObject::New_ctor(parentName);
+        RectTransform* parentTransform = parentGameObject->AddComponent<RectTransform*>();
         parentTransform->SetParent(gameObject->get_transform(), false);
 
         parentTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 12.0f));
-        externalComponents->Add(parentTransform->get_gameObject()->AddComponent<KeyboardController*>());
+        parentGameObject->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+        auto test = parentGameObject->AddComponent<KeyboardController*>();
+        gameObject->GetComponent<ExternalComponents*>()->Add(test);
         return gameObject;
     }
 
@@ -559,10 +568,9 @@ namespace QuestUI::BeatSaberUI {
         Button* decButton = ArrayUtil::First(valuePick->GetComponentsInChildren<Button*>());
         decButton->set_enabled(false);
         decButton->set_interactable(true);
-        static auto arrowName = il2cpp_utils::createcsstr("Arrow", il2cpp_utils::StringType::Manual);
-        GameObject::Destroy(decButton->get_transform()->Find(arrowName)->get_gameObject());
+        static auto iconName = il2cpp_utils::createcsstr("Icon", il2cpp_utils::StringType::Manual);
+        GameObject::Destroy(decButton->get_transform()->Find(iconName)->get_gameObject());
 
-        
         setting->Text = ArrayUtil::First(valuePick->GetComponentsInChildren<TextMeshProUGUI*>());
         setting->Text->set_alignment(TextAlignmentOptions::MidlineRight);
         setting->Text->set_enableWordWrapping(false);
@@ -579,7 +587,7 @@ namespace QuestUI::BeatSaberUI {
             
         gameObject->GetComponent<LayoutElement*>()->set_preferredWidth(90);
 
-        Image* icon = editButton->get_transform()->Find(arrowName)->GetComponent<Image*>();
+        Image* icon = editButton->get_transform()->Find(iconName)->GetComponent<Image*>();
         icon->set_name(il2cpp_utils::createcsstr("EditIcon"));
         icon->set_sprite(getEditIcon());
         icon->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(4.0f, 4.0f));
@@ -599,6 +607,27 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchoredPosition(anchoredPosition);
 
         return setting;
+    }*/
+
+    StringSetting* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
+        return CreateStringSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), settingsName, currentValue, onValueChange);
+    }
+
+    StringSetting* CreateStringSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
+        static auto name = il2cpp_utils::createcsstr("QuestUIStringSetting", il2cpp_utils::StringType::Manual);
+        InputFieldView* originalfieldView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<InputFieldView*>(), [](InputFieldView* x) { 
+            getLogger().info("TestInputFieldView: %s", to_utf8(csstrtostr(x->get_name())).c_str());
+            return to_utf8(csstrtostr(x->get_name())) == "GuestNameInputField"; });
+        GameObject* gameObj = Object::Instantiate(originalfieldView->get_gameObject());
+        gameObj->AddComponent<LayoutElement*>();
+        ArrayUtil::First(gameObj->GetComponents<Component*>(), [](Component* x) { 
+            getLogger().info("Component: %s", to_utf8(csstrtostr(x->GetType()->get_Name())).c_str()); return false;});
+        InputFieldView* fieldView = gameObj->GetComponent<InputFieldView*>();//GuestNameInputField
+        gameObj->get_transform()->SetParent(parent, false);
+        //HMUI::UIKeyboard* keyboard = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<HMUI::UIKeyboard*>()));
+        //gameObj->AddComponent<UIKeyboardManager*>()->OpenKeyboardFor(fieldView);
+        //ArrayUtil::First(Resources::FindObjectsOfTypeAll<UIKeyboardManager*>())->OpenKeyboardFor(fieldView);
+        return nullptr;
     }
 
 }

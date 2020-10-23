@@ -4,10 +4,12 @@
 DEFINE_CLASS(QuestUI::ExternalComponents);
 
 void QuestUI::ExternalComponents::Add(UnityEngine::Component* component) {
-    components.push_back(component);
+    if(component)
+        components.push_back(component);
 }
 
 UnityEngine::Component* QuestUI::ExternalComponents::GetByType(Il2CppReflectionType* type) {
+    if(!type) return nullptr;
     Il2CppClass* clazz = il2cpp_functions::class_from_system_type(type);
     for(UnityEngine::Component* component : components)
     {
