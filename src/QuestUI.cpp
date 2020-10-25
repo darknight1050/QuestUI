@@ -8,10 +8,6 @@
 //#include "CustomTypes/Components/ScrollViewContent.hpp"
 //#include "CustomTypes/Components/QuestUIScrollView.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
-#include "CustomTypes/Components/Settings/StringSetting.hpp"
-#include "CustomTypes/Components/QuestUIKeyboard.hpp"
-#include "CustomTypes/Data/TextKeyWasPressedEventData.hpp"
-#include "CustomTypes/Components/KeyboardController.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
 
@@ -76,10 +72,6 @@ void QuestUI::Init() {
         //custom_types::Register::RegisterType<ScrollViewContent>();
         //custom_types::Register::RegisterType<QuestUIScrollView>();
         custom_types::Register::RegisterType<IncrementSetting>();
-        custom_types::Register::RegisterType<QuestUIKeyboard>();
-        custom_types::Register::RegisterType<TextKeyWasPressedEventData>();
-        custom_types::Register::RegisterType<KeyboardController>();
-        custom_types::Register::RegisterType<StringSetting>();
         custom_types::Register::RegisterType<ModSettingsButtonClickData>();
         custom_types::Register::RegisterType<ModSettingsButtonsViewController>();
         custom_types::Register::RegisterType<ModSettingsFlowCoordinator>();

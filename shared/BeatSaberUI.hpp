@@ -3,7 +3,6 @@
 #include "ArrayUtil.hpp"
 
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
-#include "CustomTypes/Components/Settings/StringSetting.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
@@ -24,6 +23,7 @@
 #include "HMUI/ViewController.hpp"
 #include "HMUI/FlowCoordinator.hpp"
 #include "HMUI/HoverHint.hpp"
+#include "HMUI/InputFieldView.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
 #include "VRUIControls/PhysicsRaycasterWithCache.hpp"
@@ -66,12 +66,18 @@ namespace QuestUI::BeatSaberUI {
 
     void SetButtonBackground(UnityEngine::UI::Button* button, UnityEngine::Sprite* background);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityEngine::Events::UnityAction* onClick, std::string buttonText, UnityEngine::Sprite* icon);
-    
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction* onClick, std::string buttonText, UnityEngine::Sprite* icon);
-    
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonTemplate, UnityEngine::Events::UnityAction* onClick, std::string buttonText, UnityEngine::Sprite* icon);
-    
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Events::UnityAction* onClick = nullptr);
+
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction* onClick = nullptr);
+
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityEngine::Events::UnityAction* onClick = nullptr);
+
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Events::UnityAction* onClick = nullptr);
+
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction* onClick = nullptr);
+
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityEngine::Events::UnityAction* onClick = nullptr);
+
     UnityEngine::UI::Image* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
     UnityEngine::Sprite* Base64ToSprite(std::string base64, int width, int height);
@@ -82,17 +88,17 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
     
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Events::UnityAction_1<bool>* onToggle);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Events::UnityAction_1<bool>* onToggle = nullptr);
 
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<bool>* onToggle);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<bool>* onToggle = nullptr);
     
     UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
 
     HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
 
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Events::UnityAction_1<float>* onValueChange);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
     
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue, UnityEngine::Events::UnityAction_1<float>* onValueChange);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
 
     //UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);
 
@@ -100,10 +106,8 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::GameObject* CreateModalView(UnityEngine::Transform* parent);
 
-    UnityEngine::GameObject* CreateKeyboard(UnityEngine::Transform* parent);
+    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange = nullptr);
 
-    QuestUI::StringSetting* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange);
-
-    QuestUI::StringSetting* CreateStringSetting(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string settingsName, std::string currentValue, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange);
+    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange = nullptr);
 
 }

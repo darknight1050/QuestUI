@@ -33,7 +33,7 @@ void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation
         layoutGroup->set_childAlignment(UnityEngine::TextAnchor::MiddleCenter);
         UnityEngine::RectTransform* rectTransform = layoutGroup->GetComponent<UnityEngine::RectTransform*>();
         for(ModSettingsInfos::ModSettingsInfo& info : ModSettingsInfos::get()) {
-            BeatSaberUI::CreateUIButton(rectTransform, "OkButton", UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(0.0f, 0.0f), il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), *il2cpp_utils::New<QuestUI::ModSettingsButtonClickData*>(classof(QuestUI::ModSettingsButtonClickData*), this, (void*)&info), OnModSettingsButtonClick), info.modInfo.id, nullptr);
+            BeatSaberUI::CreateUIButton(rectTransform, info.modInfo.id, il2cpp_utils::MakeAction<UnityEngine::Events::UnityAction>(il2cpp_functions::class_get_type(classof(UnityEngine::Events::UnityAction*)), *il2cpp_utils::New<QuestUI::ModSettingsButtonClickData*>(classof(QuestUI::ModSettingsButtonClickData*), this, (void*)&info), OnModSettingsButtonClick));
         }
     }
 }

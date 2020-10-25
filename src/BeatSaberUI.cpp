@@ -5,7 +5,6 @@
 #include "CustomTypes/Components/Backgroundable.hpp"
 //#include "CustomTypes/Components/ScrollViewContent.hpp"
 //#include "CustomTypes/Components/QuestUIScrollView.hpp"
-#include "CustomTypes/Components/KeyboardController.hpp"
 
 #include "GlobalNamespace/UIKeyboardManager.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
@@ -25,6 +24,7 @@
 #include "UnityEngine/UI/ScrollRect.hpp"
 #include "UnityEngine/Events/UnityAction_1.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
+#include "HMUI/Touchable.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "HMUI/ModalView.hpp"
 #include "HMUI/TableView.hpp"
@@ -32,7 +32,7 @@
 #include "HMUI/TextPageScrollView.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
 #include "HMUI/TextSegmentedControl.hpp"
-#include "HMUI/InputFieldView.hpp"
+#include "HMUI/InputFieldView_InputFieldChanged.hpp"
 #include "HMUI/UIKeyboard.hpp"
 #include "VRUIControls/VRGraphicRaycaster.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
@@ -40,6 +40,8 @@
 #include "Zenject/DiContainer.hpp"
 
 #include "customlogger.hpp"
+
+#define DEFAULT_BUTTONTEMPLATE "PracticeButton"
 
 using namespace GlobalNamespace;
 using namespace UnityEngine;
@@ -182,6 +184,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     void SetButtonIcon(Button* button, Sprite* icon) {
+        if(!icon) return;
         auto* array = button->GetComponentsInChildren<Image*>();
         if(array->Length() > 1)
             ArrayUtil::First(array, [](Image* x) { return to_utf8(csstrtostr(x->get_name())) == "Icon";})->set_sprite(icon);
@@ -193,30 +196,11 @@ namespace QuestUI::BeatSaberUI {
             array->values[0]->set_sprite(background);
     }
 
-    Button* CreateUIButtonLazy(Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityAction* onClick, std::string buttonText){
-        Button* button = CreateUIButton(parent, "PracticeButton", onClick, buttonText, nullptr);
-        ((RectTransform*)button->get_transform())->set_anchoredPosition(anchoredPosition);
-        return button;
-    }
-
-    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityAction* onClick, std::string buttonText, Sprite* icon){
-        Button* button = CreateUIButton(parent, buttonTemplate, anchoredPosition, onClick, buttonText, icon);
-        ((RectTransform*)button->get_transform())->set_sizeDelta(sizeDelta);
-        return button;
-    }
-
-    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityAction* onClick, std::string buttonText, Sprite* icon){
-        Button* button = CreateUIButton(parent, buttonTemplate, onClick, buttonText, icon);
-        ((RectTransform*)button->get_transform())->set_anchoredPosition(anchoredPosition);
-        return button;
-    }
-
-    Button* CreateUIButton(Transform* parent, std::string buttonTemplate, UnityAction* onClick, std::string buttonText, Sprite* icon){
+    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, UnityAction* onClick) {
         Button* button = Object::Instantiate(ArrayUtil::Last(Resources::FindObjectsOfTypeAll<Button*>(), [&buttonTemplate](Button* x) { return to_utf8(csstrtostr(x->get_name())) == buttonTemplate; }), parent, false);
         button->set_onClick(Button::ButtonClickedEvent::New_ctor());
         static auto name = il2cpp_utils::createcsstr("QuestUIButton", il2cpp_utils::StringType::Manual);
         button->set_name(name);
-        //Set OnClick
         if(onClick)
             button->get_onClick()->AddListener(onClick);
 
@@ -235,14 +219,35 @@ namespace QuestUI::BeatSaberUI {
 
         SetButtonText(button, buttonText);
 
-        if(icon)
-            SetButtonIcon(button, icon);
-
         HorizontalLayoutGroup* horiztonalLayoutGroup = button->GetComponentInChildren<HorizontalLayoutGroup*>();
         if (horiztonalLayoutGroup != nullptr)
             externalComponents->Add(horiztonalLayoutGroup);
             
         return button;
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityAction* onClick) {
+        Button* button = CreateUIButton(parent, buttonText, buttonTemplate, onClick);
+        button->GetComponent<RectTransform*>()->set_anchoredPosition(anchoredPosition);
+        return button;
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityAction* onClick) {
+        Button* button = CreateUIButton(parent, buttonText, buttonTemplate, anchoredPosition, onClick);
+        button->GetComponent<RectTransform*>()->set_sizeDelta(sizeDelta);
+        return button;
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, UnityAction* onClick) {
+        return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, onClick);
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityAction* onClick) {
+        return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, anchoredPosition, onClick);
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityAction* onClick) {
+        return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, anchoredPosition, sizeDelta, onClick);
     }
 
     Image* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
@@ -372,10 +377,10 @@ namespace QuestUI::BeatSaberUI {
     }
 
     IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityAction_1<float>* onValueChange) {
-        return CreateIncrementSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), text, decimals, increment, currentValue, onValueChange);
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
     }
 
-    IncrementSetting* CreateIncrementSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string text, int decimals, float increment, float currentValue, UnityAction_1<float>* onValueChange){
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<float>* onValueChange){
         FormattedFloatListSettingsValueController* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](FormattedFloatListSettingsValueController* x){ return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale"; }), parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUIIncDecSetting", il2cpp_utils::StringType::Manual);
         baseSetting->set_name(name);
@@ -529,105 +534,30 @@ namespace QuestUI::BeatSaberUI {
         return gameObject;
     }
 
-    /*GameObject* CreateKeyboard(Transform* parent) {
-        GameObject* gameObject = CreateModalView(parent);
-
-        RectTransform* windowTransform = gameObject->GetComponent<RectTransform*>();
-        static auto name = il2cpp_utils::createcsstr("QuestUIModalKeyboard", il2cpp_utils::StringType::Manual);
-        windowTransform->set_name(name);
-        windowTransform->set_sizeDelta(UnityEngine::Vector2(135.0f, 75.0f));
-
-        static auto parentName = il2cpp_utils::createcsstr("KeyboardParent", il2cpp_utils::StringType::Manual);
-        GameObject* parentGameObject = GameObject::New_ctor(parentName);
-        RectTransform* parentTransform = parentGameObject->AddComponent<RectTransform*>();
-        parentTransform->SetParent(gameObject->get_transform(), false);
-
-        parentTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 12.0f));
-        parentGameObject->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
-        auto test = parentGameObject->AddComponent<KeyboardController*>();
-        gameObject->GetComponent<ExternalComponents*>()->Add(test);
-        return gameObject;
+    InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
+        return CreateStringSetting(parent, settingsName, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
     }
 
-    StringSetting* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
-        return CreateStringSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), settingsName, currentValue, onValueChange);
-    }
-
-    StringSetting* CreateStringSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
-        FormattedFloatListSettingsValueController* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](FormattedFloatListSettingsValueController* x){ return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale"; }), parent, false);
-        static auto name = il2cpp_utils::createcsstr("QuestUIStringSetting", il2cpp_utils::StringType::Manual);
-        baseSetting->set_name(name);
-        
-        GameObject* gameObject = baseSetting->get_gameObject();
-        gameObject->SetActive(false);
-        
-        Object::Destroy(baseSetting);
-        StringSetting* setting = gameObject->AddComponent<StringSetting*>();
-        static auto valuePickerName = il2cpp_utils::createcsstr("ValuePicker", il2cpp_utils::StringType::Manual);
-        Transform* valuePick = gameObject->get_transform()->Find(valuePickerName);
-        Button* decButton = ArrayUtil::First(valuePick->GetComponentsInChildren<Button*>());
-        decButton->set_enabled(false);
-        decButton->set_interactable(true);
-        static auto iconName = il2cpp_utils::createcsstr("Icon", il2cpp_utils::StringType::Manual);
-        GameObject::Destroy(decButton->get_transform()->Find(iconName)->get_gameObject());
-
-        setting->Text = ArrayUtil::First(valuePick->GetComponentsInChildren<TextMeshProUGUI*>());
-        setting->Text->set_alignment(TextAlignmentOptions::MidlineRight);
-        setting->Text->set_enableWordWrapping(false);
-        setting->CurrentValue = il2cpp_utils::createcsstr(currentValue);
-        setting->Text->set_text(setting->CurrentValue);
-        setting->OnValueChange = onValueChange;
-        Button* editButton = ArrayUtil::Last(valuePick->GetComponentsInChildren<Button*>());
-        RectTransform* boundingBox = (RectTransform*)valuePick;
-            
-        TextMeshProUGUI* settingsNameMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
-        settingsNameMesh->set_text(il2cpp_utils::createcsstr(settingsName));
-        gameObject->AddComponent<ExternalComponents*>()->Add(settingsNameMesh);
-        GameObject::Destroy(settingsNameMesh->GetComponent<LocalizedTextMeshProUGUI*>());
-            
-        gameObject->GetComponent<LayoutElement*>()->set_preferredWidth(90);
-
-        Image* icon = editButton->get_transform()->Find(iconName)->GetComponent<Image*>();
-        icon->set_name(il2cpp_utils::createcsstr("EditIcon"));
-        icon->set_sprite(getEditIcon());
-        icon->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(4.0f, 4.0f));
-        editButton->set_interactable(true);
-        editButton->GetComponent<RectTransform*>()->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
-
-        ExternalComponents* externalComponents = CreateKeyboard(gameObject->get_transform())->GetComponent<ExternalComponents*>();
-        KeyboardController* keyboardController = externalComponents->Get<KeyboardController*>();
-        setting->KeyboardController = keyboardController;
-        setting->ModalView = externalComponents->Get<ModalView*>();
-        keyboardController->add_confirmPressed(il2cpp_utils::MakeAction<System::Action_1<Il2CppString*>>(il2cpp_functions::class_get_type(classof(System::Action_1<Il2CppString*>*)), setting, +[](StringSetting* setting, Il2CppString* text) { setting->ConfirmPressed(text); }));
-        keyboardController->add_cancelPressed(il2cpp_utils::MakeAction<System::Action>(il2cpp_functions::class_get_type(classof(System::Action*)), setting, +[](StringSetting* setting) { setting->CancelPressed(); }));
-        editButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityAction>(il2cpp_functions::class_get_type(classof(UnityAction*)), setting, +[](StringSetting* setting) { setting->ButtonPressed(); }));
-        gameObject->SetActive(true);
-        
-        RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
-        rectTransform->set_anchoredPosition(anchoredPosition);
-
-        return setting;
-    }*/
-
-    StringSetting* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
-        return CreateStringSetting(parent, UnityEngine::Vector2(0.0f, 0.0f), settingsName, currentValue, onValueChange);
-    }
-
-    StringSetting* CreateStringSetting(Transform* parent, UnityEngine::Vector2 anchoredPosition, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
+    InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<Il2CppString*>* onValueChange) {
         static auto name = il2cpp_utils::createcsstr("QuestUIStringSetting", il2cpp_utils::StringType::Manual);
         InputFieldView* originalfieldView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<InputFieldView*>(), [](InputFieldView* x) { 
             getLogger().info("TestInputFieldView: %s", to_utf8(csstrtostr(x->get_name())).c_str());
             return to_utf8(csstrtostr(x->get_name())) == "GuestNameInputField"; });
-        GameObject* gameObj = Object::Instantiate(originalfieldView->get_gameObject());
-        gameObj->AddComponent<LayoutElement*>();
-        ArrayUtil::First(gameObj->GetComponents<Component*>(), [](Component* x) { 
-            getLogger().info("Component: %s", to_utf8(csstrtostr(x->GetType()->get_Name())).c_str()); return false;});
-        InputFieldView* fieldView = gameObj->GetComponent<InputFieldView*>();//GuestNameInputField
-        gameObj->get_transform()->SetParent(parent, false);
-        //HMUI::UIKeyboard* keyboard = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<HMUI::UIKeyboard*>()));
-        //gameObj->AddComponent<UIKeyboardManager*>()->OpenKeyboardFor(fieldView);
-        //ArrayUtil::First(Resources::FindObjectsOfTypeAll<UIKeyboardManager*>())->OpenKeyboardFor(fieldView);
-        return nullptr;
+        GameObject* gameObj = Object::Instantiate(originalfieldView->get_gameObject(), parent, false);
+        gameObj->AddComponent<LayoutElement*>()->set_preferredHeight(8.0f);
+        gameObj->GetComponent<RectTransform*>()->set_anchoredPosition(anchoredPosition);
+
+        InputFieldView* fieldView = gameObj->GetComponent<InputFieldView*>();
+        fieldView->useGlobalKeyboard = true;
+        fieldView->keyboardPositionOffset = UnityEngine::Vector3(0.0f, -4.0f, 0.0f);
+        GameObject* placeholder = fieldView->placeholderText;
+        Object::Destroy(placeholder->GetComponent<LocalizedTextMeshProUGUI*>());
+        placeholder->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(settingsName));
+        fieldView->SetText(il2cpp_utils::createcsstr(currentValue));
+        fieldView->onValueChanged = InputFieldView::InputFieldChanged::New_ctor();
+        if(onValueChange)
+            fieldView->onValueChanged->AddListener(il2cpp_utils::MakeAction<UnityAction_1<InputFieldView*>>(il2cpp_functions::class_get_type(classof(UnityAction_1<InputFieldView*>*)), onValueChange, +[](UnityAction_1<Il2CppString*>* onValueChange, InputFieldView* fieldView) { onValueChange->Invoke(fieldView->get_text()); }));
+        return fieldView;
     }
 
 }
