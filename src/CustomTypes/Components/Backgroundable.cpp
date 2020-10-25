@@ -73,8 +73,7 @@ std::map<std::string, std::string> objectParentNames =  {
 };
 
 void QuestUI::Backgroundable::ApplyBackgroundWithAlpha(Il2CppString* name, float alpha) {
-	if(background)
-        return;
+	
     std::string stringName = to_utf8(csstrtostr(name));
     HMUI::ImageView* search = ArrayUtil::Last(UnityEngine::Resources::FindObjectsOfTypeAll<HMUI::ImageView*>(), [&stringName](HMUI::ImageView* x){ 
         UnityEngine::Sprite* sprite = x->get_sprite();
@@ -86,7 +85,8 @@ void QuestUI::Backgroundable::ApplyBackgroundWithAlpha(Il2CppString* name, float
     });
     if(!search)
         return;
-    background = get_gameObject()->AddComponent<HMUI::ImageView*>();
+	if(!background)
+    	background = get_gameObject()->AddComponent<HMUI::ImageView*>();
     //Copy Image: some methods are probably not needed
     background->set_alphaHitTestMinimumThreshold(search->get_alphaHitTestMinimumThreshold());
 	UnityEngine::Color backgroundColor = search->get_color();
@@ -115,7 +115,6 @@ void QuestUI::Backgroundable::ApplyBackgroundWithAlpha(Il2CppString* name, float
     background->set_useSpriteMesh(search->get_useSpriteMesh());
 
     background->set_enabled(true);
-	
 }
 
 void QuestUI::Backgroundable::ApplyBackground(Il2CppString* name) {
