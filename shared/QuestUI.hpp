@@ -20,8 +20,8 @@ namespace QuestUI {
             };
 
             template<class T = HMUI::ViewController*>
-            static void RegisterModSettingsViewController(ModInfo modInfo, std::string title){
-                RegisterModSettings(modInfo, title, typeof(T), Type::VIEW_CONTROLLER);
+            static void RegisterModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true){
+                RegisterModSettings(modInfo, showModInfo, title, typeof(T), Type::VIEW_CONTROLLER);
             }
 
             template<class T = HMUI::ViewController*>
@@ -31,11 +31,11 @@ namespace QuestUI {
             
             template<class T = HMUI::FlowCoordinator*>
             static void RegisterModSettingsFlowCoordinator(ModInfo modInfo) {
-                RegisterModSettings(modInfo, modInfo.id, typeof(T), Type::FLOW_COORDINATOR);
+                RegisterModSettings(modInfo, false, modInfo.id, typeof(T), Type::FLOW_COORDINATOR);
             }
 
         private:
-            static void RegisterModSettings(ModInfo modInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type);
+            static void RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type);
 
     };
 

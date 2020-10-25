@@ -8,6 +8,7 @@ namespace QuestUI::ModSettingsInfos {
     
     typedef struct ModSettingsInfo {
         ModInfo modInfo;
+        bool showModInfo;
         std::string title;
         Register::Type type;
         Il2CppReflectionType* il2cpp_type;

@@ -79,6 +79,6 @@ void QuestUI::Init() {
     }
 }
 
-void Register::RegisterModSettings(ModInfo modInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type) {
-    ModSettingsInfos::add(ModSettingsInfos::ModSettingsInfo{ modInfo, title, type, il2cpp_type, nullptr });
+void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type) {
+    ModSettingsInfos::add(ModSettingsInfos::ModSettingsInfo{ modInfo, showModInfo, title, type, il2cpp_type, nullptr });
 }

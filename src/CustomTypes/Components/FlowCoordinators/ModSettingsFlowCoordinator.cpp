@@ -1,9 +1,14 @@
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
 
 #include "ModSettingsInfos.hpp"
 
 #include "UnityEngine/Object.hpp"
+#include "UnityEngine/RectTransform.hpp"
+#include "UnityEngine/RectOffset.hpp"
+#include "UnityEngine/UI/LayoutElement.hpp"
+#include "UnityEngine/UI/ContentSizeFitter.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
 #include "HMUI/ViewController_AnimationType.hpp"
 #include "System/Action_1.hpp"
@@ -14,7 +19,10 @@
 
 DEFINE_CLASS(QuestUI::ModSettingsFlowCoordinator);
 
+using namespace UnityEngine;
+using namespace UnityEngine::UI;
 using namespace HMUI;
+using namespace TMPro;
 
 void OnOpenModSettings(QuestUI::ModSettingsFlowCoordinator* self, QuestUI::ModSettingsButtonClickData* data) {
     QuestUI::ModSettingsInfos::ModSettingsInfo* info = (QuestUI::ModSettingsInfos::ModSettingsInfo*)data->info;
@@ -35,7 +43,17 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
             switch(info.type) {
                 case Register::Type::VIEW_CONTROLLER: {
                     info.viewController = BeatSaberUI::CreateViewController(info.il2cpp_type);
-                    BeatSaberUI::CreateText(info.viewController->get_transform(), info.modInfo.id + "|v" + info.modInfo.version, UnityEngine::Vector2(44.0f, -32.0f))->set_alignment(TMPro::TextAlignmentOptions::BottomRight);
+                    if(info.showModInfo){
+                        VerticalLayoutGroup* layout = BeatSaberUI::CreateVerticalLayoutGroup(info.viewController->get_rectTransform());
+                        layout->get_rectTransform()->set_anchoredPosition(UnityEngine::Vector2(0.0f, -48.0f));
+                        GameObject* layoutGameObject = layout->get_gameObject();
+                        layoutGameObject->GetComponent<ContentSizeFitter*>()->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
+                        layoutGameObject->AddComponent<Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
+                        layout->set_padding(UnityEngine::RectOffset::New_ctor(3, 3, 2, 2));
+                        TextMeshProUGUI* modInfoText = BeatSaberUI::CreateText(layout->get_transform(), info.modInfo.id + "|v" + info.modInfo.version);
+                        modInfoText->set_alignment(TextAlignmentOptions::Center);
+                        modInfoText->set_fontSize(4.8f);
+                    }
                     break;
                 }
                 case Register::Type::FLOW_COORDINATOR: {
