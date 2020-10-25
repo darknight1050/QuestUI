@@ -26,7 +26,6 @@
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "HMUI/Touchable.hpp"
 #include "HMUI/HoverHintController.hpp"
-#include "HMUI/ModalView.hpp"
 #include "HMUI/TableView.hpp"
 #include "HMUI/TableViewScroller.hpp"
 #include "HMUI/TextPageScrollView.hpp"
@@ -34,6 +33,7 @@
 #include "HMUI/TextSegmentedControl.hpp"
 #include "HMUI/InputFieldView_InputFieldChanged.hpp"
 #include "HMUI/UIKeyboard.hpp"
+#include "HMUI/EventSystemListener.hpp"
 #include "VRUIControls/VRGraphicRaycaster.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
@@ -161,7 +161,7 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchoredPosition(anchoredPosition);
         rectTransform->set_sizeDelta(sizeDelta);
-
+        
         gameObj->SetActive(true);
         return textMesh;
     }
@@ -504,7 +504,7 @@ namespace QuestUI::BeatSaberUI {
         return content;
     }*/
 
-    GameObject* CreateModalView(Transform* parent) {
+    /*ModalView* CreateModalView(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Manual);
         ModalView* yoinkFromView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ModalView*>(), [](ModalView* x){ return to_utf8(csstrtostr(x->get_name())) == "DropdownTableView"; });
         ModalView* modalView = Object::Instantiate(yoinkFromView, parent);
@@ -513,15 +513,16 @@ namespace QuestUI::BeatSaberUI {
         modalView->container = GetDiContainer();
         modalView->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
 
-        GameObject::Destroy(modalView->GetComponent<TableView*>());
-        GameObject::Destroy(modalView->GetComponent<TableViewScroller*>());
-        GameObject::Destroy(modalView->GetComponent<ScrollRect*>());
+        GameObject::DestroyImmediate(modalView->GetComponent<TableView*>());
+        GameObject::DestroyImmediate(modalView->GetComponent<TableViewScroller*>());
+        GameObject::DestroyImmediate(modalView->GetComponent<ScrollRect*>());
+        GameObject::DestroyImmediate(modalView->GetComponent<EventSystemListener*>());
 
         for(int i = 0;i<modalView->get_transform()->get_childCount();i++) {
             RectTransform* child = (RectTransform*)modalView->get_transform()->GetChild(i);
             if(to_utf8(csstrtostr(child->get_name())) == "BG") {
-                child->set_anchoredPosition(UnityEngine::Vector2::get_zero());
-                child->set_sizeDelta(UnityEngine::Vector2::get_zero());
+                child->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
+                child->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
             }
             else
             {
@@ -531,12 +532,10 @@ namespace QuestUI::BeatSaberUI {
         RectTransform* rectTransform = modalView->GetComponent<RectTransform*>();
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
-        rectTransform->set_sizeDelta(UnityEngine::Vector2::get_zero());
-        GameObject* gameObject = modalView->get_gameObject();
-        gameObject->set_name(name);
-        gameObject->AddComponent<ExternalComponents*>()->Add(modalView);
-        return gameObject;
-    }
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
+        modalView->get_gameObject()->set_name(name);;
+        return modalView;
+    }*/
 
     InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityAction_1<Il2CppString*>* onValueChange) {
         return CreateStringSetting(parent, settingsName, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);

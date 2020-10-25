@@ -24,6 +24,7 @@
 #include "HMUI/FlowCoordinator.hpp"
 #include "HMUI/HoverHint.hpp"
 #include "HMUI/InputFieldView.hpp"
+#include "HMUI/ModalView.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
 #include "VRUIControls/PhysicsRaycasterWithCache.hpp"
@@ -106,7 +107,7 @@ namespace QuestUI::BeatSaberUI {
 
     //UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
 
-    UnityEngine::GameObject* CreateModalView(UnityEngine::Transform* parent);
+    //HMUI::ModalView* CreateModalView(UnityEngine::Transform* parent);
 
     HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange = nullptr);
 
