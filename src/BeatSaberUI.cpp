@@ -355,7 +355,7 @@ namespace QuestUI::BeatSaberUI {
         return toggle;
     }
 
-    GameObject* CreateLoadingIndicator(Transform* parent, UnityEngine::Vector2 anchoredPosition)
+    /*GameObject* CreateLoadingIndicator(Transform* parent, UnityEngine::Vector2 anchoredPosition)
     {
         GameObject* loadingIndicator = GameObject::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameObject*>(), [](GameObject* x){ return to_utf8(csstrtostr(x->get_name())) == "LoadingIndicator"; }), parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUILoadingIndicator", il2cpp_utils::StringType::Manual);
@@ -367,7 +367,7 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchoredPosition(anchoredPosition);
 
         return loadingIndicator;
-    }
+    }*/
 
     HoverHint* AddHoverHint(GameObject* gameObject, std::string text){
         HoverHint* hoverHint = gameObject->AddComponent<HoverHint*>();
@@ -541,7 +541,6 @@ namespace QuestUI::BeatSaberUI {
     InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<Il2CppString*>* onValueChange) {
         static auto name = il2cpp_utils::createcsstr("QuestUIStringSetting", il2cpp_utils::StringType::Manual);
         InputFieldView* originalfieldView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<InputFieldView*>(), [](InputFieldView* x) { 
-            getLogger().info("TestInputFieldView: %s", to_utf8(csstrtostr(x->get_name())).c_str());
             return to_utf8(csstrtostr(x->get_name())) == "GuestNameInputField"; });
         GameObject* gameObj = Object::Instantiate(originalfieldView->get_gameObject(), parent, false);
         gameObj->AddComponent<LayoutElement*>()->set_preferredHeight(8.0f);
@@ -549,7 +548,7 @@ namespace QuestUI::BeatSaberUI {
 
         InputFieldView* fieldView = gameObj->GetComponent<InputFieldView*>();
         fieldView->useGlobalKeyboard = true;
-        fieldView->keyboardPositionOffset = UnityEngine::Vector3(0.0f, -4.0f, 0.0f);
+        fieldView->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 0.0f, 0.0f);
         GameObject* placeholder = fieldView->placeholderText;
         Object::Destroy(placeholder->GetComponent<LocalizedTextMeshProUGUI*>());
         placeholder->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(settingsName));

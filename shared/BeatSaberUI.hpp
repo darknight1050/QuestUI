@@ -92,7 +92,7 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<bool>* onToggle = nullptr);
     
-    UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
+    //UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
 
     HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
 
