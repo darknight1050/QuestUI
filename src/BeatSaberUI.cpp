@@ -136,6 +136,10 @@ namespace QuestUI::BeatSaberUI {
         return flowCoordinator;
     }
 
+    TextMeshProUGUI* CreateText(Transform* parent, std::string text) {
+        return CreateText(parent, text, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(60.0f, 10.0f));
+    }
+
     TextMeshProUGUI* CreateText(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition) {
         return CreateText(parent, text, anchoredPosition, UnityEngine::Vector2(60.0f, 10.0f));
     }

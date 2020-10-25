@@ -52,6 +52,8 @@ namespace QuestUI::BeatSaberUI {
         return (T)CreateFlowCoordinator(typeof(T));
     }
 
+    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text);
+
     TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition);
 
     TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
