@@ -136,27 +136,35 @@ namespace QuestUI::BeatSaberUI {
         return flowCoordinator;
     }
 
-    TextMeshProUGUI* CreateText(Transform* parent, std::string text) {
-        return CreateText(parent, text, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(60.0f, 10.0f));
-    }
-
     TextMeshProUGUI* CreateText(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition) {
-        return CreateText(parent, text, anchoredPosition, UnityEngine::Vector2(60.0f, 10.0f));
+        return CreateText(parent, text, true, anchoredPosition);
     }
 
     TextMeshProUGUI* CreateText(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
+        return CreateText(parent, text, true, anchoredPosition, sizeDelta);
+    }
+
+    TextMeshProUGUI* CreateText(Transform* parent, std::string text, bool italic) {
+        return CreateText(parent, text, italic, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(60.0f, 10.0f));
+    }
+
+    TextMeshProUGUI* CreateText(Transform* parent, std::string text, bool italic, UnityEngine::Vector2 anchoredPosition) {
+        return CreateText(parent, text, italic, anchoredPosition, UnityEngine::Vector2(60.0f, 10.0f));
+    }
+
+    TextMeshProUGUI* CreateText(Transform* parent, std::string text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
         static auto name = il2cpp_utils::createcsstr("QuestUIText", il2cpp_utils::StringType::Manual);
         GameObject* gameObj = GameObject::New_ctor(name);
         gameObj->SetActive(false);
 
         CurvedTextMeshPro* textMesh = gameObj->AddComponent<CurvedTextMeshPro*>();
         RectTransform* rectTransform = textMesh->get_rectTransform();
-        textMesh->set_font(getMainTextFont());
         rectTransform->SetParent(parent, false);
-        textMesh->set_text(il2cpp_utils::createcsstr(text));
+        textMesh->set_font(getMainTextFont());
+        textMesh->set_text(il2cpp_utils::createcsstr(italic ? ("<i>" + text + "</i>") : text));
         textMesh->set_fontSize(4.0f);
         textMesh->set_color(UnityEngine::Color::get_white());
-
+        textMesh->set_richText(true);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchoredPosition(anchoredPosition);
