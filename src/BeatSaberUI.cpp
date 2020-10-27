@@ -554,7 +554,9 @@ namespace QuestUI::BeatSaberUI {
         InputFieldView* originalfieldView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<InputFieldView*>(), [](InputFieldView* x) { 
             return to_utf8(csstrtostr(x->get_name())) == "GuestNameInputField"; });
         GameObject* gameObj = Object::Instantiate(originalfieldView->get_gameObject(), parent, false);
-        gameObj->AddComponent<LayoutElement*>()->set_preferredHeight(8.0f);
+        LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
+        layoutElement->set_preferredWidth(64.0f);
+        layoutElement->set_preferredHeight(8.0f);
         gameObj->GetComponent<RectTransform*>()->set_anchoredPosition(anchoredPosition);
 
         InputFieldView* fieldView = gameObj->GetComponent<InputFieldView*>();
