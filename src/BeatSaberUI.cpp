@@ -333,10 +333,20 @@ namespace QuestUI::BeatSaberUI {
 
     Toggle* CreateToggle(Transform* parent, std::string text, UnityAction_1<bool>* onToggle)
     {
-        return CreateToggle(parent, text, UnityEngine::Vector2(0.0f, 0.0f), onToggle);
+        return CreateToggle(parent, text, false, onToggle);
+    }
+
+    Toggle* CreateToggle(Transform* parent, std::string text, bool currentValue, UnityAction_1<bool>* onToggle)
+    {
+        return CreateToggle(parent, text, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onToggle);
+    }
+
+    Toggle* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityAction_1<bool>* onToggle)
+    {
+        return CreateToggle(parent, text, false, anchoredPosition, onToggle);
     }
     
-    Toggle* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityAction_1<bool>* onToggle)
+    Toggle* CreateToggle(Transform* parent, std::string text, bool currentValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<bool>* onToggle)
     {
         GameObject* gameObject = Object::Instantiate(ArrayUtil::First(ArrayUtil::Select<GameObject*>(Resources::FindObjectsOfTypeAll<Toggle*>(), [](Toggle* x){ return x->get_transform()->get_parent()->get_gameObject(); }), [](GameObject* x){ return to_utf8(csstrtostr(x->get_name())) == "Fullscreen";}), parent, false);
         GameObject* nameText = gameObject->get_transform()->Find(il2cpp_utils::createcsstr("NameText"))->get_gameObject();
@@ -351,7 +361,7 @@ namespace QuestUI::BeatSaberUI {
         
         Toggle* toggle = gameObject->GetComponentInChildren<Toggle*>();
         toggle->set_interactable(true);
-        toggle->set_isOn(false);
+        toggle->set_isOn(currentValue);
         toggle->onValueChanged = Toggle::ToggleEvent::New_ctor();
         if(onToggle)
             toggle->onValueChanged->AddListener(onToggle);
