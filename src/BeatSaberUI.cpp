@@ -414,8 +414,8 @@ namespace QuestUI::BeatSaberUI {
         Button* incButton = ArrayUtil::Last(child->GetComponentsInChildren<Button*>());
         decButton->set_interactable(true);
         incButton->set_interactable(true);
-        decButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityAction>(il2cpp_functions::class_get_type(classof(UnityAction*)), setting, +[](IncrementSetting* setting){ setting->DecButtonPressed(); }));
-        incButton->get_onClick()->AddListener(il2cpp_utils::MakeAction<UnityAction>(il2cpp_functions::class_get_type(classof(UnityAction*)), setting, +[](IncrementSetting* setting){ setting->IncButtonPressed(); }));
+        decButton->get_onClick()->AddListener(il2cpp_utils::MakeDelegate<UnityAction*>(classof(UnityAction*), setting, +[](IncrementSetting* setting){ setting->DecButtonPressed(); }));
+        incButton->get_onClick()->AddListener(il2cpp_utils::MakeDelegate<UnityAction*>(classof(UnityAction*), setting, +[](IncrementSetting* setting){ setting->IncButtonPressed(); }));
         
         child->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(40, 0));
         TextMeshProUGUI* textMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
@@ -568,8 +568,7 @@ namespace QuestUI::BeatSaberUI {
         fieldView->SetText(il2cpp_utils::createcsstr(currentValue));
         fieldView->onValueChanged = InputFieldView::InputFieldChanged::New_ctor();
         if(onValueChange)
-            fieldView->onValueChanged->AddListener(il2cpp_utils::MakeAction<UnityAction_1<InputFieldView*>>(il2cpp_functions::class_get_type(classof(UnityAction_1<InputFieldView*>*)), onValueChange, +[](UnityAction_1<Il2CppString*>* onValueChange, InputFieldView* fieldView) { onValueChange->Invoke(fieldView->get_text()); }));
+            fieldView->onValueChanged->AddListener(il2cpp_utils::MakeDelegate<UnityAction_1<InputFieldView*>*>(classof(UnityAction_1<InputFieldView*>*), onValueChange, +[](UnityAction_1<Il2CppString*>* onValueChange, InputFieldView* fieldView) { onValueChange->Invoke(fieldView->get_text()); }));
         return fieldView;
     }
-
 }

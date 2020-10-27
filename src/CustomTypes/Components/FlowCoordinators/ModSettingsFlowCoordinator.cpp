@@ -67,7 +67,7 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
         }
         if(!ModSettingsButtonsViewController)
             ModSettingsButtonsViewController = BeatSaberUI::CreateViewController<QuestUI::ModSettingsButtonsViewController*>();
-        ModSettingsButtonsViewController->add_openModSettings(il2cpp_utils::MakeAction<System::Action_1<QuestUI::ModSettingsButtonClickData*>>(il2cpp_functions::class_get_type(classof(System::Action_1<QuestUI::ModSettingsButtonClickData*>*)), this, OnOpenModSettings));
+        ModSettingsButtonsViewController->add_openModSettings(il2cpp_utils::MakeDelegate<System::Action_1<QuestUI::ModSettingsButtonClickData*>*>(classof(System::Action_1<QuestUI::ModSettingsButtonClickData*>*), this, OnOpenModSettings));
         ProvideInitialViewControllers(ModSettingsButtonsViewController, nullptr, nullptr, nullptr, nullptr);
         ActiveViewController = ModSettingsButtonsViewController;
     }
