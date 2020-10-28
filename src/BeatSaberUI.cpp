@@ -571,6 +571,7 @@ namespace QuestUI::BeatSaberUI {
 
         InputFieldView* fieldView = gameObj->GetComponent<InputFieldView*>();
         fieldView->useGlobalKeyboard = true;
+        fieldView->textLengthLimit = 128;
         fieldView->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 0.0f, 0.0f);
         GameObject* placeholder = fieldView->placeholderText;
         Object::Destroy(placeholder->GetComponent<LocalizedTextMeshProUGUI*>());
