@@ -19,8 +19,6 @@ TARGET_ARCH_ABI := $(APP_ABI)
 include $(CLEAR_VARS)
 LOCAL_MODULE := hook
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
-
-# Creating prebuilt for dependency: custom-types - version: 0.2.9
 include $(CLEAR_VARS)
 LOCAL_MODULE := custom-types
 LOCAL_EXPORT_C_INCLUDES := extern/custom-types
@@ -58,7 +56,7 @@ LOCAL_SHARED_LIBRARIES += beatsaber-hook_0_8_2
 LOCAL_SHARED_LIBRARIES += codegen_0_3_5
 LOCAL_SHARED_LIBRARIES += custom-types
 LOCAL_LDLIBS += -llog 
-LOCAL_CFLAGS += -I"include" -I"shared" -I"./extern/libil2cpp/il2cpp/libil2cpp" -I"extern" -I"extern/codegen/include" -DVERSION='"0.2.1"'
+LOCAL_CFLAGS += -I"include" -I"shared" -I"./extern/libil2cpp/il2cpp/libil2cpp" -I"extern" -I"extern/codegen/include" -DVERSION='"0.0.1"'
 LOCAL_C_INCLUDES += ./include ./src 
 LOCAL_CPP_FEATURES += exceptions
 include $(BUILD_SHARED_LIBRARY)
