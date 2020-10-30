@@ -19,12 +19,7 @@ TARGET_ARCH_ABI := $(APP_ABI)
 include $(CLEAR_VARS)
 LOCAL_MODULE := hook
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
-include $(CLEAR_VARS)
-LOCAL_MODULE := beatsaber-hook_0_8_0
-LOCAL_EXPORT_C_INCLUDES := extern/beatsaber-hook
-LOCAL_SRC_FILES := extern/libbeatsaber-hook_0_8_0.so
-LOCAL_CPP_FEATURES += exceptions
-include $(PREBUILT_SHARED_LIBRARY)
+
 # Creating prebuilt for dependency: custom-types - version: 0.2.9
 include $(CLEAR_VARS)
 LOCAL_MODULE := custom-types
@@ -49,6 +44,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := beatsaber-hook_0_8_2
 LOCAL_EXPORT_C_INCLUDES := extern/beatsaber-hook
 LOCAL_SRC_FILES := extern/libbeatsaber-hook_0_8_2.so
+LOCAL_CPP_FEATURES += exceptions
 include $(PREBUILT_SHARED_LIBRARY)
 
 # If you would like to use more shared libraries (such as custom UI, utils, or more) add them here, following the format above. # In addition, ensure that you add them to the shared library build below. 

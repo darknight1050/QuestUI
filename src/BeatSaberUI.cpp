@@ -3,8 +3,7 @@
 
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
-//#include "CustomTypes/Components/ScrollViewContent.hpp"
-//#include "CustomTypes/Components/QuestUIScrollView.hpp"
+#include "CustomTypes/Components/ScrollViewContent.hpp"
 
 #include "GlobalNamespace/UIKeyboardManager.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
@@ -372,7 +371,7 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchoredPosition(anchoredPosition);
 
         LayoutElement* layout = gameObject->GetComponent<LayoutElement*>();
-        layout->set_preferredWidth(90);
+        layout->set_preferredWidth(90.0f);
         gameObject->SetActive(true);
         return toggle;
     }
@@ -436,7 +435,7 @@ namespace QuestUI::BeatSaberUI {
         Object::Destroy(textMesh->GetComponent<LocalizedTextMeshProUGUI*>());
 
         LayoutElement* layoutElement = gameObject->AddComponent<LayoutElement*>();
-        layoutElement->set_preferredWidth(90);
+        layoutElement->set_preferredWidth(90.0f);
 
         RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
         rectTransform->set_anchoredPosition(anchoredPosition);
@@ -446,43 +445,50 @@ namespace QuestUI::BeatSaberUI {
         return setting;
     }
 
-    /*GameObject* CreateScrollView(Transform* parent) {
-        ReleaseInfoViewController* releaseInfoViewController = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<ReleaseInfoViewController*>()), parent);
-        releaseInfoViewController->get_gameObject()->SetActive(true);
-        TextPageScrollView* textScrollView = releaseInfoViewController->textPageScrollView;
+    GameObject* CreateScrollView(Transform* parent) {
+        TextPageScrollView* textScrollView = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<ReleaseInfoViewController*>())->textPageScrollView, parent);
         static auto textScrollViewName = il2cpp_utils::createcsstr("QuestUIScrollView", il2cpp_utils::StringType::Manual);
         textScrollView->set_name(textScrollViewName);
         Button* pageUpButton = textScrollView->pageUpButton;
         Button* pageDownButton = textScrollView->pageDownButton;
         VerticalScrollIndicator* verticalScrollIndicator = textScrollView->verticalScrollIndicator; 
         RectTransform* viewport = textScrollView->viewport;
+        viewport->get_gameObject()->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+        
         GameObject::Destroy(textScrollView->text->get_gameObject());
         GameObject* gameObject = textScrollView->get_gameObject();
         GameObject::Destroy(textScrollView);
         gameObject->SetActive(false);
 
-        QuestUIScrollView* scrollView = gameObject->AddComponent<QuestUIScrollView*>();
+        ScrollView* scrollView = gameObject->AddComponent<ScrollView*>();
         scrollView->pageUpButton = pageUpButton;
         scrollView->pageDownButton = pageDownButton;
         scrollView->verticalScrollIndicator = verticalScrollIndicator;
         scrollView->viewport = viewport;
 
         viewport->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
-        viewport->set_anchorMin(UnityEngine::Vector2(1.0f, 1.0f));
-        scrollView->SetReserveButtonSpace(false);
+        viewport->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
 
         static auto parentObjName = il2cpp_utils::createcsstr("QuestUIScrollViewContent", il2cpp_utils::StringType::Manual);
         GameObject* parentObj = GameObject::New_ctor(parentObjName);
         parentObj->get_transform()->SetParent(viewport, false);
 
+        ContentSizeFitter* contentSizeFitter = parentObj->AddComponent<ContentSizeFitter*>();
+        contentSizeFitter->set_horizontalFit(ContentSizeFitter::FitMode::PreferredSize);
+        contentSizeFitter->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
+
         VerticalLayoutGroup* verticalLayout = parentObj->AddComponent<VerticalLayoutGroup*>();
         verticalLayout->set_childForceExpandHeight(false);
         verticalLayout->set_childForceExpandWidth(false);
+        verticalLayout->set_childControlHeight(true);
+        verticalLayout->set_childControlWidth(true);
+        verticalLayout->set_childAlignment(TextAnchor::UpperCenter);
 
         RectTransform* rectTransform = parentObj->GetComponent<RectTransform*>();
-        rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 1.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
-        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, -1.0f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
+        rectTransform->set_pivot(UnityEngine::Vector2(0.5f, 1.0f));
         
         parentObj->AddComponent<ScrollViewContent*>()->scrollView = scrollView;
 
@@ -493,16 +499,15 @@ namespace QuestUI::BeatSaberUI {
         VerticalLayoutGroup* layoutGroup = child->AddComponent<VerticalLayoutGroup*>();
         layoutGroup->set_childControlHeight(false);
         layoutGroup->set_childForceExpandHeight(false);
-        layoutGroup->set_childAlignment(TextAnchor::MiddleCenter);
+        layoutGroup->set_childAlignment(TextAnchor::LowerCenter);
         layoutGroup->set_spacing(0.5f);
-
-        child->AddComponent<ContentSizeFitter*>();
-        child->AddComponent<LayoutElement*>();
 
         ExternalComponents* externalComponents = child->AddComponent<ExternalComponents*>();
         externalComponents->Add(scrollView);
         externalComponents->Add(scrollView->get_transform());
         externalComponents->Add(gameObject->AddComponent<LayoutElement*>());
+
+        child->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(0.0f, -1.0f));
 
         scrollView->contentRectTransform = rectTransform;
 
@@ -514,13 +519,12 @@ namespace QuestUI::BeatSaberUI {
         GameObject* content = CreateScrollView(parent);
         ExternalComponents* externalComponents = content->GetComponent<ExternalComponents*>();
         RectTransform* scrollTransform = externalComponents->Get<RectTransform*>();
-        scrollTransform->set_anchoredPosition(UnityEngine::Vector2(2, 6));
-        scrollTransform->set_sizeDelta(UnityEngine::Vector2(0, 20));
+        scrollTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
+        scrollTransform->set_sizeDelta(UnityEngine::Vector2(-54.0f, 0.0f));
         static auto name = il2cpp_utils::createcsstr("QuestUIScrollableSettingsContainer", il2cpp_utils::StringType::Manual);
         scrollTransform->get_gameObject()->set_name(name);
-        externalComponents->Get<QuestUIScrollView*>()->SetReserveButtonSpace(true);
         return content;
-    }*/
+    }
 
     /*ModalView* CreateModalView(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Manual);
@@ -565,7 +569,7 @@ namespace QuestUI::BeatSaberUI {
             return to_utf8(csstrtostr(x->get_name())) == "GuestNameInputField"; });
         GameObject* gameObj = Object::Instantiate(originalfieldView->get_gameObject(), parent, false);
         LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
-        layoutElement->set_preferredWidth(64.0f);
+        layoutElement->set_preferredWidth(90.0f);
         layoutElement->set_preferredHeight(8.0f);
         gameObj->GetComponent<RectTransform*>()->set_anchoredPosition(anchoredPosition);
 
