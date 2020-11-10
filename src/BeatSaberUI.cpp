@@ -222,6 +222,7 @@ namespace QuestUI::BeatSaberUI {
 
         TextMeshProUGUI* textMesh = button->GetComponentInChildren<TextMeshProUGUI*>();
         textMesh->set_richText(true);
+        textMesh->set_alignment(TextAlignmentOptions::Center);
         externalComponents->Add(textMesh);
 
         RectTransform* rectTransform = (RectTransform*)button->get_transform();
