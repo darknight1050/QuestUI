@@ -19,6 +19,7 @@ TARGET_ARCH_ABI := $(APP_ABI)
 include $(CLEAR_VARS)
 LOCAL_MODULE := hook
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+# Creating prebuilt for dependency: beatsaber-hook - version: 0.8.2
 include $(CLEAR_VARS)
 LOCAL_MODULE := beatsaber-hook_0_8_2
 LOCAL_EXPORT_C_INCLUDES := extern/beatsaber-hook
