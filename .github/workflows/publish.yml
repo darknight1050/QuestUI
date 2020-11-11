@@ -1,8 +1,5 @@
 name: Publish QPM Package
 
-# This script originally created by Sc2ad.
-# A version of this script can be found here: https://github.com/sc2ad/Il2CppQuestTypePatching/blob/master/.github/workflows/publish.yml
-
 on:
   push:
     tags:
@@ -10,6 +7,8 @@ on:
 
 jobs:
   publish:
+    env:
+      module_id: questui
     runs-on: ubuntu-latest
     
     steps:
@@ -21,14 +20,34 @@ jobs:
     - name: Install Powershell
       run: sudo apt-get install -y powershell
     
-    - name: Setup NDK
-      id: setup-ndk
-      uses: nttld/setup-ndk@v1.0.0
+    - name: Cache Android NDK
+      id: cache-ndk
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-ndk
+        ndkname: android-ndk-r21
       with:
-        ndk-version: r21
+        path: ndk
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{ env.ndkname }}
+        restore-keys: |
+          ${{ runner.os }}-${{ env.cache-name }}-${{ env.ndkname }}
+      
+    - name: Install Android NDK
+      if: steps.cache-ndk.outputs.cache-hit != 'true'
+      env:
+        ndkname: android-ndk-r21
+      run: |
+        wget -q -O ndk.zip https://dl.google.com/android/repository/${ndkname}-linux-x86_64.zip
+        unzip -q ndk.zip
+        mv ${ndkname} ndk
       
     - name: Create ndkpath.txt
-      run: echo ${{ steps.setup-ndk.outputs.ndk-path }} > ${GITHUB_WORKSPACE}/ndkpath.txt
+      run: |
+        cd ndk
+        pwd > ${GITHUB_WORKSPACE}/ndkpath.txt
+      
+    - name: Enable untrusted output
+      run: echo "::stop-commands::`echo -n ${{ github.token }} | sha256sum | head -c 64`"
         
 #     - name: Cache QPM
 #       id: cache-qpm
@@ -114,8 +133,7 @@ jobs:
       uses: octokit/request-action@v2.x
       id: get_release
       with:
-          route: GET /repos/:repository/releases/tags/${{ steps.get_tag_version.outputs.TAG }}
-          repository: ${{ github.repository }}
+          route: GET /repos/${{ github.repository }}/releases/tags/${{ steps.get_tag_version.outputs.TAG }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Get Release Upload URL
@@ -125,12 +143,12 @@ jobs:
         echo $url
         echo "::set-output name=upload_url::$url"
       env: 
-          response:  ${{ steps.get_release.outputs.data }}
+          response: ${{ steps.get_release.outputs.data }}
     - name: Get Library Name
       id: libname
       run: |
         cd ./libs/arm64-v8a/
-        pattern="libquestui*.so"
+        pattern="lib${module_id}*.so"
         files=( $pattern )
         echo ::set-output name=NAME::"${files[0]}"
     # Upload our release assets
