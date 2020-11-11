@@ -4,6 +4,7 @@
 #include "QuestUI.hpp"
 #include "ModSettingsInfos.hpp"
 #include "CustomTypes/Components/ExternalComponents.hpp"
+#include "CustomTypes/Data/CustomDataType.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
@@ -67,10 +68,10 @@ void QuestUI::Init() {
         init = true;
         il2cpp_functions::Init();
         custom_types::Register::RegisterType<ExternalComponents>();
+        custom_types::Register::RegisterType<CustomDataType>();
         custom_types::Register::RegisterType<Backgroundable>();
         custom_types::Register::RegisterType<ScrollViewContent>();
         custom_types::Register::RegisterType<IncrementSetting>();
-        custom_types::Register::RegisterType<ModSettingsButtonClickData>();
         custom_types::Register::RegisterType<ModSettingsButtonsViewController>();
         custom_types::Register::RegisterType<ModSettingsFlowCoordinator>();
         INSTALL_HOOK_OFFSETLESS(OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));

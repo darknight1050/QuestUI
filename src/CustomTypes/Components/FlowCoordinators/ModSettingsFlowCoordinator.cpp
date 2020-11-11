@@ -1,6 +1,6 @@
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
-#include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
+#include "ModSettingsButtonClickData.hpp"
 
 #include "ModSettingsInfos.hpp"
 
@@ -24,14 +24,14 @@ using namespace UnityEngine::UI;
 using namespace HMUI;
 using namespace TMPro;
 
-void OnOpenModSettings(QuestUI::ModSettingsFlowCoordinator* self, QuestUI::ModSettingsButtonClickData* data) {
-    QuestUI::ModSettingsInfos::ModSettingsInfo* info = (QuestUI::ModSettingsInfos::ModSettingsInfo*)data->info;
-    if(info->viewController) {
-        self->SetTitle(il2cpp_utils::createcsstr(info->title), ViewController::AnimationType::In);
-        self->ReplaceTopViewController(info->viewController, self, self, nullptr, ViewController::AnimationType::In, ViewController::AnimationDirection::Horizontal);
-        self->ActiveViewController = info->viewController;
-    } else if(info->flowCoordinator) {
-        self->PresentFlowCoordinator(info->flowCoordinator, nullptr, ViewController::AnimationDirection::Horizontal, false, false);
+void OnOpenModSettings(QuestUI::ModSettingsFlowCoordinator* self, QuestUI::CustomDataType* data) {
+    QuestUI::ModSettingsInfos::ModSettingsInfo& info = data->GetData<QuestUI::ModSettingsButtonClickData>().info;
+    if(info.viewController) {
+        self->SetTitle(il2cpp_utils::createcsstr(info.title), ViewController::AnimationType::In);
+        self->ReplaceTopViewController(info.viewController, self, self, nullptr, ViewController::AnimationType::In, ViewController::AnimationDirection::Horizontal);
+        self->ActiveViewController = info.viewController;
+    } else if(info.flowCoordinator) {
+        self->PresentFlowCoordinator(info.flowCoordinator, nullptr, ViewController::AnimationDirection::Horizontal, false, false);
     }
 }
 
@@ -67,7 +67,7 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
         }
         if(!ModSettingsButtonsViewController)
             ModSettingsButtonsViewController = BeatSaberUI::CreateViewController<QuestUI::ModSettingsButtonsViewController*>();
-        ModSettingsButtonsViewController->add_openModSettings(il2cpp_utils::MakeDelegate<System::Action_1<QuestUI::ModSettingsButtonClickData*>*>(classof(System::Action_1<QuestUI::ModSettingsButtonClickData*>*), this, OnOpenModSettings));
+        ModSettingsButtonsViewController->add_openModSettings(il2cpp_utils::MakeDelegate<System::Action_1<QuestUI::CustomDataType*>*>(classof(System::Action_1<QuestUI::CustomDataType*>*), this, OnOpenModSettings));
         ProvideInitialViewControllers(ModSettingsButtonsViewController, nullptr, nullptr, nullptr, nullptr);
         ActiveViewController = ModSettingsButtonsViewController;
     }

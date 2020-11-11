@@ -1,6 +1,6 @@
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ViewControllers/ModSettingsButtonsViewController.hpp"
-#include "CustomTypes/Data/ModSettingsButtonClickData.hpp"
+#include "ModSettingsButtonClickData.hpp"
 
 #include "ModSettingsInfos.hpp"
 
@@ -14,14 +14,13 @@
 
 DEFINE_CLASS(QuestUI::ModSettingsButtonsViewController);
 
-DEFINE_EVENT(QuestUI::ModSettingsButtonsViewController, System::Action_1<QuestUI::ModSettingsButtonClickData*>*, openModSettings);
+DEFINE_EVENT(QuestUI::ModSettingsButtonsViewController, System::Action_1<QuestUI::CustomDataType*>*, openModSettings);
 
-void OnModSettingsButtonClick(QuestUI::ModSettingsButtonClickData* data, UnityEngine::UI::Button* button) {
-    QuestUI::ModSettingsInfos::ModSettingsInfo* info = (QuestUI::ModSettingsInfos::ModSettingsInfo*)data->info;
-    QuestUI::ModSettingsButtonsViewController* viewController = (QuestUI::ModSettingsButtonsViewController*)data->viewController;
-    getLogger().info("OnModSettingsButtonClick %s", info->modInfo.id.c_str());
-    if(viewController->openModSettings)
-        viewController->openModSettings->Invoke(data);
+void OnModSettingsButtonClick(QuestUI::CustomDataType* data, UnityEngine::UI::Button* button) {
+    QuestUI::ModSettingsButtonClickData& clickData = data->GetData<QuestUI::ModSettingsButtonClickData>();
+    getLogger().info("OnModSettingsButtonClick %s", clickData.info.modInfo.id.c_str());
+    if(clickData.viewController->openModSettings)
+        clickData.viewController->openModSettings->Invoke(data);
 }
 
 void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
@@ -33,7 +32,7 @@ void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation
         layoutGroup->set_childAlignment(UnityEngine::TextAnchor::MiddleCenter);
         UnityEngine::RectTransform* rectTransform = layoutGroup->GetComponent<UnityEngine::RectTransform*>();
         for(ModSettingsInfos::ModSettingsInfo& info : ModSettingsInfos::get()) {
-            BeatSaberUI::CreateUIButton(rectTransform, info.modInfo.id, il2cpp_utils::MakeDelegate<UnityEngine::Events::UnityAction*>(classof(UnityEngine::Events::UnityAction*), CRASH_UNLESS(il2cpp_utils::New<QuestUI::ModSettingsButtonClickData*>(classof(QuestUI::ModSettingsButtonClickData*), this, (void*)&info)), OnModSettingsButtonClick));
+            BeatSaberUI::CreateUIButton(rectTransform, info.modInfo.id, il2cpp_utils::MakeDelegate<UnityEngine::Events::UnityAction*>(classof(UnityEngine::Events::UnityAction*), CRASH_UNLESS(il2cpp_utils::New<CustomDataType*>(classof(CustomDataType*)))->SetData(ModSettingsButtonClickData{this, info}), OnModSettingsButtonClick));
         }
     }
 }
