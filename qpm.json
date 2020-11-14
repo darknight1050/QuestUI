@@ -22,12 +22,12 @@
     },
     {
       "id": "codegen",
-      "versionRange": "^0.3.6",
+      "versionRange": "^0.4.0",
       "additionalData": {}
     },
     {
       "id": "custom-types",
-      "versionRange": "^0.2.13",
+      "versionRange": "^0.2.14",
       "additionalData": {}
     }
   ],
