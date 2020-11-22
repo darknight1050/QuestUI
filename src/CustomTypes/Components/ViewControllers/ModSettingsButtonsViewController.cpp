@@ -8,6 +8,7 @@
 #include "UnityEngine/RectOffset.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 
+#include "HMUI/Touchable.hpp"
 #include "BeatSaberUI.hpp"
 
 #include "customlogger.hpp"
@@ -25,6 +26,7 @@ void OnModSettingsButtonClick(QuestUI::CustomDataType* data, UnityEngine::UI::Bu
 
 void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     if(addedToHierarchy && firstActivation) {
+        get_gameObject()->AddComponent<HMUI::Touchable*>();
         UnityEngine::UI::GridLayoutGroup* layoutGroup = BeatSaberUI::CreateGridLayoutGroup(get_transform());
         layoutGroup->set_constraint(UnityEngine::UI::GridLayoutGroup::Constraint::Flexible);
         layoutGroup->set_cellSize(UnityEngine::Vector2(48.0f, 10.0f));
