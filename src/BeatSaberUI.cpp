@@ -289,11 +289,15 @@ namespace QuestUI::BeatSaberUI {
     
     GridLayoutGroup* CreateGridLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIGridLayoutGroup", il2cpp_utils::StringType::Manual);
-        RectTransform* rectTransform = GameObject::New_ctor(name, typeof(GridLayoutGroup*), typeof(ContentSizeFitter*), typeof(Backgroundable*))->GetComponent<RectTransform*>();
+        GameObject* gameObject = GameObject::New_ctor(name, typeof(GridLayoutGroup*), typeof(ContentSizeFitter*), typeof(Backgroundable*));
+        
+        RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
         rectTransform->SetParent(parent, false);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
+
+        gameObject->AddComponent<LayoutElement*>();
         return rectTransform->GetComponent<GridLayoutGroup*>();
     }
     
