@@ -21,16 +21,16 @@ Il2CppString* QuestUI::IncrementSetting::GetRoundedString() {
 
 void QuestUI::IncrementSetting::DecButtonPressed() {
     CurrentValue -= Increment;
-	UpdateValue();
+    UpdateValue();
 }
 
 void QuestUI::IncrementSetting::IncButtonPressed() {
     CurrentValue += Increment;
-	UpdateValue();
+    UpdateValue();
 }
 
 void QuestUI::IncrementSetting::UpdateValue() {
-	Text->SetText(GetRoundedString());
+    Text->SetText(GetRoundedString());
     if(OnValueChange)
         OnValueChange->Invoke(CurrentValue);
 }
