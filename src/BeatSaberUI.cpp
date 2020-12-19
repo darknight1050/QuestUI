@@ -406,7 +406,19 @@ namespace QuestUI::BeatSaberUI {
         return CreateIncrementSetting(parent, text, decimals, increment, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
     }
 
-    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<float>* onValueChange){
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityAction_1<float>* onValueChange) {
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, minValue, maxValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
+    }
+
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<float>* onValueChange) {
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, false, false, 0.0f, 0.0f, anchoredPosition, onValueChange);
+    }
+
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<float>* onValueChange) {
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, true, true, minValue, maxValue, anchoredPosition, onValueChange);
+    }
+
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<float>* onValueChange) {
         FormattedFloatListSettingsValueController* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](FormattedFloatListSettingsValueController* x){ return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale"; }), parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUIIncDecSetting", il2cpp_utils::StringType::Manual);
         baseSetting->set_name(name);
@@ -418,6 +430,10 @@ namespace QuestUI::BeatSaberUI {
         IncrementSetting* setting = gameObject->AddComponent<IncrementSetting*>();
         setting->Decimals = decimals;
         setting->Increment = increment;
+        setting->HasMin = hasMin;
+        setting->HasMax = hasMax;
+        setting->MinValue = minValue;
+        setting->MaxValue = maxValue;
         setting->CurrentValue = currentValue;
         setting->OnValueChange = onValueChange;
         Transform* child = gameObject->get_transform()->GetChild(1);

@@ -111,6 +111,12 @@ namespace QuestUI::BeatSaberUI {
     
     QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
 
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
+    
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
+    
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
+
     UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
 
     UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);

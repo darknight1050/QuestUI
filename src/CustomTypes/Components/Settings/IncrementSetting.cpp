@@ -30,6 +30,10 @@ void QuestUI::IncrementSetting::IncButtonPressed() {
 }
 
 void QuestUI::IncrementSetting::UpdateValue() {
+    if(HasMin && CurrentValue < MinValue)
+        CurrentValue = MinValue;
+    if(HasMax && CurrentValue > MaxValue)
+        CurrentValue = MaxValue;
     Text->SetText(GetRoundedString());
     if(OnValueChange)
         OnValueChange->Invoke(CurrentValue);

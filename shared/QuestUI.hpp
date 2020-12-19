@@ -1,6 +1,7 @@
 #pragma once
 
 #include "modloader/shared/modloader.hpp"
+#include "beatsaber-hook/shared/utils/il2cpp-utils.hpp"
 
 #include "UnityEngine/UI/Button.hpp"
 #include "HMUI/ViewController.hpp"
