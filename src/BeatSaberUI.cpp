@@ -1,3 +1,4 @@
+#include <fstream>
 #include "BeatSaberUI.hpp"
 #include "InternalBeatSaberUI.hpp"
 
@@ -278,7 +279,7 @@ namespace QuestUI::BeatSaberUI {
         return image;
     }
 
-    Sprite* Base64ToSprite(std::string base64, int width, int height)
+    Sprite* Base64ToSprite(std::string& base64, int width, int height)
     {
         Array<uint8_t>* bytes = System::Convert::FromBase64String(il2cpp_utils::createcsstr(base64));
         Texture2D* texture = Texture2D::New_ctor(width, height, TextureFormat::RGBA32, false, false);
@@ -286,7 +287,18 @@ namespace QuestUI::BeatSaberUI {
             return Sprite::Create(texture, UnityEngine::Rect(0.0f, 0.0f, (float)width, (float)height), UnityEngine::Vector2(0.5f,0.5f), 1024.0f, 1u, SpriteMeshType::FullRect, UnityEngine::Vector4(0.0f, 0.0f, 0.0f, 0.0f), false);
         return nullptr;
     }
-    
+
+    Sprite* FileToSprite(std::string& filePath, int width, int height)
+    {
+        std::ifstream instream(filePath, std::ios::in | std::ios::binary);
+        std::vector<uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
+        Array<uint8_t>* bytes = il2cpp_utils::vectorToArray(data);
+        Texture2D* texture = Texture2D::New_ctor(width, height, TextureFormat::RGBA32, false, false);
+        if (ImageConversion::LoadImage(texture, bytes, false))
+            return Sprite::Create(texture, UnityEngine::Rect(0.0f, 0.0f, (float)width, (float)height), UnityEngine::Vector2(0.5f,0.5f), 1024.0f, 1u, SpriteMeshType::FullRect, UnityEngine::Vector4(0.0f, 0.0f, 0.0f, 0.0f), false);
+        return nullptr;
+    }
+
     GridLayoutGroup* CreateGridLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIGridLayoutGroup", il2cpp_utils::StringType::Manual);
         GameObject* gameObject = GameObject::New_ctor(name, typeof(GridLayoutGroup*), typeof(ContentSizeFitter*), typeof(Backgroundable*));
