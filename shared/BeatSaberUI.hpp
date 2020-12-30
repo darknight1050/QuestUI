@@ -39,6 +39,8 @@ namespace QuestUI::BeatSaberUI {
 
     VRUIControls::PhysicsRaycasterWithCache* GetPhysicsRaycasterWithCache();
 
+    void ClearCache();
+
     HMUI::ViewController* CreateViewController(System::Type* type);
 
     template<class T = HMUI::ViewController*>

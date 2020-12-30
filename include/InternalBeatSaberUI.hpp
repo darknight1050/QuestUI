@@ -2,6 +2,4 @@
 
 namespace QuestUI::BeatSaberUI {
 
-    void clearCache();
-
 }

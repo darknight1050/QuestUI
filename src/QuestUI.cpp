@@ -32,8 +32,13 @@ const Logger& getLogger() {
 
 ModSettingsFlowCoordinator* flowCoordinator = nullptr;
 
+//TODO: Fix naming convension
 HMUI::FlowCoordinator* QuestUI::getModSettingsFlowCoordinator(){
     return flowCoordinator;
+}
+
+int QuestUI::GetModsCount(){
+    return ModSettingsInfos::get().size();
 }
 
 void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
@@ -47,8 +52,8 @@ MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::O
     OptionsViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     if(firstActivation) {
         flowCoordinator = nullptr;
-        BeatSaberUI::clearCache();
-        if(ModSettingsInfos::get().size() > 0) {
+        BeatSaberUI::ClearCache();
+        if(GetModsCount() > 0) {
             UnityEngine::UI::Button* avatarButton = self->settingsButton;
             UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
             button->set_name(il2cpp_utils::createcsstr("Mod Settings"));

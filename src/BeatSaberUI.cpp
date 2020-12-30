@@ -55,6 +55,7 @@ using namespace Zenject;
 
 namespace QuestUI::BeatSaberUI {
     
+    //TODO: Fix naming convension
     MainFlowCoordinator* mainFlowCoordinator = nullptr;
     MainFlowCoordinator* getMainFlowCoordinator() {
         if(!mainFlowCoordinator)
@@ -92,7 +93,7 @@ namespace QuestUI::BeatSaberUI {
         return diContainer;
     }
 
-    void clearCache() {
+    void ClearCache() {
         mainFlowCoordinator = nullptr;
         mainTextFont = nullptr;
         editIcon = nullptr;
