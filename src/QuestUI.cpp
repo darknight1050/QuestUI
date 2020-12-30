@@ -9,15 +9,17 @@
 #include "CustomTypes/Components/ScrollViewContent.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
-#include "HMUI/ViewController_AnimationDirection.hpp"
 
 #include "BeatSaberUI.hpp"
 #include "InternalBeatSaberUI.hpp"
+#include "Sprites/ModSettingsButton.hpp"
 
 #include "GlobalNamespace/MainMenuViewController.hpp"
-#include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
+#include "Polyglot/LocalizedTextMeshProUGUI.hpp"
+#include "HMUI/ViewController_AnimationDirection.hpp"
+#include "HMUI/ButtonSpriteSwap.hpp"
 
 #include "customlogger.hpp"
 
@@ -58,6 +60,11 @@ MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::O
             UnityEngine::Object::Destroy(button->GetComponentInChildren<Polyglot::LocalizedTextMeshProUGUI*>());
 
             button->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr("Mod Settings"));
+            HMUI::ButtonSpriteSwap* spriteSwap = button->get_gameObject()->GetComponent<HMUI::ButtonSpriteSwap*>();
+            spriteSwap->normalStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Normal, 256, 256);
+            spriteSwap->disabledStateSprite = spriteSwap->normalStateSprite;
+            spriteSwap->highlightStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Highlight, 256, 256);
+            spriteSwap->pressedStateSprite = spriteSwap->highlightStateSprite;
         }
     }
 }

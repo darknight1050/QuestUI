@@ -87,7 +87,9 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::Image* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
-    UnityEngine::Sprite* Base64ToSprite(std::string base64, int width, int height);
+    UnityEngine::Sprite* Base64ToSprite(std::string& base64, int width, int height);   
+
+    UnityEngine::Sprite* FileToSprite(std::string& filePath, int width, int height);
 
     UnityEngine::UI::GridLayoutGroup* CreateGridLayoutGroup(UnityEngine::Transform* parent);
 
