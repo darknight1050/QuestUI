@@ -102,3 +102,17 @@ void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::strin
     info.didActivateEvent = didActivateEvent;
     ModSettingsInfos::add(info);
 }
+
+//TODO: Remove
+void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type) {
+    ModSettingsInfos::ModSettingsInfo info;
+    info.modInfo = modInfo;
+    info.showModInfo = showModInfo;
+    info.title = title;
+    info.type = type;
+    info.il2cpp_type = il2cpp_type;
+    info.viewController = nullptr;
+    info.flowCoordinator = nullptr;
+    info.didActivateEvent = nullptr;
+    ModSettingsInfos::add(info);
+}
