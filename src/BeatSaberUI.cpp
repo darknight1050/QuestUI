@@ -249,6 +249,8 @@ namespace QuestUI::BeatSaberUI {
     Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityAction* onClick) {
         Button* button = CreateUIButton(parent, buttonText, buttonTemplate, anchoredPosition, onClick);
         button->GetComponent<RectTransform*>()->set_sizeDelta(sizeDelta);
+        button->GetComponent<LayoutElement*>()->set_preferredWidth(sizeDelta.x);
+        button->GetComponent<LayoutElement*>()->set_preferredHeight(sizeDelta.y);
         return button;
     }
 

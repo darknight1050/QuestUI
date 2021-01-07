@@ -1,11 +1,12 @@
-#include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ViewControllers/ModSettingsButtonsViewController.hpp"
+#include "CustomTypes/Components/ExternalComponents.hpp"
+#include "CustomTypes/Components/Backgroundable.hpp"
 #include "ModSettingsButtonClickData.hpp"
 
 #include "ModSettingsInfos.hpp"
 
 #include "UnityEngine/TextAnchor.hpp"
-#include "UnityEngine/RectOffset.hpp"
+#include "UnityEngine/RectTransform.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 
 #include "HMUI/Touchable.hpp"
@@ -24,17 +25,32 @@ void OnModSettingsButtonClick(QuestUI::CustomDataType* data, UnityEngine::UI::Bu
         clickData.viewController->openModSettings->Invoke(data);
 }
 
+UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent){
+    UnityEngine::UI::HorizontalLayoutGroup* layoutGroup = QuestUI::BeatSaberUI::CreateHorizontalLayoutGroup(parent);
+    layoutGroup->set_childForceExpandHeight(false);
+    layoutGroup->set_childForceExpandWidth(false);
+    layoutGroup->set_childControlHeight(true);
+    layoutGroup->set_childControlWidth(true);
+    layoutGroup->set_childAlignment(UnityEngine::TextAnchor::MiddleLeft);
+    layoutGroup->set_spacing(3.0f);
+    return layoutGroup;
+}
+
 void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     if(addedToHierarchy && firstActivation) {
         get_gameObject()->AddComponent<HMUI::Touchable*>();
-        UnityEngine::UI::GridLayoutGroup* layoutGroup = BeatSaberUI::CreateGridLayoutGroup(get_transform());
-        layoutGroup->set_constraint(UnityEngine::UI::GridLayoutGroup::Constraint::Flexible);
-        layoutGroup->set_cellSize(UnityEngine::Vector2(48.0f, 10.0f));
-        layoutGroup->set_spacing(UnityEngine::Vector2(3.0f, 3.0f));
-        layoutGroup->set_childAlignment(UnityEngine::TextAnchor::MiddleCenter);
-        UnityEngine::RectTransform* rectTransform = layoutGroup->GetComponent<UnityEngine::RectTransform*>();
-        for(ModSettingsInfos::ModSettingsInfo& info : ModSettingsInfos::get()) {
-            BeatSaberUI::CreateUIButton(rectTransform, info.modInfo.id, il2cpp_utils::MakeDelegate<UnityEngine::Events::UnityAction*>(classof(UnityEngine::Events::UnityAction*), CRASH_UNLESS(il2cpp_utils::New<CustomDataType*>(classof(CustomDataType*)))->SetData(ModSettingsButtonClickData{this, info}), OnModSettingsButtonClick));
+        UnityEngine::GameObject* scrollView = BeatSaberUI::CreateScrollView(get_transform());
+        ExternalComponents* externalComponents = scrollView->GetComponent<ExternalComponents*>();
+        UnityEngine::RectTransform* scrollTransform = externalComponents->Get<UnityEngine::RectTransform*>();
+        scrollTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
+        scrollTransform->set_sizeDelta(UnityEngine::Vector2(-28.0f, 0.0f));
+        UnityEngine::UI::HorizontalLayoutGroup* layoutGroup = nullptr;
+        std::vector<ModSettingsInfos::ModSettingsInfo>& infos = ModSettingsInfos::get();
+        for(int i = 0; i < infos.size(); i++) {
+            ModSettingsInfos::ModSettingsInfo& info = infos[i];
+            if(i % 3 == 0)
+                layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
+            BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.modInfo.id, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(36.0f, 8.0f), il2cpp_utils::MakeDelegate<UnityEngine::Events::UnityAction*>(classof(UnityEngine::Events::UnityAction*), CRASH_UNLESS(il2cpp_utils::New<CustomDataType*>(classof(CustomDataType*)))->SetData(ModSettingsButtonClickData{this, info}), OnModSettingsButtonClick));
         }
     }
 }
