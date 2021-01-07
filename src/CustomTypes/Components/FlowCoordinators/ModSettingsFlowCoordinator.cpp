@@ -11,6 +11,7 @@
 #include "UnityEngine/UI/ContentSizeFitter.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
 #include "HMUI/ViewController_AnimationType.hpp"
+#include "HMUI/ViewController_DidActivateDelegate.hpp"
 #include "System/Action_1.hpp"
 
 #include "BeatSaberUI.hpp"
@@ -53,6 +54,9 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
                         TextMeshProUGUI* modInfoText = BeatSaberUI::CreateText(layout->get_transform(), info.modInfo.id + "|v" + info.modInfo.version);
                         modInfoText->set_alignment(TextAlignmentOptions::Center);
                         modInfoText->set_fontSize(4.8f);
+                    }
+                    if(info.didActivateEvent) {
+                        info.viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(classof(HMUI::ViewController::DidActivateDelegate*), info.viewController, info.didActivateEvent));
                     }
                     break;
                 }

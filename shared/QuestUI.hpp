@@ -22,14 +22,20 @@ namespace QuestUI {
                 FLOW_COORDINATOR,
             };
 
+            typedef void(*DidActivateEvent)(HMUI::ViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
+
             template<class T = HMUI::ViewController*>
-            static void RegisterModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true){
-                RegisterModSettings(modInfo, showModInfo, title, typeof(T), Type::VIEW_CONTROLLER);
+            static void RegisterModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true, DidActivateEvent didActivateEvent = nullptr){
+                RegisterModSettings(modInfo, showModInfo, title, typeof(T), Type::VIEW_CONTROLLER, didActivateEvent);
+            }
+            template<class T = HMUI::ViewController*>
+            static void RegisterModSettingsViewController(ModInfo modInfo, std::string title, DidActivateEvent didActivateEvent){
+                RegisterModSettingsViewController<T>(modInfo, title, true, didActivateEvent);
             }
 
             template<class T = HMUI::ViewController*>
-            static void RegisterModSettingsViewController(ModInfo modInfo) {
-                RegisterModSettingsViewController<T>(modInfo, modInfo.id);
+            static void RegisterModSettingsViewController(ModInfo modInfo, DidActivateEvent didActivateEvent = nullptr) {
+                RegisterModSettingsViewController<T>(modInfo, modInfo.id, true, didActivateEvent);
             }
             
             template<class T = HMUI::FlowCoordinator*>
@@ -38,7 +44,7 @@ namespace QuestUI {
             }
 
         private:
-            static void RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type);
+            static void RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type, DidActivateEvent didActivateEvent = nullptr);
 
     };
 
