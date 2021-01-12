@@ -55,23 +55,22 @@ using namespace Zenject;
 
 namespace QuestUI::BeatSaberUI {
     
-    //TODO: Fix naming convension
     MainFlowCoordinator* mainFlowCoordinator = nullptr;
-    MainFlowCoordinator* getMainFlowCoordinator() {
+    MainFlowCoordinator* GetMainFlowCoordinator() {
         if(!mainFlowCoordinator)
             mainFlowCoordinator = Object::FindObjectOfType<MainFlowCoordinator*>();
         return mainFlowCoordinator;
     }
 
     TMP_FontAsset* mainTextFont = nullptr;
-    TMP_FontAsset* getMainTextFont() {
+    TMP_FontAsset* GetMainTextFont() {
         if(!mainTextFont)
             mainTextFont = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TMP_FontAsset*>(), [](TMP_FontAsset* x) { return to_utf8(csstrtostr(x->get_name())) == "Teko-Medium SDF No Glow"; });
         return mainTextFont;
     }
 
     Sprite* editIcon = nullptr;
-    Sprite* getEditIcon() {
+    Sprite* GetEditIcon() {
         if(!editIcon)
             editIcon = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Image*>(), [](Image* x) { return x->get_sprite() && to_utf8(csstrtostr(x->get_sprite()->get_name())) == "EditIcon"; })->get_sprite();
         return editIcon;
@@ -133,7 +132,7 @@ namespace QuestUI::BeatSaberUI {
     FlowCoordinator* CreateFlowCoordinator(System::Type* type) {
         static auto name = il2cpp_utils::createcsstr("QuestUIFlowCoordinator", il2cpp_utils::StringType::Manual);
         FlowCoordinator* flowCoordinator = (FlowCoordinator*)GameObject::New_ctor(name)->AddComponent(type);
-        flowCoordinator->baseInputModule = getMainFlowCoordinator()->baseInputModule;
+        flowCoordinator->baseInputModule = GetMainFlowCoordinator()->baseInputModule;
         return flowCoordinator;
     }
 
@@ -161,7 +160,7 @@ namespace QuestUI::BeatSaberUI {
         CurvedTextMeshPro* textMesh = gameObj->AddComponent<CurvedTextMeshPro*>();
         RectTransform* rectTransform = textMesh->get_rectTransform();
         rectTransform->SetParent(parent, false);
-        textMesh->set_font(getMainTextFont());
+        textMesh->set_font(GetMainTextFont());
         textMesh->set_text(il2cpp_utils::createcsstr(italic ? ("<i>" + text + "</i>") : text));
         textMesh->set_fontSize(4.0f);
         textMesh->set_color(UnityEngine::Color::get_white());
@@ -304,8 +303,11 @@ namespace QuestUI::BeatSaberUI {
 
     GridLayoutGroup* CreateGridLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIGridLayoutGroup", il2cpp_utils::StringType::Manual);
-        GameObject* gameObject = GameObject::New_ctor(name, typeof(GridLayoutGroup*), typeof(ContentSizeFitter*), typeof(Backgroundable*));
-        
+        GameObject* gameObject = GameObject::New_ctor(name);
+        gameObject->AddComponent<GridLayoutGroup*>();
+        gameObject->AddComponent<ContentSizeFitter*>();
+        gameObject->AddComponent<Backgroundable*>();
+
         RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
         rectTransform->SetParent(parent, false);
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
@@ -318,8 +320,10 @@ namespace QuestUI::BeatSaberUI {
     
     HorizontalLayoutGroup* CreateHorizontalLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup", il2cpp_utils::StringType::Manual);
-        GameObject* gameObject = GameObject::New_ctor(name, typeof(HorizontalLayoutGroup*), typeof(Backgroundable*));
-        
+        GameObject* gameObject = GameObject::New_ctor(name);
+        gameObject->AddComponent<HorizontalLayoutGroup*>();
+        gameObject->AddComponent<Backgroundable*>();
+
         ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<ContentSizeFitter*>();
         contentSizeFitter->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
 
@@ -335,8 +339,10 @@ namespace QuestUI::BeatSaberUI {
     
     VerticalLayoutGroup* CreateVerticalLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup", il2cpp_utils::StringType::Manual);
-        GameObject* gameObject = GameObject::New_ctor(name, typeof(VerticalLayoutGroup*), typeof(Backgroundable*));
-        
+        GameObject* gameObject = GameObject::New_ctor(name);
+        gameObject->AddComponent<VerticalLayoutGroup*>();
+        gameObject->AddComponent<Backgroundable*>();
+
         ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<ContentSizeFitter*>();
         contentSizeFitter->set_horizontalFit(ContentSizeFitter::FitMode::PreferredSize);
 

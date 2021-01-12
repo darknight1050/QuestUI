@@ -13,7 +13,7 @@ namespace QuestUI {
 
     int GetModsCount();
 
-    HMUI::FlowCoordinator* getModSettingsFlowCoordinator();
+    HMUI::FlowCoordinator* GetModSettingsFlowCoordinator();
 
     class Register {
         public:
@@ -26,7 +26,7 @@ namespace QuestUI {
 
             template<class T = HMUI::ViewController*>
             static void RegisterModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true, DidActivateEvent didActivateEvent = nullptr){
-                RegisterModSettings(modInfo, showModInfo, title, typeof(T), Type::VIEW_CONTROLLER, didActivateEvent);
+                RegisterModSettings(modInfo, showModInfo, title, csTypeOf(T), Type::VIEW_CONTROLLER, didActivateEvent);
             }
             template<class T = HMUI::ViewController*>
             static void RegisterModSettingsViewController(ModInfo modInfo, std::string title, DidActivateEvent didActivateEvent){
@@ -40,13 +40,11 @@ namespace QuestUI {
             
             template<class T = HMUI::FlowCoordinator*>
             static void RegisterModSettingsFlowCoordinator(ModInfo modInfo) {
-                RegisterModSettings(modInfo, false, modInfo.id, typeof(T), Type::FLOW_COORDINATOR);
+                RegisterModSettings(modInfo, false, modInfo.id, csTypeOf(T), Type::FLOW_COORDINATOR);
             }
 
         private:
-            static void RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type, DidActivateEvent didActivateEvent);
-            
-            static void RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type);
+            static void RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type, DidActivateEvent didActivateEvent = nullptr);
 
     };
 

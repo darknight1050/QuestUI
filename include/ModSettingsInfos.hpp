@@ -11,7 +11,7 @@ namespace QuestUI::ModSettingsInfos {
         bool showModInfo;
         std::string title;
         Register::Type type;
-        Il2CppReflectionType* il2cpp_type;
+        System::Type* il2cpp_type;
         HMUI::ViewController* viewController;
         HMUI::FlowCoordinator* flowCoordinator;
         Register::DidActivateEvent didActivateEvent;

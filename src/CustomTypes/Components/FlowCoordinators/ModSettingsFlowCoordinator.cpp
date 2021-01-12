@@ -85,6 +85,6 @@ void QuestUI::ModSettingsFlowCoordinator::BackButtonWasPressed(ViewController* t
         ReplaceTopViewController(ModSettingsButtonsViewController, this, this, nullptr, ViewController::AnimationType::Out, ViewController::AnimationDirection::Horizontal);
         ActiveViewController = ModSettingsButtonsViewController;
     } else {
-        BeatSaberUI::getMainFlowCoordinator()->DismissFlowCoordinator(this, ViewController::AnimationDirection::Horizontal, nullptr, false);
+        BeatSaberUI::GetMainFlowCoordinator()->DismissFlowCoordinator(this, ViewController::AnimationDirection::Horizontal, nullptr, false);
     }
 }

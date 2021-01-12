@@ -31,11 +31,11 @@
 
 namespace QuestUI::BeatSaberUI {
 
-    GlobalNamespace::MainFlowCoordinator* getMainFlowCoordinator();
+    GlobalNamespace::MainFlowCoordinator* GetMainFlowCoordinator();
 
-    TMPro::TMP_FontAsset* getMainTextFont();
+    TMPro::TMP_FontAsset* GetMainTextFont();
 
-    UnityEngine::Sprite* getEditIcon();
+    UnityEngine::Sprite* GetEditIcon();
 
     VRUIControls::PhysicsRaycasterWithCache* GetPhysicsRaycasterWithCache();
 
@@ -45,14 +45,14 @@ namespace QuestUI::BeatSaberUI {
 
     template<class T = HMUI::ViewController*>
     T CreateViewController() {
-        return (T)CreateViewController(typeof(T));
+        return (T)CreateViewController(reinterpret_cast<System::Type*>(csTypeOf(T)));
     }
 
     HMUI::FlowCoordinator* CreateFlowCoordinator(System::Type* type);
 
     template<class T = HMUI::FlowCoordinator*>
     T CreateFlowCoordinator() {
-        return (T)CreateFlowCoordinator(typeof(T));
+        return (T)CreateFlowCoordinator(reinterpret_cast<System::Type*>(csTypeOf(T)));
     }
 
     TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition);
