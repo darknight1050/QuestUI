@@ -14,7 +14,7 @@ QuestUI::CustomDataType* QuestUI::CustomDataType::SetDataPointer(void* data) {
 }
 
 void QuestUI::CustomDataType::Finalize(){
-    if(this->allocated){
+    if(this->allocated && this->data){
         free(this->data);
         this->data = nullptr;
         this->allocated = false;

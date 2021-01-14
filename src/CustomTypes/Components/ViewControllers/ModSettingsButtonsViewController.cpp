@@ -50,7 +50,9 @@ void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation
             ModSettingsInfos::ModSettingsInfo& info = infos[i];
             if(i % 3 == 0)
                 layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
-            BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.modInfo.id, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(36.0f, 8.0f), il2cpp_utils::MakeDelegate<UnityEngine::Events::UnityAction*>(classof(UnityEngine::Events::UnityAction*), CRASH_UNLESS(il2cpp_utils::New<CustomDataType*>(classof(CustomDataType*)))->SetData(ModSettingsButtonClickData{this, info}), OnModSettingsButtonClick));
+            CustomDataType* data = CRASH_UNLESS(il2cpp_utils::New<CustomDataType*>(classof(CustomDataType*)))->SetData(ModSettingsButtonClickData{this, info});
+            UnityEngine::Events::UnityAction* onClick = il2cpp_utils::MakeDelegate<UnityEngine::Events::UnityAction*>(classof(UnityEngine::Events::UnityAction*), data, OnModSettingsButtonClick);
+            BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.modInfo.id, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(36.0f, 8.0f), onClick);
         }
     }
 }
