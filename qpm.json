@@ -27,7 +27,7 @@
     },
     {
       "id": "custom-types",
-      "versionRange": "^0.3.5",
+      "versionRange": "^0.4.0",
       "additionalData": {}
     }
   ],
