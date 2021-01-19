@@ -80,13 +80,15 @@ void QuestUI::Init() {
     if(!init) {
         init = true;
         il2cpp_functions::Init();
-        custom_types::Register::RegisterType<ExternalComponents>();
-        custom_types::Register::RegisterType<CustomDataType>();
-        custom_types::Register::RegisterType<Backgroundable>();
-        custom_types::Register::RegisterType<ScrollViewContent>();
-        custom_types::Register::RegisterType<IncrementSetting>();
-        custom_types::Register::RegisterType<ModSettingsButtonsViewController>();
-        custom_types::Register::RegisterType<ModSettingsFlowCoordinator>();
+        custom_types::Register::RegisterTypes<
+            ExternalComponents, 
+            CustomDataType, 
+            Backgroundable, 
+            ScrollViewContent, 
+            IncrementSetting, 
+            ModSettingsButtonsViewController, 
+            ModSettingsFlowCoordinator
+            >();
         INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
     }
 }
