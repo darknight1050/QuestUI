@@ -19,11 +19,11 @@ TARGET_ARCH_ABI := $(APP_ABI)
 include $(CLEAR_VARS)
 LOCAL_MODULE := hook
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
-# Creating prebuilt for dependency: codegen - version: 0.5.3
+# Creating prebuilt for dependency: codegen - version: 0.6.0
 include $(CLEAR_VARS)
-LOCAL_MODULE := codegen_0_5_3
+LOCAL_MODULE := codegen_0_6_0
 LOCAL_EXPORT_C_INCLUDES := extern/codegen
-LOCAL_SRC_FILES := extern/libcodegen_0_5_3.so
+LOCAL_SRC_FILES := extern/libcodegen_0_6_0.so
 include $(PREBUILT_SHARED_LIBRARY)
 # Creating prebuilt for dependency: custom-types - version: 0.4.2
 include $(CLEAR_VARS)
@@ -50,7 +50,7 @@ LOCAL_SRC_FILES += $(call rwildcard,src/**,*.cpp)
 LOCAL_SRC_FILES += $(call rwildcard,extern/beatsaber-hook/src/inline-hook,*.cpp)
 LOCAL_SRC_FILES += $(call rwildcard,extern/beatsaber-hook/src/inline-hook,*.c)
 LOCAL_SHARED_LIBRARIES += modloader
-LOCAL_SHARED_LIBRARIES += codegen_0_5_3
+LOCAL_SHARED_LIBRARIES += codegen_0_6_0
 LOCAL_SHARED_LIBRARIES += custom-types
 LOCAL_SHARED_LIBRARIES += beatsaber-hook_1_0_9
 LOCAL_LDLIBS += -llog 
