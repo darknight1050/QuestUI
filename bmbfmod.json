@@ -1,0 +1,32 @@
+{
+  "id": "questui",
+  "name": "QuestUI",
+  "version": "0.4.1",
+  "author": "darknight1050",
+  "description": [
+    "A library used to add Mod Settings and other UI."
+  ]
+  "category": "Other",
+  "gameVersion": "1.13.2",
+  "platform": "Quest",
+  "components": [
+    {
+      "type": "HookModLibrary",
+      "installAction": {
+        "installLibraryFile": "libbeatsaber-hook_1_0_10.so"
+      }
+    },
+    {
+      "type": "HookModLibrary",
+      "installAction": {
+        "installLibraryFile": "libcustom-types.so"
+      }
+    },
+    {
+      "type": "HookModLibrary",
+      "installAction": {
+        "installLibraryFile": "libquestui.so"
+      }
+    }
+  ]
+}
