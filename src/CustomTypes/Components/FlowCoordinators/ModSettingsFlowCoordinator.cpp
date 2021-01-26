@@ -34,7 +34,8 @@ void OnOpenModSettings(ModSettingsFlowCoordinator* self, CustomDataType* data) {
                 info.viewController = BeatSaberUI::CreateViewController(info.il2cpp_type);
                 if(info.showModInfo) {
                     VerticalLayoutGroup* layout = BeatSaberUI::CreateVerticalLayoutGroup(info.viewController->get_rectTransform());
-                    layout->get_rectTransform()->set_anchoredPosition(UnityEngine::Vector2(0.0f, -48.0f));
+                    layout->get_rectTransform()->set_position(UnityEngine::Vector3(0.0f, -39.0f, -24.0f));
+                    layout->get_rectTransform()->set_eulerAngles(UnityEngine::Vector3(60.0f, 0.0f, 0.0f));
                     GameObject* layoutGameObject = layout->get_gameObject();
                     layoutGameObject->GetComponent<ContentSizeFitter*>()->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
                     layoutGameObject->AddComponent<Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
