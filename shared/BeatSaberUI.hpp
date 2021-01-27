@@ -41,6 +41,8 @@ namespace QuestUI::BeatSaberUI {
 
     void ClearCache();
 
+    UnityEngine::GameObject* CreateCanvas();
+
     HMUI::ViewController* CreateViewController(System::Type* type);
 
     template<class T = HMUI::ViewController*>

@@ -100,6 +100,27 @@ namespace QuestUI::BeatSaberUI {
         diContainer = nullptr;
     }
 
+    GameObject* CreateCanvas() {
+        static auto name = il2cpp_utils::createcsstr("QuestUICanvas", il2cpp_utils::StringType::Manual);
+        GameObject* go = GameObject::New_ctor(name);
+        go->set_layer(5);
+        Canvas* cv = go->AddComponent<Canvas*>();
+        cv->set_additionalShaderChannels(AdditionalCanvasShaderChannels::TexCoord1 | AdditionalCanvasShaderChannels::TexCoord2);
+        cv->set_sortingOrder(4);
+        
+        CanvasScaler* scaler = go->AddComponent<CanvasScaler*>();
+        scaler->set_scaleFactor(1.0f);
+        scaler->set_dynamicPixelsPerUnit(3.44f);
+        scaler->set_referencePixelsPerUnit(10.0f);
+        
+        go->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+
+        RectTransform* rectTransform = go->GetComponent<RectTransform*>();
+        float scale = 1.5f*0.02f; //Wrapper->ScreenSystem: 1.5 Wrapper->ScreenSystem->ScreenContainer: 0.02
+        rectTransform->set_localScale(UnityEngine::Vector3(scale, scale, scale));
+        return go;
+    }
+
     ViewController* CreateViewController(System::Type* type) {
         static auto name = il2cpp_utils::createcsstr("QuestUIViewController", il2cpp_utils::StringType::Manual);
         GameObject* go = GameObject::New_ctor(name);
