@@ -22,6 +22,7 @@
 #include "UnityEngine/ImageConversion.hpp"
 #include "UnityEngine/Material.hpp"
 #include "UnityEngine/UI/ScrollRect.hpp"
+#include "UnityEngine/UI/CanvasScaler.hpp"
 #include "UnityEngine/Events/UnityAction_1.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "HMUI/Touchable.hpp"
