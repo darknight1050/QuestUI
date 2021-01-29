@@ -99,6 +99,8 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::Sprite* FileToSprite(std::string& filePath);
 
+    UnityEngine::Sprite* ArrayToSprite(Array<uint8_t>* bytes);
+
     UnityEngine::UI::GridLayoutGroup* CreateGridLayoutGroup(UnityEngine::Transform* parent);
 
     UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent);
