@@ -305,19 +305,31 @@ namespace QuestUI::BeatSaberUI {
 
     Sprite* Base64ToSprite(std::string& base64, int width, int height)
     {
+        return Base64ToSprite(base64);
+    }
+
+    Sprite* Base64ToSprite(std::string& base64)
+    {
         Array<uint8_t>* bytes = System::Convert::FromBase64String(il2cpp_utils::createcsstr(base64));
-        Texture2D* texture = Texture2D::New_ctor(width, height, TextureFormat::RGBA32, false, false);
-        if(ImageConversion::LoadImage(texture, bytes, false))
-            return Sprite::Create(texture, UnityEngine::Rect(0.0f, 0.0f, (float)width, (float)height), UnityEngine::Vector2(0.5f,0.5f), 1024.0f, 1u, SpriteMeshType::FullRect, UnityEngine::Vector4(0.0f, 0.0f, 0.0f, 0.0f), false);
-        return nullptr;
+        return  ArrayToSprite(bytes);
     }
 
     Sprite* FileToSprite(std::string& filePath, int width, int height)
     {
+        return FileToSprite(filePath);
+    }
+
+    Sprite* FileToSprite(std::string& filePath)
+    {
         std::ifstream instream(filePath, std::ios::in | std::ios::binary);
         std::vector<uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
         Array<uint8_t>* bytes = il2cpp_utils::vectorToArray(data);
-        Texture2D* texture = Texture2D::New_ctor(width, height, TextureFormat::RGBA32, false, false);
+        return ArrayToSprite(bytes);
+    }
+
+    Sprite* ArrayToSprite(Array<uint8_t>* bytes)
+    {
+        Texture2D* texture = Texture2D::New_ctor(0, 0, TextureFormat::RGBA32, false, false);
         if (ImageConversion::LoadImage(texture, bytes, false))
             return Sprite::Create(texture, UnityEngine::Rect(0.0f, 0.0f, (float)texture->get_width(), (float)texture->get_height()), UnityEngine::Vector2(0.5f,0.5f), 1024.0f, 1u, SpriteMeshType::FullRect, UnityEngine::Vector4(0.0f, 0.0f, 0.0f, 0.0f), false);
         return nullptr;
