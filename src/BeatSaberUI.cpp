@@ -683,15 +683,16 @@ namespace QuestUI::BeatSaberUI {
         placeholder->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(settingsName));
         fieldView->SetText(il2cpp_utils::createcsstr(currentValue));
         fieldView->onValueChanged = InputFieldView::InputFieldChanged::New_ctor();
-        if(onValueChange)
+        if(onValueChange) {
             fieldView->onValueChanged->AddListener(il2cpp_utils::MakeDelegate<UnityAction_1<InputFieldView*>*>(classof(UnityAction_1<InputFieldView*>*), onValueChange, 
-            +[](UnityAction_1<Il2CppString*>* onValueChange, InputFieldView* fieldView) { 
-                onValueChange->Invoke(fieldView->get_text()); 
-            }));
+                +[](UnityAction_1<Il2CppString*>* onValueChange, InputFieldView* fieldView) { 
+                    onValueChange->Invoke(fieldView->get_text()); 
+                }));
+        }
         return fieldView;
     }
 
-    SimpleTextDropdown* CreateDropdown(Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, UnityAction_1<Il2CppString*>* onValueChange) {
+    SimpleTextDropdown* CreateDropdown(Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, std::function<void(std::string)> onValueChange) {
         GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUIDropdownList", il2cpp_utils::StringType::Manual);
         gameObj->set_name(name);
@@ -720,11 +721,13 @@ namespace QuestUI::BeatSaberUI {
         dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
         dropdown->SelectCellWithIdx(selectedIndex);
 
-        using EventType = System::Action_2<DropdownWithTableView*, int>*;
-        dropdown->add_didSelectCellWithIdxEvent(il2cpp_utils::MakeDelegate<EventType>(classof(EventType), onValueChange, 
-            +[](UnityAction_1<Il2CppString*>* onValueChange, SimpleTextDropdown* dropdownWithTableView, int index) { 
-                onValueChange->Invoke(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index));
-            }));
+        if(onValueChange){
+            using EventType = System::Action_2<DropdownWithTableView*, int>*;
+            dropdown->add_didSelectCellWithIdxEvent(il2cpp_utils::MakeDelegate<EventType>(classof(EventType), 
+                (std::function<void(SimpleTextDropdown*, int)>)[onValueChange](SimpleTextDropdown* dropdownWithTableView, int index){
+                    onValueChange(to_utf8(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index))));
+                }));
+        }
 
         dropdown->get_gameObject()->SetActive(true);
         gameObj->SetActive(true);
