@@ -523,8 +523,8 @@ namespace QuestUI::BeatSaberUI {
         Button* incButton = ArrayUtil::Last(child->GetComponentsInChildren<Button*>());
         decButton->set_interactable(true);
         incButton->set_interactable(true);
-        decButton->get_onClick()->AddListener(il2cpp_utils::MakeDelegate<UnityAction*>(classof(UnityAction*), setting, +[](IncrementSetting* setting){ setting->DecButtonPressed(); }));
-        incButton->get_onClick()->AddListener(il2cpp_utils::MakeDelegate<UnityAction*>(classof(UnityAction*), setting, +[](IncrementSetting* setting){ setting->IncButtonPressed(); }));
+        decButton->get_onClick()->AddListener(il2cpp_utils::MakeDelegate<UnityAction*>(classof(UnityAction*), (std::function<void()>)[setting](){ setting->DecButtonPressed(); }));
+        incButton->get_onClick()->AddListener(il2cpp_utils::MakeDelegate<UnityAction*>(classof(UnityAction*), (std::function<void()>)[setting](){ setting->IncButtonPressed(); }));
         
         child->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(40, 0));
         TextMeshProUGUI* textMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
@@ -684,9 +684,10 @@ namespace QuestUI::BeatSaberUI {
         fieldView->SetText(il2cpp_utils::createcsstr(currentValue));
         fieldView->onValueChanged = InputFieldView::InputFieldChanged::New_ctor();
         if(onValueChange) {
-            fieldView->onValueChanged->AddListener(il2cpp_utils::MakeDelegate<UnityAction_1<InputFieldView*>*>(classof(UnityAction_1<InputFieldView*>*), onValueChange, 
-                +[](UnityAction_1<Il2CppString*>* onValueChange, InputFieldView* fieldView) { 
-                    onValueChange->Invoke(fieldView->get_text()); 
+            using DelegateType = UnityAction_1<InputFieldView*>*;
+            fieldView->onValueChanged->AddListener(il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), 
+                (std::function<void(InputFieldView*)>)[onValueChange](InputFieldView* fieldView){
+                    onValueChange->Invoke(fieldView->get_text());
                 }));
         }
         return fieldView;
@@ -722,8 +723,8 @@ namespace QuestUI::BeatSaberUI {
         dropdown->SelectCellWithIdx(selectedIndex);
 
         if(onValueChange){
-            using EventType = System::Action_2<DropdownWithTableView*, int>*;
-            dropdown->add_didSelectCellWithIdxEvent(il2cpp_utils::MakeDelegate<EventType>(classof(EventType), 
+            using DelegateType = System::Action_2<DropdownWithTableView*, int>*;
+            dropdown->add_didSelectCellWithIdxEvent(il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), 
                 (std::function<void(SimpleTextDropdown*, int)>)[onValueChange](SimpleTextDropdown* dropdownWithTableView, int index){
                     onValueChange(to_utf8(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index))));
                 }));
@@ -734,5 +735,83 @@ namespace QuestUI::BeatSaberUI {
         return dropdown;
     }
 
+#pragma region stdfuncWrappers
+    #define MD(DelegateType, varName) (varName == nullptr ? nullptr : il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), varName))
+    #define MDS(DelegateType, varName) (varName == nullptr ? nullptr : il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), (std::function<void(Il2CppString*)>)[varName](Il2CppString* value){ varName(to_utf8(csstrtostr(value))); }))
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, std::function<void()> onClick) {
+        return CreateUIButton(parent, buttonText, buttonTemplate, MD(UnityAction*, onClick));
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick) {
+        return CreateUIButton(parent, buttonText, buttonTemplate, anchoredPosition, MD(UnityAction*, onClick));
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick) {
+        return CreateUIButton(parent, buttonText, buttonTemplate, anchoredPosition, sizeDelta, MD(UnityAction*, onClick));
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, std::function<void()> onClick) {
+        return CreateUIButton(parent, buttonText, MD(UnityAction*, onClick));
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick) {
+        return CreateUIButton(parent, buttonText, anchoredPosition, MD(UnityAction*, onClick));
+    }
+
+    Button* CreateUIButton(Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick) {
+        return CreateUIButton(parent, buttonText, anchoredPosition, sizeDelta, MD(UnityAction*, onClick));
+    }
+
+    Toggle* CreateToggle(Transform* parent, std::string text, std::function<void(bool)> onValueChange)
+    {
+        return CreateToggle(parent, text, MD(UnityAction_1<bool>*, onValueChange));
+    }
+
+    Toggle* CreateToggle(Transform* parent, std::string text, bool currentValue, std::function<void(bool)> onValueChange)
+    {
+        return CreateToggle(parent, text, currentValue, MD(UnityAction_1<bool>*, onValueChange));
+    }
+
+    Toggle* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onValueChange)
+    {
+        return CreateToggle(parent, text, anchoredPosition, MD(UnityAction_1<bool>*, onValueChange));
+    }
+    
+    Toggle* CreateToggle(Transform* parent, std::string text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onValueChange)
+    {
+        return CreateToggle(parent, text, currentValue, anchoredPosition, MD(UnityAction_1<bool>*, onValueChange));
+    }
+
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange) {
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, MD(UnityAction_1<float>*, onValueChange));
+    }
+
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, std::function<void(float)> onValueChange) {
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, minValue, maxValue, MD(UnityAction_1<float>*, onValueChange));
+    }
+
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, anchoredPosition, MD(UnityAction_1<float>*, onValueChange));
+    }
+
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, minValue, maxValue, anchoredPosition, MD(UnityAction_1<float>*, onValueChange));
+    }
+
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
+        return CreateIncrementSetting(parent, text, decimals, increment, currentValue, hasMin, hasMax, minValue, maxValue, anchoredPosition, MD(UnityAction_1<float>*, onValueChange));
+    }
+
+    InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, std::function<void(std::string)> onValueChange) {
+        return CreateStringSetting(parent, settingsName, currentValue, MDS(UnityAction_1<Il2CppString*>*, onValueChange));
+    }
+
+    InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string)> onValueChange) {
+        return CreateStringSetting(parent, settingsName, currentValue, anchoredPosition, MDS(UnityAction_1<Il2CppString*>*, onValueChange));
+    }
+
+    #undef MD
+#pragma endregion
 
 }
