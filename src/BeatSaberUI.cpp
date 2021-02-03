@@ -311,7 +311,7 @@ namespace QuestUI::BeatSaberUI {
     Sprite* Base64ToSprite(std::string& base64)
     {
         Array<uint8_t>* bytes = System::Convert::FromBase64String(il2cpp_utils::createcsstr(base64));
-        return  ArrayToSprite(bytes);
+        return ArrayToSprite(bytes);
     }
 
     Sprite* FileToSprite(std::string& filePath, int width, int height)
@@ -640,10 +640,11 @@ namespace QuestUI::BeatSaberUI {
     }
 
     InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityAction_1<Il2CppString*>* onValueChange) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIStringSetting", il2cpp_utils::StringType::Manual);
         InputFieldView* originalFieldView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<InputFieldView*>(), [](InputFieldView* x) { 
             return to_utf8(csstrtostr(x->get_name())) == "GuestNameInputField"; });
         GameObject* gameObj = Object::Instantiate(originalFieldView->get_gameObject(), parent, false);
+        static auto name = il2cpp_utils::createcsstr("QuestUIStringSetting", il2cpp_utils::StringType::Manual);
+        gameObj->set_name(name);
         LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
         layoutElement->set_preferredWidth(90.0f);
         layoutElement->set_preferredHeight(8.0f);
@@ -659,7 +660,10 @@ namespace QuestUI::BeatSaberUI {
         fieldView->SetText(il2cpp_utils::createcsstr(currentValue));
         fieldView->onValueChanged = InputFieldView::InputFieldChanged::New_ctor();
         if(onValueChange)
-            fieldView->onValueChanged->AddListener(il2cpp_utils::MakeDelegate<UnityAction_1<InputFieldView*>*>(classof(UnityAction_1<InputFieldView*>*), onValueChange, +[](UnityAction_1<Il2CppString*>* onValueChange, InputFieldView* fieldView) { onValueChange->Invoke(fieldView->get_text()); }));
+            fieldView->onValueChanged->AddListener(il2cpp_utils::MakeDelegate<UnityAction_1<InputFieldView*>*>(classof(UnityAction_1<InputFieldView*>*), onValueChange, 
+            +[](UnityAction_1<Il2CppString*>* onValueChange, InputFieldView* fieldView) { 
+                onValueChange->Invoke(fieldView->get_text()); 
+            }));
         return fieldView;
     }
 }
