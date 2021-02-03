@@ -35,9 +35,11 @@
 #include "HMUI/InputFieldView_InputFieldChanged.hpp"
 #include "HMUI/UIKeyboard.hpp"
 #include "HMUI/EventSystemListener.hpp"
+#include "HMUI/DropdownWithTableView.hpp"
 #include "VRUIControls/VRGraphicRaycaster.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "System/Convert.hpp"
+#include "System/Action_2.hpp"
 #include "Zenject/DiContainer.hpp"
 
 #include "customlogger.hpp"
@@ -55,7 +57,29 @@ using namespace VRUIControls;
 using namespace Zenject;
 
 namespace QuestUI::BeatSaberUI {
-    
+
+    GameObject* beatSaberUIObject = nullptr;
+    GameObject* dropdownListPrefab = nullptr;
+
+    void SetupPersistentObjects(){
+        getLogger().info("SetupPersistentObjects");
+        if(!beatSaberUIObject){
+            static auto name = il2cpp_utils::createcsstr("BeatSaberUIObject", il2cpp_utils::StringType::Manual);
+            beatSaberUIObject = GameObject::New_ctor(name);
+            GameObject::DontDestroyOnLoad(beatSaberUIObject);
+        }
+        if(!dropdownListPrefab) {
+            GameObject* search = ArrayUtil::First(Resources::FindObjectsOfTypeAll<SimpleTextDropdown*>(), [](SimpleTextDropdown* x) { 
+                    return to_utf8(csstrtostr(x->get_transform()->get_parent()->get_name())) == "NormalLevels"; 
+                }
+            )->get_transform()->get_parent()->get_gameObject();
+            dropdownListPrefab = Object::Instantiate(search, beatSaberUIObject->get_transform(), false);
+            static auto name = il2cpp_utils::createcsstr("QuestUIDropdownListPrefab", il2cpp_utils::StringType::Manual);
+            dropdownListPrefab->set_name(name);
+            dropdownListPrefab->SetActive(false);
+        }
+    }
+
     MainFlowCoordinator* mainFlowCoordinator = nullptr;
     MainFlowCoordinator* GetMainFlowCoordinator() {
         if(!mainFlowCoordinator)
@@ -666,4 +690,46 @@ namespace QuestUI::BeatSaberUI {
             }));
         return fieldView;
     }
+
+    SimpleTextDropdown* CreateDropdown(Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, UnityAction_1<Il2CppString*>* onValueChange) {
+        GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
+        static auto name = il2cpp_utils::createcsstr("QuestUIDropdownList", il2cpp_utils::StringType::Manual);
+        gameObj->set_name(name);
+        SimpleTextDropdown* dropdown = gameObj->GetComponentInChildren<SimpleTextDropdown*>();
+        dropdown->get_gameObject()->SetActive(false);
+        reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren(csTypeOf(VRGraphicRaycaster*), true))->physicsRaycaster = GetPhysicsRaycasterWithCache();
+        reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren(csTypeOf(ModalView*), true))->container = GetDiContainer();
+
+        static auto labelName = il2cpp_utils::createcsstr("Label", il2cpp_utils::StringType::Manual);
+        GameObject* labelObject = gameObj->get_transform()->Find(labelName)->get_gameObject();
+        GameObject::Destroy(labelObject->GetComponent<LocalizedTextMeshProUGUI*>());
+        labelObject->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(dropdownName));
+
+        LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
+        layoutElement->set_preferredWidth(90.0f);
+        layoutElement->set_preferredHeight(8.0f);
+
+        List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
+        int selectedIndex = 0;
+        for(int i = 0; i < values.size(); i++){
+            std::string value = values[i];
+            if(currentValue == value)
+                selectedIndex = i;
+            list->Add(il2cpp_utils::createcsstr(value));
+        }
+        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
+        dropdown->SelectCellWithIdx(selectedIndex);
+
+        using EventType = System::Action_2<DropdownWithTableView*, int>*;
+        dropdown->add_didSelectCellWithIdxEvent(il2cpp_utils::MakeDelegate<EventType>(classof(EventType), onValueChange, 
+            +[](UnityAction_1<Il2CppString*>* onValueChange, SimpleTextDropdown* dropdownWithTableView, int index) { 
+                onValueChange->Invoke(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index));
+            }));
+
+        dropdown->get_gameObject()->SetActive(true);
+        gameObj->SetActive(true);
+        return dropdown;
+    }
+
+
 }

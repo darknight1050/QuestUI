@@ -15,6 +15,7 @@
 #include "Sprites/ModSettingsButton.hpp"
 
 #include "GlobalNamespace/MainMenuViewController.hpp"
+#include "UnityEngine/SceneManagement/Scene.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
@@ -75,6 +76,32 @@ MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::O
     }
 }
 
+MAKE_HOOK_OFFSETLESS(SceneManager_Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
+    SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
+    if(prevScene.IsValid() && nextScene.IsValid()) {
+        std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
+        std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+        getLogger().info("Scene change from %s to %s", prevSceneName.c_str(), nextSceneName.c_str());
+        static bool hasInited = false;
+        if(prevSceneName == "QuestInit"){
+            hasInited = true;
+        }
+        if(hasInited && prevSceneName == "EmptyTransition" && nextSceneName.find("Menu") != std::string::npos) {
+            hasInited = false;
+            BeatSaberUI::SetupPersistentObjects();
+        }
+    } else {
+        if(prevScene.IsValid()) {
+            std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
+            getLogger().info("Scene change from %s to null", prevSceneName.c_str());
+        } 
+        if(nextScene.IsValid()) {
+            std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+            getLogger().info("Scene change from null to %s", nextSceneName.c_str());
+        }
+    }
+}
+
 void QuestUI::Init() {
     static bool init = false;
     if(!init) {
@@ -90,6 +117,8 @@ void QuestUI::Init() {
             ModSettingsFlowCoordinator
             >();
         INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
+        INSTALL_HOOK_OFFSETLESS(getLogger(), SceneManager_Internal_ActiveSceneChanged, il2cpp_utils::FindMethodUnsafe("UnityEngine.SceneManagement", "SceneManager", "Internal_ActiveSceneChanged", 2));
+        
     }
 }
 

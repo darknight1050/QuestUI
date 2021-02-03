@@ -25,6 +25,7 @@
 #include "HMUI/HoverHint.hpp"
 #include "HMUI/InputFieldView.hpp"
 #include "HMUI/ModalView.hpp"
+#include "HMUI/SimpleTextDropdown.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
 #include "VRUIControls/PhysicsRaycasterWithCache.hpp"
@@ -139,4 +140,6 @@ namespace QuestUI::BeatSaberUI {
 
     HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange = nullptr);
 
+    HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange);
+    
 }
