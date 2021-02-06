@@ -796,7 +796,7 @@ namespace QuestUI::BeatSaberUI {
             }
         ));
 
-        return gameObject;
+        return buttonGO;
     }
 
 #pragma region stdfuncWrappers
