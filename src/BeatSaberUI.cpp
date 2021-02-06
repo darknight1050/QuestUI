@@ -10,6 +10,8 @@
 #include "GlobalNamespace/BoolSettingsController.hpp"
 #include "GlobalNamespace/FormattedFloatListSettingsValueController.hpp"
 #include "GlobalNamespace/ReleaseInfoViewController.hpp"
+#include "GlobalNamespace/ColorPickerButtonController.hpp"
+#include "GlobalNamespace/HSVPanelController.hpp"
 #include "UnityEngine/Canvas.hpp"
 #include "UnityEngine/CanvasGroup.hpp"
 #include "UnityEngine/AdditionalCanvasShaderChannels.hpp"
@@ -627,7 +629,6 @@ namespace QuestUI::BeatSaberUI {
     }
 
     /*ModalView* CreateModalView(Transform* parent) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Manual);
         ModalView* yoinkFromView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ModalView*>(), [](ModalView* x){ return to_utf8(csstrtostr(x->get_name())) == "DropdownTableView"; });
         ModalView* modalView = Object::Instantiate(yoinkFromView, parent);
         modalView->presentPanelAnimations = yoinkFromView->presentPanelAnimations;
@@ -640,7 +641,7 @@ namespace QuestUI::BeatSaberUI {
         GameObject::DestroyImmediate(modalView->GetComponent<ScrollRect*>());
         GameObject::DestroyImmediate(modalView->GetComponent<EventSystemListener*>());
 
-        for(int i = 0;i<modalView->get_transform()->get_childCount();i++) {
+        for(int i = 0; i < modalView->get_transform()->get_childCount(); i++) {
             RectTransform* child = (RectTransform*)modalView->get_transform()->GetChild(i);
             if(to_utf8(csstrtostr(child->get_name())) == "BG") {
                 child->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
@@ -655,7 +656,10 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-        modalView->get_gameObject()->set_name(name);;
+
+        static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Manual);
+        modalView->get_gameObject()->set_name(name);
+
         return modalView;
     }*/
 
@@ -733,6 +737,66 @@ namespace QuestUI::BeatSaberUI {
         dropdown->get_gameObject()->SetActive(true);
         gameObj->SetActive(true);
         return dropdown;
+    }
+
+    GameObject* CreateColorPicker(Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, ColorChangeUIEventType)> onValueChange) {
+        // use QuestUI toggle as starting point to make positioning and sizing easier
+        auto fakeToggle = CreateToggle(parent, text, nullptr);
+        auto gameObject = fakeToggle->get_transform()->get_parent()->get_gameObject();
+        Object::Destroy(fakeToggle->get_gameObject());
+        
+        // create element that gets toggled to contain the actual picker
+        static auto name = il2cpp_utils::createcsstr("QuestUIColorPickerModal", il2cpp_utils::StringType::Manual);
+        auto pickerModalGO = GameObject::New_ctor(name);
+        auto pickerModalGORect = pickerModalGO->AddComponent<RectTransform*>();
+        pickerModalGORect->set_anchorMin(UnityEngine::Vector2(1.0f, 1.0f));
+        pickerModalGORect->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
+        pickerModalGORect->set_sizeDelta(UnityEngine::Vector2(40.0f, 40.0f));
+        pickerModalGO->get_transform()->SetParent(parent, false);
+        pickerModalGO->SetActive(false);
+
+        // initialize the color button that toggles the picker open
+        static auto colorPickerButtonControllers = Resources::FindObjectsOfTypeAll<ColorPickerButtonController*>();
+        static auto buttonBase = colorPickerButtonControllers->values[0]->get_gameObject();
+        auto buttonGO = Object::Instantiate(buttonBase, gameObject->get_transform(), false);
+        static auto buttonGOName = il2cpp_utils::createcsstr("QuestUIColorPickerButton", il2cpp_utils::StringType::Manual);
+        buttonGO->set_name(buttonGOName);
+        auto buttonRect = buttonGO->GetComponent<RectTransform*>();
+        buttonRect->set_anchorMin(UnityEngine::Vector2(1.0f, 0.5f));
+        buttonRect->set_anchorMax(UnityEngine::Vector2(1.0f, 0.5f));
+        buttonRect->set_anchoredPosition(UnityEngine::Vector2(-1.0f, -0.5f));
+        buttonRect->set_pivot(UnityEngine::Vector2(1.0f, 0.5f));
+
+        auto colorPickerButtonController = buttonGO->GetComponent<ColorPickerButtonController*>();
+        colorPickerButtonController->SetColor(defaultColor);
+
+        // initialize the picker itself
+        static auto hsvColorPickers = Resources::FindObjectsOfTypeAll<HSVPanelController*>();
+        static auto pickerBase = hsvColorPickers->values[0]->get_gameObject();
+        auto pickerGO = Object::Instantiate(pickerBase, pickerModalGO->get_transform(), false);
+        auto hsvPanelController = pickerGO->GetComponent<HSVPanelController*>();
+        static auto searchName = il2cpp_utils::createcsstr("ColorPickerButtonPrimary", il2cpp_utils::StringType::Manual);
+        Object::Destroy(pickerGO->get_transform()->Find(searchName)->get_gameObject());
+        hsvPanelController->set_color(defaultColor);
+        auto pickerRect = pickerGO->GetComponent<UnityEngine::RectTransform*>();
+        pickerRect->set_pivot(UnityEngine::Vector2(0.25f, 0.77f));
+        pickerRect->set_localScale(UnityEngine::Vector3(0.75f, 0.75f, 0.75f));
+
+        // event bindings
+        using DelegateType = System::Action_2<UnityEngine::Color, ColorChangeUIEventType>*;
+        hsvPanelController->add_colorDidChangeEvent(il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType),
+            (std::function<void(UnityEngine::Color, ColorChangeUIEventType)>)[colorPickerButtonController, onValueChange](UnityEngine::Color color, ColorChangeUIEventType eventType) {
+                colorPickerButtonController->SetColor(color);
+                if(onValueChange)
+                    onValueChange(color, eventType);
+            }));
+        colorPickerButtonController->button->get_onClick()->AddListener(il2cpp_utils::MakeDelegate<UnityAction*>(classof(UnityAction*), 
+            (std::function<void()>)[pickerModalGO]() {
+                pickerModalGO->SetActive(!pickerModalGO->get_activeSelf());
+            }
+        ));
+
+        return gameObject;
     }
 
 #pragma region stdfuncWrappers
