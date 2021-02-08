@@ -102,10 +102,16 @@ MAKE_HOOK_OFFSETLESS(SceneManager_Internal_ActiveSceneChanged, void, UnityEngine
     }
 }
 
+bool didInit = false;
+
+bool DidInit(){
+    return didInit;
+}
+
 void QuestUI::Init() {
-    static bool init = false;
-    if(!init) {
-        init = true;
+    if(!didInit) {
+        didInit = true;
+        getLogger().info("Init started...");
         il2cpp_functions::Init();
         custom_types::Register::RegisterTypes<
             ExternalComponents, 
@@ -118,7 +124,7 @@ void QuestUI::Init() {
             >();
         INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
         INSTALL_HOOK_OFFSETLESS(getLogger(), SceneManager_Internal_ActiveSceneChanged, il2cpp_utils::FindMethodUnsafe("UnityEngine.SceneManagement", "SceneManager", "Internal_ActiveSceneChanged", 2));
-        
+        getLogger().info("Init completed!");
     }
 }
 

@@ -11,6 +11,8 @@ namespace QuestUI {
 
     void Init();
 
+    bool DidInit();
+
     int GetModsCount();
 
     HMUI::FlowCoordinator* GetModSettingsFlowCoordinator();
