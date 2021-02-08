@@ -218,6 +218,8 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchoredPosition(anchoredPosition);
         rectTransform->set_sizeDelta(sizeDelta);
         
+        gameObj->AddComponent<LayoutElement*>();
+
         gameObj->SetActive(true);
         return textMesh;
     }
