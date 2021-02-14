@@ -82,10 +82,14 @@ namespace QuestUI::BeatSaberUI {
         }
     }
 
+    #define CacheNotFoundWarningLog(type) getLogger().warning("Can't find '" #type "'! (This shouldn't happen and can cause unexpected behaviour)")
+
     MainFlowCoordinator* mainFlowCoordinator = nullptr;
     MainFlowCoordinator* GetMainFlowCoordinator() {
         if(!mainFlowCoordinator)
             mainFlowCoordinator = Object::FindObjectOfType<MainFlowCoordinator*>();
+        if(!mainFlowCoordinator)
+            CacheNotFoundWarningLog(MainFlowCoordinator);
         return mainFlowCoordinator;
     }
 
@@ -93,6 +97,8 @@ namespace QuestUI::BeatSaberUI {
     TMP_FontAsset* GetMainTextFont() {
         if(!mainTextFont)
             mainTextFont = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TMP_FontAsset*>(), [](TMP_FontAsset* x) { return to_utf8(csstrtostr(x->get_name())) == "Teko-Medium SDF No Glow"; });
+        if(!mainTextFont)
+            CacheNotFoundWarningLog(MainTextFont);
         return mainTextFont;
     }
 
@@ -100,6 +106,8 @@ namespace QuestUI::BeatSaberUI {
     Sprite* GetEditIcon() {
         if(!editIcon)
             editIcon = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Image*>(), [](Image* x) { return x->get_sprite() && to_utf8(csstrtostr(x->get_sprite()->get_name())) == "EditIcon"; })->get_sprite();
+        if(!editIcon)
+            CacheNotFoundWarningLog(EditIcon);
         return editIcon;
     }
 
@@ -108,6 +116,8 @@ namespace QuestUI::BeatSaberUI {
     {
         if(!physicsRaycaster)
             physicsRaycaster = ArrayUtil::First(Resources::FindObjectsOfTypeAll<MainMenuViewController*>())->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster;
+        if(!physicsRaycaster)
+            CacheNotFoundWarningLog(PhysicsRaycasterWithCache);
         return physicsRaycaster;
     }
 
@@ -116,6 +126,8 @@ namespace QuestUI::BeatSaberUI {
     {
         if(!diContainer)
             diContainer = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TextSegmentedControl*>(), [](TextSegmentedControl* x) { return to_utf8(csstrtostr(x->get_transform()->get_parent()->get_name())) == "PlayerStatisticsViewController" && x->container; })->container;
+        if(!diContainer)
+            CacheNotFoundWarningLog(DiContainer);
         return diContainer;
     }
 
@@ -139,8 +151,10 @@ namespace QuestUI::BeatSaberUI {
         scaler->set_scaleFactor(1.0f);
         scaler->set_dynamicPixelsPerUnit(3.44f);
         scaler->set_referencePixelsPerUnit(10.0f);
-        
-        go->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+
+        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
+        if(physicsRaycaster)
+            go->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = physicsRaycaster;
 
         RectTransform* rectTransform = go->GetComponent<RectTransform*>();
         float scale = 1.5f*0.02f; //Wrapper->ScreenSystem: 1.5 Wrapper->ScreenSystem->ScreenContainer: 0.02
@@ -164,7 +178,9 @@ namespace QuestUI::BeatSaberUI {
         cv->set_sortingOrder(cvCopy->get_sortingOrder());
         cv->set_worldCamera(cvCopy->get_worldCamera());
 
-        go->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
+        if(physicsRaycaster)
+            go->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = physicsRaycaster;
         go->AddComponent<CanvasGroup*>();
         auto vc = go->AddComponent(type);
 
@@ -557,7 +573,10 @@ namespace QuestUI::BeatSaberUI {
         Button* pageDownButton = textScrollView->pageDownButton;
         VerticalScrollIndicator* verticalScrollIndicator = textScrollView->verticalScrollIndicator; 
         RectTransform* viewport = textScrollView->viewport;
-        viewport->get_gameObject()->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+
+        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
+        if(physicsRaycaster)
+            viewport->get_gameObject()->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = physicsRaycaster;
         
         GameObject::Destroy(textScrollView->text->get_gameObject());
         GameObject* gameObject = textScrollView->get_gameObject();
@@ -636,7 +655,10 @@ namespace QuestUI::BeatSaberUI {
         modalView->presentPanelAnimations = yoinkFromView->presentPanelAnimations;
         modalView->dismissPanelAnimation = yoinkFromView->dismissPanelAnimation;
         modalView->container = GetDiContainer();
-        modalView->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+
+        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
+        if(physicsRaycaster)
+            modalView->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster = physicsRaycaster;
 
         GameObject::DestroyImmediate(modalView->GetComponent<TableView*>());
         GameObject::DestroyImmediate(modalView->GetComponent<TableViewScroller*>());
@@ -705,7 +727,11 @@ namespace QuestUI::BeatSaberUI {
         gameObj->set_name(name);
         SimpleTextDropdown* dropdown = gameObj->GetComponentInChildren<SimpleTextDropdown*>();
         dropdown->get_gameObject()->SetActive(false);
-        reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren(csTypeOf(VRGraphicRaycaster*), true))->physicsRaycaster = GetPhysicsRaycasterWithCache();
+
+        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
+        if(physicsRaycaster)
+            reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren(csTypeOf(VRGraphicRaycaster*), true))->physicsRaycaster = physicsRaycaster;
+        
         reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren(csTypeOf(ModalView*), true))->container = GetDiContainer();
 
         static auto labelName = il2cpp_utils::createcsstr("Label", il2cpp_utils::StringType::Manual);
