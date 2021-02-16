@@ -21,6 +21,7 @@
 #include "UnityEngine/SpriteMeshType.hpp"
 #include "UnityEngine/Texture2D.hpp"
 #include "UnityEngine/TextureFormat.hpp"
+#include "UnityEngine/TextureWrapMode.hpp"
 #include "UnityEngine/ImageConversion.hpp"
 #include "UnityEngine/Material.hpp"
 #include "UnityEngine/UI/ScrollRect.hpp"
@@ -374,8 +375,10 @@ namespace QuestUI::BeatSaberUI {
     Sprite* ArrayToSprite(Array<uint8_t>* bytes)
     {
         Texture2D* texture = Texture2D::New_ctor(0, 0, TextureFormat::RGBA32, false, false);
-        if (ImageConversion::LoadImage(texture, bytes, false))
+        if (ImageConversion::LoadImage(texture, bytes, false)) {
+            texture->set_wrapMode(TextureWrapMode::Clamp);
             return Sprite::Create(texture, UnityEngine::Rect(0.0f, 0.0f, (float)texture->get_width(), (float)texture->get_height()), UnityEngine::Vector2(0.5f,0.5f), 1024.0f, 1u, SpriteMeshType::FullRect, UnityEngine::Vector4(0.0f, 0.0f, 0.0f, 0.0f), false);
+        }
         return nullptr;
     }
 
