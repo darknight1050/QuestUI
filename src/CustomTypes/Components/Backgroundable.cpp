@@ -31,6 +31,10 @@ std::map<std::string, std::string> backgrounds =  {
 	{
 		"panel-top-gradient",
 		"RoundRect10"
+	},
+	{
+		"title-gradient",	
+		"RoundRect10"
 	}
 };
 
@@ -49,6 +53,10 @@ std::map<std::string, std::string> objectNames =  {
 	},
 	{
 		"panel-top-gradient",
+		"BG"
+	},
+	{
+		"title-gradient",	
 		"BG"
 	}
 };
@@ -69,6 +77,10 @@ std::map<std::string, std::string> objectParentNames =  {
 	{
 		"panel-top-gradient",
 		"ActionButton"
+	},
+	{
+		"title-gradient",	
+		"TitleViewController"
 	}
 };
 
