@@ -787,8 +787,8 @@ namespace QuestUI::BeatSaberUI {
         pickerModalGO->SetActive(false);
 
         // initialize the color button that toggles the picker open
-        static auto colorPickerButtonControllers = Resources::FindObjectsOfTypeAll<ColorPickerButtonController*>();
-        static auto buttonBase = colorPickerButtonControllers->values[0]->get_gameObject();
+        auto colorPickerButtonControllers = Resources::FindObjectsOfTypeAll<ColorPickerButtonController*>();
+        auto buttonBase = colorPickerButtonControllers->values[0]->get_gameObject();
         auto buttonGO = Object::Instantiate(buttonBase, gameObject->get_transform(), false);
         static auto buttonGOName = il2cpp_utils::createcsstr("QuestUIColorPickerButton", il2cpp_utils::StringType::Manual);
         buttonGO->set_name(buttonGOName);
@@ -802,8 +802,8 @@ namespace QuestUI::BeatSaberUI {
         colorPickerButtonController->SetColor(defaultColor);
 
         // initialize the picker itself
-        static auto hsvColorPickers = Resources::FindObjectsOfTypeAll<HSVPanelController*>();
-        static auto pickerBase = hsvColorPickers->values[0]->get_gameObject();
+        auto hsvColorPickers = Resources::FindObjectsOfTypeAll<HSVPanelController*>();
+        auto pickerBase = hsvColorPickers->values[0]->get_gameObject();
         auto pickerGO = Object::Instantiate(pickerBase, pickerModalGO->get_transform(), false);
         auto hsvPanelController = pickerGO->GetComponent<HSVPanelController*>();
         static auto searchName = il2cpp_utils::createcsstr("ColorPickerButtonPrimary", il2cpp_utils::StringType::Manual);
