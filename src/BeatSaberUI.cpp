@@ -790,9 +790,9 @@ namespace QuestUI::BeatSaberUI {
         pickerModalGO->SetActive(false);
 
         // initialize the color button that toggles the picker open
-        auto colorPickerButtonControllers = Resources::FindObjectsOfTypeAll<ColorPickerButtonController*>();
-        auto buttonBase = colorPickerButtonControllers->values[0]->get_gameObject();
-        auto buttonGO = Object::Instantiate(buttonBase, gameObject->get_transform(), false);
+        auto buttonBase = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ColorPickerButtonController*>(), [](ColorPickerButtonController* x) { 
+            return to_utf8(csstrtostr(x->get_name())) == "ColorPickerButtonSecondary"; });
+        auto buttonGO = Object::Instantiate(buttonBase->get_gameObject(), gameObject->get_transform(), false);
         static auto buttonGOName = il2cpp_utils::createcsstr("QuestUIColorPickerButton", il2cpp_utils::StringType::Manual);
         buttonGO->set_name(buttonGOName);
         auto buttonRect = buttonGO->GetComponent<RectTransform*>();
@@ -805,9 +805,11 @@ namespace QuestUI::BeatSaberUI {
         colorPickerButtonController->SetColor(defaultColor);
 
         // initialize the picker itself
-        auto hsvColorPickers = Resources::FindObjectsOfTypeAll<HSVPanelController*>();
-        auto pickerBase = hsvColorPickers->values[0]->get_gameObject();
-        auto pickerGO = Object::Instantiate(pickerBase, pickerModalGO->get_transform(), false);
+        auto pickerBase = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HSVPanelController*>(), [](HSVPanelController* x) { 
+            return to_utf8(csstrtostr(x->get_name())) == "HSVColorPicker"; });
+        auto pickerGO = Object::Instantiate(pickerBase->get_gameObject(), pickerModalGO->get_transform(), false);
+        static auto pickerGOName = il2cpp_utils::createcsstr("QuestUIColorPickerController", il2cpp_utils::StringType::Manual);
+        pickerGO->set_name(pickerGOName);
         auto hsvPanelController = pickerGO->GetComponent<HSVPanelController*>();
         static auto searchName = il2cpp_utils::createcsstr("ColorPickerButtonPrimary", il2cpp_utils::StringType::Manual);
         Object::Destroy(pickerGO->get_transform()->Find(searchName)->get_gameObject());
