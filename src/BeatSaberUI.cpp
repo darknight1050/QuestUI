@@ -5,8 +5,8 @@
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
-#include "CustomTypes/Components/FloatingScreen.hpp"
-#include "CustomTypes/Components/FloatingScreenManager.hpp"
+#include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
+#include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
 
 #include "GlobalNamespace/UIKeyboardManager.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
