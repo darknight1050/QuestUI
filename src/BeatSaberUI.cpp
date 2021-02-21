@@ -5,6 +5,8 @@
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
+#include "CustomTypes/Components/FloatingScreen.hpp"
+#include "CustomTypes/Components/FloatingScreenManager.hpp"
 
 #include "GlobalNamespace/UIKeyboardManager.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
@@ -37,6 +39,7 @@
 #include "HMUI/TextSegmentedControl.hpp"
 #include "HMUI/InputFieldView_InputFieldChanged.hpp"
 #include "HMUI/UIKeyboard.hpp"
+#include "HMUI/CurvedCanvasSettings.hpp"
 #include "HMUI/EventSystemListener.hpp"
 #include "HMUI/DropdownWithTableView.hpp"
 #include "VRUIControls/VRGraphicRaycaster.hpp"
@@ -771,6 +774,40 @@ namespace QuestUI::BeatSaberUI {
         dropdown->get_gameObject()->SetActive(true);
         gameObj->SetActive(true);
         return dropdown;
+    }
+    
+    GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius, bool hasBackground, bool createHandle, int handleSide){
+        //Set up canvas components
+        auto gameObject = CreateCanvas();
+        auto manager = gameObject->AddComponent<FloatingScreenManager*>();
+        auto screen = gameObject->AddComponent<FloatingScreen*>();
+        if(createHandle){
+            screen->set_showHandle(true);
+            screen->set_side(handleSide);
+        }
+        auto curvedCanvasSettings = gameObject->AddComponent<HMUI::CurvedCanvasSettings*>();
+        curvedCanvasSettings->SetRadius(curvatureRadius);
+        auto scaler = gameObject->GetComponent<CanvasScaler*>();
+        scaler->set_dynamicPixelsPerUnit(3.44f);
+        scaler->set_referencePixelsPerUnit(10);
+
+        //background
+        if(hasBackground){
+            auto backgroundGo = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("bg"));
+            backgroundGo->get_transform()->SetParent(gameObject->get_transform(), false);
+            auto background = backgroundGo->AddComponent<Backgroundable*>();
+            background->ApplyBackgroundWithAlpha(il2cpp_utils::createcsstr("round-rect-panel"), 0.5f);
+            screen->set_bgGo(backgroundGo);
+        }
+
+        //Transform
+        auto transform = gameObject->get_transform();
+        transform->set_position(position);
+        transform->set_eulerAngles(rotation);
+        transform->set_localScale(UnityEngine::Vector3(0.02f, 0.02f, 0.02f));
+        screen->set_screenSize(screenSize);
+
+        return gameObject;
     }
 
     GameObject* CreateColorPicker(Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, ColorChangeUIEventType)> onValueChange) {

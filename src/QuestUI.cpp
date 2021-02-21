@@ -9,6 +9,9 @@
 #include "CustomTypes/Components/ScrollViewContent.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Components/FloatingScreen.hpp"
+#include "CustomTypes/Components/FloatingScreenManager.hpp"
+#include "CustomTypes/Components/FloatingScreenMoverPointer.hpp"
 
 #include "BeatSaberUI.hpp"
 #include "InternalBeatSaberUI.hpp"
@@ -17,6 +20,8 @@
 #include "GlobalNamespace/MainMenuViewController.hpp"
 #include "UnityEngine/SceneManagement/Scene.hpp"
 #include "UnityEngine/Transform.hpp"
+#include "UnityEngine/UI/VerticalLayoutGroup.hpp"
+#include "UnityEngine/UI/LayoutElement.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
@@ -120,7 +125,10 @@ void QuestUI::Init() {
             ScrollViewContent, 
             IncrementSetting, 
             ModSettingsButtonsViewController, 
-            ModSettingsFlowCoordinator
+            ModSettingsFlowCoordinator,
+            FloatingScreen,
+            FloatingScreenMoverPointer,
+            FloatingScreenManager
             >();
         INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
         INSTALL_HOOK_OFFSETLESS(getLogger(), SceneManager_Internal_ActiveSceneChanged, il2cpp_utils::FindMethodUnsafe("UnityEngine.SceneManagement", "SceneManager", "Internal_ActiveSceneChanged", 2));
