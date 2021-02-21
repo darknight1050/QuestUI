@@ -18,7 +18,12 @@ DECLARE_CLASS_CODEGEN(QuestUI, ExternalComponents, UnityEngine::MonoBehaviour,
     DECLARE_METHOD(void, Add, UnityEngine::Component* component); 
     DECLARE_METHOD(UnityEngine::Component*, GetByType, Il2CppReflectionType* type); 
     
+    DECLARE_OVERRIDE_METHOD(void, Finalize, il2cpp_utils::FindMethod("System", "Object", "Finalize"));
+
     REGISTER_FUNCTION(ExternalComponents,
+        REGISTER_METHOD(Add);
         REGISTER_METHOD(GetByType);
+        
+        REGISTER_METHOD(Finalize);
     )
 )
