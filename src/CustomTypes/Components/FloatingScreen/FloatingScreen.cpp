@@ -1,5 +1,5 @@
-#include "CustomTypes/Components/FloatingScreen.hpp"
-#include "CustomTypes/Components/FloatingScreenManager.hpp"
+#include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
+#include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
 
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/Vector2.hpp"
@@ -18,11 +18,14 @@
 
 DEFINE_CLASS(QuestUI::FloatingScreen);
 
-void QuestUI::FloatingScreen::set_bgGo(UnityEngine::GameObject* bg){ bgGo = bg; }
+void QuestUI::FloatingScreen::set_bgGo(UnityEngine::GameObject* bg) { 
+    bgGo = bg;
+}
 
-void QuestUI::FloatingScreen::updateHandle(){
-    if(handle == nullptr) return;
-    switch(handleSide){
+void QuestUI::FloatingScreen::updateHandle() {
+    if(!handle) 
+        return;
+    switch(handleSide) {
         case 0:
             handle->get_transform()->set_localPosition(UnityEngine::Vector3(-screenSize.x / 2, 0, 0));
             handle->get_transform()->set_localScale(UnityEngine::Vector3(screenSize.x / 15, screenSize.y * 1, screenSize.x / 15));
@@ -36,25 +39,20 @@ void QuestUI::FloatingScreen::updateHandle(){
             handle->get_transform()->set_localScale(UnityEngine::Vector3(screenSize.x, screenSize.y / 15, screenSize.y / 15));
             break;
         case 3:
-            handle->get_transform()->set_localPosition(UnityEngine::Vector3(0, -screenSize.y /2, 0));
+            handle->get_transform()->set_localPosition(UnityEngine::Vector3(0, -screenSize.y / 2, 0));
             handle->get_transform()->set_localScale(UnityEngine::Vector3(screenSize.x, screenSize.y / 15, screenSize.y / 15));
             break;
-        case 4l:
+        case 4:
             handle->get_transform()->set_localPosition(UnityEngine::Vector3::get_zero());
             handle->get_transform()->set_localScale(UnityEngine::Vector3(screenSize.x, screenSize.y, screenSize.x / 15));
             break;
     }
-    if(handleSide == 4){
-        handle->GetComponent<UnityEngine::MeshRenderer*>()->set_enabled(false);
-    }
-    else{
-        handle->GetComponent<UnityEngine::MeshRenderer*>()->set_enabled(true);
-    }
+    handle->GetComponent<UnityEngine::MeshRenderer*>()->set_enabled(handleSide != 4);
 }
 
-void QuestUI::FloatingScreen::createHandle(){
+void QuestUI::FloatingScreen::createHandle() {
     auto vrpointer = UnityEngine::Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->values[0];
-    if(handle == nullptr){
+    if(!handle) {
         handle = UnityEngine::GameObject::CreatePrimitive(UnityEngine::PrimitiveType::_get_Cube());
         handle->get_transform()->set_parent(get_transform());
         handle->get_transform()->set_localRotation(UnityEngine::Quaternion::get_identity());
@@ -65,32 +63,32 @@ void QuestUI::FloatingScreen::createHandle(){
         rend->set_material(mat);
         GetComponent<QuestUI::FloatingScreenManager*>()->createMover(this, vrpointer);
     }
-    this->updateHandle();
+    updateHandle();
 }
 
-void QuestUI::FloatingScreen::set_showHandle(bool value){
+void QuestUI::FloatingScreen::set_showHandle(bool value) {
     showHandle = value;
-    if(handle == nullptr) createHandle();
+    if(!handle) 
+        createHandle();
     updateHandle();
 }
 
-void QuestUI::FloatingScreen::set_screenSize(UnityEngine::Vector2 size){
+void QuestUI::FloatingScreen::set_screenSize(UnityEngine::Vector2 size) {
     screenSize = size;
-    reinterpret_cast<UnityEngine::RectTransform*>(get_transform())->set_sizeDelta(size);
-    if(bgGo != nullptr){
+    GetComponent<UnityEngine::RectTransform*>()->set_sizeDelta(size);
+    if(bgGo)
         bgGo->GetComponent<UnityEngine::RectTransform*>()->set_sizeDelta(size);
-    }
     updateHandle();
 }
 
-UnityEngine::GameObject* QuestUI::FloatingScreen::get_handle(){
+UnityEngine::GameObject* QuestUI::FloatingScreen::get_handle() {
     return handle;
 }
 
-int QuestUI::FloatingScreen::get_side(){
+int QuestUI::FloatingScreen::get_side() {
     return handleSide;
 }
 
-void QuestUI::FloatingScreen::set_side(int side){
+void QuestUI::FloatingScreen::set_side(int side) {
     handleSide = side;
 }

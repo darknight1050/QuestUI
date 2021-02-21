@@ -13,10 +13,11 @@
 
 #include "GlobalNamespace/VRController.hpp"
 
-#include "CustomTypes/Components/FloatingScreen.hpp"
+#include "FloatingScreen.hpp"
 #include "VRUIControls/VRPointer.hpp"
 
 DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreenMoverPointer, UnityEngine::MonoBehaviour,
+
     DECLARE_INSTANCE_FIELD(VRUIControls::VRPointer*, vrPointer);
     DECLARE_INSTANCE_FIELD(GlobalNamespace::VRController*, grabbingController);
     DECLARE_INSTANCE_FIELD(::QuestUI::FloatingScreen*, floatingScreen);
@@ -26,6 +27,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreenMoverPointer, UnityEngine::MonoBeha
     DECLARE_INSTANCE_FIELD(UnityEngine::Vector3, realPos);
     DECLARE_INSTANCE_FIELD(UnityEngine::Quaternion, realRot);
     DECLARE_INSTANCE_FIELD(UnityEngine::RaycastHit, hit);
+
     DECLARE_METHOD(void, Init, ::QuestUI::FloatingScreen* screen, VRUIControls::VRPointer* pointer);
     DECLARE_METHOD(void, Update);
     DECLARE_METHOD(void, LateUpdate);
@@ -40,6 +42,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreenMoverPointer, UnityEngine::MonoBeha
         REGISTER_FIELD(realPos);
         REGISTER_FIELD(realRot);
         REGISTER_FIELD(hit);
+
         REGISTER_METHOD(Init);
         REGISTER_METHOD(Update);
         REGISTER_METHOD(LateUpdate);

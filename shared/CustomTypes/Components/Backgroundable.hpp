@@ -14,6 +14,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, Backgroundable, UnityEngine::MonoBehaviour,
     
     REGISTER_FUNCTION(Backgroundable,
         REGISTER_FIELD(background);
+        
         REGISTER_METHOD(ApplyBackgroundWithAlpha);
         REGISTER_METHOD(ApplyBackground);
     )

@@ -17,6 +17,7 @@
 #include "UnityEngine/RaycastHit.hpp"
 
 DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreen, UnityEngine::MonoBehaviour,
+
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, bgGo);
     DECLARE_INSTANCE_FIELD(UnityEngine::Vector2, screenSize);
     DECLARE_INSTANCE_FIELD(UnityEngine::Vector3, screenPosition);
@@ -24,6 +25,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreen, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, handle);
     DECLARE_INSTANCE_FIELD(bool, showHandle);
     DECLARE_INSTANCE_FIELD_DEFAULT(int, handleSide, 0);
+
     DECLARE_METHOD(void, set_showHandle, bool value);
     DECLARE_METHOD(void, set_screenSize, UnityEngine::Vector2 size);
     DECLARE_METHOD(void, set_bgGo, UnityEngine::GameObject* bg);
@@ -41,6 +43,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreen, UnityEngine::MonoBehaviour,
         REGISTER_FIELD(handle);
         REGISTER_FIELD(showHandle);
         REGISTER_FIELD(handleSide);
+        
         REGISTER_METHOD(set_showHandle);
         REGISTER_METHOD(set_screenSize);
         REGISTER_METHOD(set_bgGo);

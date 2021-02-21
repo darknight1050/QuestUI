@@ -776,27 +776,26 @@ namespace QuestUI::BeatSaberUI {
         return dropdown;
     }
     
-    GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius, bool hasBackground, bool createHandle, int handleSide){
+    GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius, bool hasBackground, bool createHandle, int handleSide) {
         //Set up canvas components
         auto gameObject = CreateCanvas();
         auto manager = gameObject->AddComponent<FloatingScreenManager*>();
         auto screen = gameObject->AddComponent<FloatingScreen*>();
-        if(createHandle){
+        if(createHandle) {
             screen->set_showHandle(true);
             screen->set_side(handleSide);
         }
         auto curvedCanvasSettings = gameObject->AddComponent<HMUI::CurvedCanvasSettings*>();
         curvedCanvasSettings->SetRadius(curvatureRadius);
-        auto scaler = gameObject->GetComponent<CanvasScaler*>();
-        scaler->set_dynamicPixelsPerUnit(3.44f);
-        scaler->set_referencePixelsPerUnit(10);
 
         //background
-        if(hasBackground){
-            auto backgroundGo = UnityEngine::GameObject::New_ctor(il2cpp_utils::createcsstr("bg"));
+        if(hasBackground) {
+            static auto backgroundGoName = il2cpp_utils::createcsstr("bg", il2cpp_utils::StringType::Manual);
+            auto backgroundGo = UnityEngine::GameObject::New_ctor(backgroundGoName);
             backgroundGo->get_transform()->SetParent(gameObject->get_transform(), false);
             auto background = backgroundGo->AddComponent<Backgroundable*>();
-            background->ApplyBackgroundWithAlpha(il2cpp_utils::createcsstr("round-rect-panel"), 0.5f);
+            static auto backgroundName = il2cpp_utils::createcsstr("round-rect-panel", il2cpp_utils::StringType::Manual);
+            background->ApplyBackgroundWithAlpha(backgroundName, 0.5f);
             screen->set_bgGo(backgroundGo);
         }
 
@@ -804,7 +803,6 @@ namespace QuestUI::BeatSaberUI {
         auto transform = gameObject->get_transform();
         transform->set_position(position);
         transform->set_eulerAngles(rotation);
-        transform->set_localScale(UnityEngine::Vector3(0.02f, 0.02f, 0.02f));
         screen->set_screenSize(screenSize);
 
         return gameObject;
