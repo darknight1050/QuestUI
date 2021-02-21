@@ -42,6 +42,18 @@ namespace QuestUI::ArrayUtil {
         }
         return nullptr;
     }
+
+    template <class T, class Predicate>
+    inline Array<T*>* Where(Array<T*>* array, Predicate pred)
+    {
+        List<T*>* newArray = List<T*>::New_ctor();
+        for (int i = 0; i < array->Length(); i++) {
+            T* item = array->values[i];
+            if(pred(item))
+                newArray->Add(item);
+        }
+        return newArray->ToArray();
+    }
     
     template <class Out, class T, class Predicate>
     inline Array<Out>* Select(Array<T*>* array, Predicate pred)
