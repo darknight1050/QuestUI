@@ -316,10 +316,8 @@ namespace QuestUI::BeatSaberUI {
         Button* button = CreateUIButton(parent, buttonText, buttonTemplate, anchoredPosition, onClick);
         button->GetComponent<RectTransform*>()->set_sizeDelta(sizeDelta);
         LayoutElement* layoutElement = button->GetComponent<LayoutElement*>();
-        if(layoutElement->get_minWidth() > sizeDelta.x)
-            layoutElement->set_minWidth(sizeDelta.x);
-        if(layoutElement->get_minHeight() > sizeDelta.y)
-            layoutElement->set_minHeight(sizeDelta.y);
+        layoutElement->set_minWidth(sizeDelta.x);
+        layoutElement->set_minHeight(sizeDelta.y);
         layoutElement->set_preferredWidth(sizeDelta.x);
         layoutElement->set_preferredHeight(sizeDelta.y);
         return button;
