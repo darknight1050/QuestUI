@@ -385,7 +385,7 @@ namespace QuestUI::BeatSaberUI {
     GridLayoutGroup* CreateGridLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIGridLayoutGroup", il2cpp_utils::StringType::Manual);
         GameObject* gameObject = GameObject::New_ctor(name);
-        gameObject->AddComponent<GridLayoutGroup*>();
+        GridLayoutGroup* layout = gameObject->AddComponent<GridLayoutGroup*>();
         gameObject->AddComponent<ContentSizeFitter*>();
         gameObject->AddComponent<Backgroundable*>();
 
@@ -396,13 +396,13 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
 
         gameObject->AddComponent<LayoutElement*>();
-        return rectTransform->GetComponent<GridLayoutGroup*>();
+        return layout;
     }
     
     HorizontalLayoutGroup* CreateHorizontalLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup", il2cpp_utils::StringType::Manual);
         GameObject* gameObject = GameObject::New_ctor(name);
-        gameObject->AddComponent<HorizontalLayoutGroup*>();
+        HorizontalLayoutGroup* layout = gameObject->AddComponent<HorizontalLayoutGroup*>();
         gameObject->AddComponent<Backgroundable*>();
 
         ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<ContentSizeFitter*>();
@@ -415,13 +415,13 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
         
         gameObject->AddComponent<LayoutElement*>();
-        return rectTransform->GetComponent<HorizontalLayoutGroup*>();
+        return layout;
     }
     
     VerticalLayoutGroup* CreateVerticalLayoutGroup(Transform* parent) {
         static auto name = il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup", il2cpp_utils::StringType::Manual);
         GameObject* gameObject = GameObject::New_ctor(name);
-        gameObject->AddComponent<VerticalLayoutGroup*>();
+        VerticalLayoutGroup* layout = gameObject->AddComponent<VerticalLayoutGroup*>();
         gameObject->AddComponent<Backgroundable*>();
 
         ContentSizeFitter* contentSizeFitter = gameObject->AddComponent<ContentSizeFitter*>();
@@ -434,7 +434,7 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
         
         gameObject->AddComponent<LayoutElement*>();
-        return rectTransform->GetComponent<VerticalLayoutGroup*>();
+        return layout;
     }
 
     Toggle* CreateToggle(Transform* parent, std::string text, UnityAction_1<bool>* onToggle)
