@@ -286,7 +286,7 @@ namespace QuestUI::BeatSaberUI {
         if(onClick)
             button->get_onClick()->AddListener(onClick);
 
-        Polyglot::LocalizedTextMeshProUGUI* localizer = button->GetComponentInChildren<Polyglot::LocalizedTextMeshProUGUI*>();
+        LocalizedTextMeshProUGUI* localizer = button->GetComponentInChildren<LocalizedTextMeshProUGUI*>();
         if (localizer != nullptr)
             GameObject::Destroy(localizer);
         ExternalComponents* externalComponents = button->get_gameObject()->AddComponent<ExternalComponents*>();
