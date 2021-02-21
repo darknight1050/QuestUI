@@ -9,6 +9,9 @@
 #include "CustomTypes/Components/ScrollViewContent.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Components/FloatingScreen.hpp"
+#include "CustomTypes/Components/FloatingScreenManager.hpp"
+#include "CustomTypes/Components/FloatingScreenMoverPointer.hpp"
 
 #include "BeatSaberUI.hpp"
 #include "InternalBeatSaberUI.hpp"
@@ -17,6 +20,8 @@
 #include "GlobalNamespace/MainMenuViewController.hpp"
 #include "UnityEngine/SceneManagement/Scene.hpp"
 #include "UnityEngine/Transform.hpp"
+#include "UnityEngine/UI/VerticalLayoutGroup.hpp"
+#include "UnityEngine/UI/LayoutElement.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
@@ -102,6 +107,16 @@ MAKE_HOOK_OFFSETLESS(SceneManager_Internal_ActiveSceneChanged, void, UnityEngine
     }
 }
 
+MAKE_HOOK_OFFSETLESS(MMVC_DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling){
+    MMVC_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
+    auto transform = BeatSaberUI::CreateFloatingScreen(UnityEngine::Vector2(30,15), UnityEngine::Vector3(0,1,2), UnityEngine::Vector3(0,0,0))->get_transform();
+    BeatSaberUI::CreateText(transform, "Look,")->set_alignment(TMPro::TextAlignmentOptions::Center);
+    auto transform2 = BeatSaberUI::CreateFloatingScreen(UnityEngine::Vector2(30,15), UnityEngine::Vector3(1,0.6f,2), UnityEngine::Vector3(0,0,0))->get_transform();
+    BeatSaberUI::CreateText(transform2, "Multiple")->set_alignment(TMPro::TextAlignmentOptions::Center);
+    auto transform3 = BeatSaberUI::CreateFloatingScreen(UnityEngine::Vector2(30,15), UnityEngine::Vector3(-0.5,1.6f,2), UnityEngine::Vector3(0,0,0))->get_transform();
+    BeatSaberUI::CreateText(transform3, "Screens!")->set_alignment(TMPro::TextAlignmentOptions::Center);
+}
+
 bool didInit = false;
 
 bool DidInit(){
@@ -120,9 +135,13 @@ void QuestUI::Init() {
             ScrollViewContent, 
             IncrementSetting, 
             ModSettingsButtonsViewController, 
-            ModSettingsFlowCoordinator
+            ModSettingsFlowCoordinator,
+            FloatingScreen,
+            FloatingScreenMoverPointer,
+            FloatingScreenManager
             >();
         INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
+        INSTALL_HOOK_OFFSETLESS(getLogger(), MMVC_DidActivate, il2cpp_utils::FindMethodUnsafe("", "MainMenuViewController", "DidActivate", 3));
         INSTALL_HOOK_OFFSETLESS(getLogger(), SceneManager_Internal_ActiveSceneChanged, il2cpp_utils::FindMethodUnsafe("UnityEngine.SceneManagement", "SceneManager", "Internal_ActiveSceneChanged", 2));
         getLogger().info("Init completed!");
     }
