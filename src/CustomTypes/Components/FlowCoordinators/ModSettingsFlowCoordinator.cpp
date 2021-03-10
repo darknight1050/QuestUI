@@ -1,6 +1,5 @@
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
-#include "ModSettingsButtonClickData.hpp"
 
 #include "ModSettingsInfos.hpp"
 
@@ -26,8 +25,7 @@ using namespace UnityEngine::UI;
 using namespace HMUI;
 using namespace TMPro;
 
-void OnOpenModSettings(ModSettingsFlowCoordinator* self, CustomDataType* data) {
-    ModSettingsInfos::ModSettingsInfo& info = data->GetData<ModSettingsButtonClickData>().info;
+void QuestUI::ModSettingsFlowCoordinator::OnOpenModSettings(ModSettingsInfos::ModSettingsInfo& info) {
     switch(info.type) {
         case Register::Type::VIEW_CONTROLLER: {
             if(!info.viewController) {
@@ -47,15 +45,15 @@ void OnOpenModSettings(ModSettingsFlowCoordinator* self, CustomDataType* data) {
                 if(info.didActivateEvent)
                     info.viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<ViewController::DidActivateDelegate*>(classof(ViewController::DidActivateDelegate*), info.viewController, info.didActivateEvent));
             }
-            self->SetTitle(il2cpp_utils::createcsstr(info.title), ViewController::AnimationType::In);
-            self->ReplaceTopViewController(info.viewController, self, self, nullptr, ViewController::AnimationType::In, ViewController::AnimationDirection::Horizontal);
-            self->ActiveViewController = info.viewController;
+            SetTitle(il2cpp_utils::createcsstr(info.title), ViewController::AnimationType::In);
+            ReplaceTopViewController(info.viewController, this, this, nullptr, ViewController::AnimationType::In, ViewController::AnimationDirection::Horizontal);
+            ActiveViewController = info.viewController;
             break;
         }
         case Register::Type::FLOW_COORDINATOR: {
             if(!info.flowCoordinator)
                 info.flowCoordinator = BeatSaberUI::CreateFlowCoordinator(info.il2cpp_type);
-            self->PresentFlowCoordinator(info.flowCoordinator, nullptr, ViewController::AnimationDirection::Horizontal, false, false);
+            PresentFlowCoordinator(info.flowCoordinator, nullptr, ViewController::AnimationDirection::Horizontal, false, false);
             break;
         }
         default:
@@ -73,7 +71,7 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
         showBackButton = true;
         if(!ModSettingsButtonsViewController)
             ModSettingsButtonsViewController = BeatSaberUI::CreateViewController<QuestUI::ModSettingsButtonsViewController*>();
-        ModSettingsButtonsViewController->add_openModSettings(il2cpp_utils::MakeDelegate<System::Action_1<CustomDataType*>*>(classof(System::Action_1<CustomDataType*>*), this, OnOpenModSettings));
+        ModSettingsButtonsViewController->OnOpenModSettings = [this](ModSettingsInfos::ModSettingsInfo& info) { this->OnOpenModSettings(info); };
         ProvideInitialViewControllers(ModSettingsButtonsViewController, nullptr, nullptr, nullptr, nullptr);
         ActiveViewController = ModSettingsButtonsViewController;
     }
@@ -85,6 +83,6 @@ void QuestUI::ModSettingsFlowCoordinator::BackButtonWasPressed(ViewController* t
         ReplaceTopViewController(ModSettingsButtonsViewController, this, this, nullptr, ViewController::AnimationType::Out, ViewController::AnimationDirection::Horizontal);
         ActiveViewController = ModSettingsButtonsViewController;
     } else {
-        this->parentFlowCoordinator->DismissFlowCoordinator(this, ViewController::AnimationDirection::Horizontal, nullptr, false);
+        parentFlowCoordinator->DismissFlowCoordinator(this, ViewController::AnimationDirection::Horizontal, nullptr, false);
     }
 }

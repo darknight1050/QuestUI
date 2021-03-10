@@ -79,17 +79,17 @@ namespace QuestUI::BeatSaberUI {
 
     void SetButtonBackground(UnityEngine::UI::Button* button, UnityEngine::Sprite* background);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Events::UnityAction* onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction* onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityEngine::Events::UnityAction* onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::function<void()> onClick);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Events::UnityAction* onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction* onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, UnityEngine::Events::UnityAction* onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, std::function<void()> onClick);
 
     UnityEngine::UI::Image* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
@@ -109,66 +109,17 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
     
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Events::UnityAction_1<bool>* onToggle = nullptr);
-
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, UnityEngine::Events::UnityAction_1<bool>* onToggle = nullptr);
-    
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<bool>* onToggle = nullptr);
-    
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<bool>* onToggle = nullptr);
-    
-    //UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
-
-    HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
-
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
-    
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
-
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
-    
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
-    
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<float>* onValueChange = nullptr);
-
-    UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
-
-    UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);
-
-    //HMUI::ModalView* CreateModalView(UnityEngine::Transform* parent);
-
-    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange = nullptr);
-
-    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Events::UnityAction_1<Il2CppString*>* onValueChange = nullptr);
-
-    HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, std::function<void(std::string)> onValueChange = nullptr);
-
-    //For handleSide, a different int corresponds to each side. 0-left, 1-right, 2-bottom, 3-top, 4-full
-    UnityEngine::GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius = 0, bool hasBackground = true, bool createHandle = true, int handleSide = 4);
-    
-    UnityEngine::GameObject* CreateColorPicker(UnityEngine::Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr);
-    
-#pragma region stdfunctionWrappers
-   
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick);
-
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick);
-
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::function<void()> onClick);
-
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick);
-
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick);
-
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, std::function<void()> onClick);
-
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, std::function<void(bool)> onToggle);
+   UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, std::function<void(bool)> onToggle);
 
     UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, std::function<void(bool)> onToggle);
     
     UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle);
     
     UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle);
+
+    //UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
+
+    HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
 
     QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange);
     
@@ -180,11 +131,21 @@ namespace QuestUI::BeatSaberUI {
     
     QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange);
 
+    UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
+
+    UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);
+
+    //HMUI::ModalView* CreateModalView(UnityEngine::Transform* parent);
+
     HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, std::function<void(std::string)> onValueChange);
 
     HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string)> onValueChange);
  
-#pragma endregion
+    HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, std::function<void(std::string)> onValueChange = nullptr);
+
+    //For handleSide, a different int corresponds to each side. 0-left, 1-right, 2-bottom, 3-top, 4-full
+    UnityEngine::GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius = 0, bool hasBackground = true, bool createHandle = true, int handleSide = 4);
     
+    UnityEngine::GameObject* CreateColorPicker(UnityEngine::Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr);
 
 }

@@ -36,6 +36,6 @@ void QuestUI::IncrementSetting::UpdateValue() {
         CurrentValue = MaxValue;
     Text->SetText(GetRoundedString());
     if(OnValueChange)
-        OnValueChange->Invoke(CurrentValue);
+        OnValueChange(CurrentValue);
 }
 
