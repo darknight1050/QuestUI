@@ -16,9 +16,8 @@
 LOCAL_PATH := $(call my-dir)
 TARGET_ARCH_ABI := $(APP_ABI)
 
-include $(CLEAR_VARS)
-LOCAL_MODULE := hook
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+
 # Creating prebuilt for dependency: codegen - version: 0.6.2
 include $(CLEAR_VARS)
 LOCAL_MODULE := codegen_0_6_2
