@@ -188,7 +188,7 @@ namespace QuestUI::BeatSaberUI {
         if(physicsRaycaster)
             go->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = physicsRaycaster;
         go->AddComponent<CanvasGroup*>();
-        auto vc = go->AddComponent(type);
+        ViewController* vc = reinterpret_cast<ViewController*>(go->AddComponent(type));
 
         RectTransform* rectTransform = go->GetComponent<RectTransform*>();
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
@@ -196,12 +196,12 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
         rectTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
         go->SetActive(false);
-        return go->GetComponent<ViewController*>();
+        return vc;
     }
     
     FlowCoordinator* CreateFlowCoordinator(System::Type* type) {
         static auto name = il2cpp_utils::createcsstr("QuestUIFlowCoordinator", il2cpp_utils::StringType::Manual);
-        FlowCoordinator* flowCoordinator = (FlowCoordinator*)GameObject::New_ctor(name)->AddComponent(type);
+        FlowCoordinator* flowCoordinator = reinterpret_cast<FlowCoordinator*>(GameObject::New_ctor(name)->AddComponent(type));
         flowCoordinator->baseInputModule = GetMainFlowCoordinator()->baseInputModule;
         return flowCoordinator;
     }
@@ -842,7 +842,7 @@ namespace QuestUI::BeatSaberUI {
         // initialize the picker itself
         auto pickerBase = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HSVPanelController*>(), [](HSVPanelController* x) { 
             return to_utf8(csstrtostr(x->get_name())) == "HSVColorPicker"; });
-        auto pickerGO = Object::Instantiate(pickerBase->get_gameObject(), pickerModalGO->get_transform(), false);
+        auto pickerGO = Object::Instantiate(pickerBase->get_gameObject(), pickerModalGORect, false);
         static auto pickerGOName = il2cpp_utils::createcsstr("QuestUIColorPickerController", il2cpp_utils::StringType::Manual);
         pickerGO->set_name(pickerGOName);
         auto hsvPanelController = pickerGO->GetComponent<HSVPanelController*>();
@@ -867,7 +867,8 @@ namespace QuestUI::BeatSaberUI {
                 pickerModalGO->SetActive(!pickerModalGO->get_activeSelf());
             }
         ));
-
+        ExternalComponents* externalComponents = buttonGO->AddComponent<ExternalComponents*>();
+        externalComponents->Add(pickerModalGORect);
         return buttonGO;
     }
 
