@@ -55,7 +55,6 @@ MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::O
     OptionsViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     if(firstActivation) {
         flowCoordinator = nullptr;
-        BeatSaberUI::ClearCache();
         if(GetModsCount() > 0) {
             UnityEngine::UI::Button* avatarButton = self->settingsButton;
             UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
@@ -81,6 +80,7 @@ MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::O
 
 MAKE_HOOK_OFFSETLESS(SceneManager_Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
     SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
+    BeatSaberUI::ClearCache();
     if(prevScene.IsValid() && nextScene.IsValid()) {
         std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
         std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
