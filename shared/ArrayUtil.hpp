@@ -75,4 +75,34 @@ namespace QuestUI::ArrayUtil {
         return false;
     }
 
+    template <class Out, class T, class Predicate>
+    inline Out Min(Array<T*>* array, Predicate pred)
+    {
+        bool first = true;
+        Out min;
+        for (int i = 0; i < array->Length(); i++) {
+            auto value = pred(array->values[i]);
+            if(first || value < min){
+                first = false;
+                min = value;
+            }
+        }
+        return min;
+    }
+
+    template <class Out, class T, class Predicate>
+    inline Out Max(Array<T*>* array, Predicate pred)
+    {
+        bool first = true;
+        Out max;
+        for (int i = 0; i < array->Length(); i++) {
+            auto value = pred(array->values[i]);
+            if(first || value > max){
+                first = false;
+                max = value;
+            }
+        }
+        return max;
+    }
+
 }
