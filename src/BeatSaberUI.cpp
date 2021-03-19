@@ -33,7 +33,6 @@
 #include "HMUI/Touchable.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "HMUI/TableView.hpp"
-#include "HMUI/TableViewScroller.hpp"
 #include "HMUI/TextPageScrollView.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
 #include "HMUI/TextSegmentedControl.hpp"
@@ -69,9 +68,9 @@ namespace QuestUI::BeatSaberUI {
     GameObject* beatSaberUIObject = nullptr;
     GameObject* dropdownListPrefab = nullptr;
 
-    void SetupPersistentObjects(){
+    void SetupPersistentObjects() {
         getLogger().info("SetupPersistentObjects");
-        if(!beatSaberUIObject){
+        if(!beatSaberUIObject) {
             static auto name = il2cpp_utils::createcsstr("BeatSaberUIObject", il2cpp_utils::StringType::Manual);
             beatSaberUIObject = GameObject::New_ctor(name);
             GameObject::DontDestroyOnLoad(beatSaberUIObject);
@@ -102,10 +101,20 @@ namespace QuestUI::BeatSaberUI {
     TMP_FontAsset* mainTextFont = nullptr;
     TMP_FontAsset* GetMainTextFont() {
         if(!mainTextFont)
-            mainTextFont = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TMP_FontAsset*>(), [](TMP_FontAsset* x) { return to_utf8(csstrtostr(x->get_name())) == "Teko-Medium SDF No Glow"; });
+            mainTextFont = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TMP_FontAsset*>(), [](TMP_FontAsset* x) { return to_utf8(csstrtostr(x->get_name())) == "Teko-Medium SDF"; });
         if(!mainTextFont)
             CacheNotFoundWarningLog(MainTextFont);
         return mainTextFont;
+    }
+
+    Material* mainUIFontMaterial = nullptr;
+    Material* GetMainUIFontMaterial()
+    {
+        if(!mainUIFontMaterial)
+            mainUIFontMaterial = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Material*>(), [](Material* x) { return to_utf8(csstrtostr(x->get_name())) == "Teko-Medium SDF Curved Softer"; });
+        if(!mainUIFontMaterial)
+            CacheNotFoundWarningLog(MainUIFontMaterial);
+        return mainUIFontMaterial;
     }
 
     Sprite* editIcon = nullptr;
@@ -140,6 +149,7 @@ namespace QuestUI::BeatSaberUI {
     void ClearCache() {
         mainFlowCoordinator = nullptr;
         mainTextFont = nullptr;
+        mainUIFontMaterial = nullptr;
         editIcon = nullptr;
         physicsRaycaster = nullptr;
         diContainer = nullptr;
@@ -231,6 +241,7 @@ namespace QuestUI::BeatSaberUI {
         RectTransform* rectTransform = textMesh->get_rectTransform();
         rectTransform->SetParent(parent, false);
         textMesh->set_font(GetMainTextFont());
+        textMesh->set_fontSharedMaterial(GetMainUIFontMaterial());
         textMesh->set_text(il2cpp_utils::createcsstr(italic ? ("<i>" + text + "</i>") : text));
         textMesh->set_fontSize(4.0f);
         textMesh->set_color(UnityEngine::Color::get_white());
@@ -763,7 +774,7 @@ namespace QuestUI::BeatSaberUI {
         dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
         dropdown->SelectCellWithIdx(selectedIndex);
 
-        if(onValueChange){
+        if(onValueChange) {
             using DelegateType = System::Action_2<DropdownWithTableView*, int>*;
             dropdown->add_didSelectCellWithIdxEvent(MakeDelegate(DelegateType,
                 (std::function<void(SimpleTextDropdown*, int)>)[onValueChange](SimpleTextDropdown* dropdownWithTableView, int index){

@@ -37,6 +37,8 @@ namespace QuestUI::BeatSaberUI {
 
     TMPro::TMP_FontAsset* GetMainTextFont();
 
+    UnityEngine::Material* GetMainUIFontMaterial();
+
     UnityEngine::Sprite* GetEditIcon();
 
     VRUIControls::PhysicsRaycasterWithCache* GetPhysicsRaycasterWithCache();
