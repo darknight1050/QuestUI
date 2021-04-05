@@ -332,10 +332,14 @@ namespace QuestUI::BeatSaberUI {
         Button* button = CreateUIButton(parent, buttonText, buttonTemplate, anchoredPosition, onClick);
         button->GetComponent<RectTransform*>()->set_sizeDelta(sizeDelta);
         LayoutElement* layoutElement = button->GetComponent<LayoutElement*>();
+        if(!layoutElement)
+            layoutElement = button->get_gameObject()->AddComponent<LayoutElement*>();
         layoutElement->set_minWidth(sizeDelta.x);
         layoutElement->set_minHeight(sizeDelta.y);
         layoutElement->set_preferredWidth(sizeDelta.x);
         layoutElement->set_preferredHeight(sizeDelta.y);
+        layoutElement->set_flexibleWidth(sizeDelta.x);
+        layoutElement->set_flexibleHeight(sizeDelta.y);
         return button;
     }
 
