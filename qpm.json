@@ -4,7 +4,7 @@
   "info": {
     "name": "questui",
     "id": "questui",
-    "version": "0.0.1",
+    "version": "0.6.0",
     "url": "https://github.com/darknight1050/questui",
     "additionalData": {
       "overrideSoName": "libquestui.so"
