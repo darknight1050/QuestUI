@@ -11,7 +11,7 @@
 using namespace UnityEngine;
 using namespace UnityEngine::UI;
 
-DEFINE_CLASS(QuestUI::ScrollViewContent);
+DEFINE_TYPE(QuestUI::ScrollViewContent);
 
 void QuestUI::ScrollViewContent::Start() {
     LayoutRebuilder::ForceRebuildLayoutImmediate(GetComponent<RectTransform*>());

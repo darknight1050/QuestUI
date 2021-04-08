@@ -16,7 +16,7 @@
 
 #include <limits>
 
-DEFINE_CLASS(QuestUI::FloatingScreenMoverPointer);
+DEFINE_TYPE(QuestUI::FloatingScreenMoverPointer);
 
 void QuestUI::FloatingScreenMoverPointer::Init(QuestUI::FloatingScreen* screen, VRUIControls::VRPointer* pointer){
     vrPointer = pointer;

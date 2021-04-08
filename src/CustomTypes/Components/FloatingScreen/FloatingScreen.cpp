@@ -16,7 +16,7 @@
 
 #include "VRUIControls/VRPointer.hpp"
 
-DEFINE_CLASS(QuestUI::FloatingScreen);
+DEFINE_TYPE(QuestUI::FloatingScreen);
 
 void QuestUI::FloatingScreen::set_bgGo(UnityEngine::GameObject* bg) { 
     bgGo = bg;

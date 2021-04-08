@@ -24,7 +24,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreen, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_FIELD(UnityEngine::Quaternion, screenRotation);
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, handle);
     DECLARE_INSTANCE_FIELD(bool, showHandle);
-    DECLARE_INSTANCE_FIELD_DEFAULT(int, handleSide, 0);
+    DECLARE_INSTANCE_FIELD(int, handleSide);
 
     DECLARE_METHOD(void, set_showHandle, bool value);
     DECLARE_METHOD(void, set_screenSize, UnityEngine::Vector2 size);
