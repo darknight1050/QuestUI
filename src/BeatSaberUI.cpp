@@ -5,6 +5,7 @@
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
+#include "CustomTypes/Components/CustomInputFieldView.hpp"
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
@@ -719,6 +720,10 @@ namespace QuestUI::BeatSaberUI {
     }
 
     InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string)> onValueChange) {
+        return CreateStringSetting(parent, settingsName, currentValue, anchoredPosition, UnityEngine::Vector3(1337.0f, 1337.0f, 1337.0f), onValueChange);
+    }
+    
+    InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector3 keyboardPositionOffset, std::function<void(std::string)> onValueChange) {
         InputFieldView* originalFieldView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<InputFieldView*>(), [](InputFieldView* x) { 
             return to_utf8(csstrtostr(x->get_name())) == "GuestNameInputField"; });
         GameObject* gameObj = Object::Instantiate(originalFieldView->get_gameObject(), parent, false);
@@ -730,12 +735,37 @@ namespace QuestUI::BeatSaberUI {
         gameObj->GetComponent<RectTransform*>()->set_anchoredPosition(anchoredPosition);
 
         InputFieldView* fieldView = gameObj->GetComponent<InputFieldView*>();
+        auto blinkingCaret = fieldView->blinkingCaret;
+        auto clearSearchButton = fieldView->clearSearchButton;
+        auto hasKeyboardAssigned = fieldView->hasKeyboardAssigned;
+        auto placeholderText = fieldView->placeholderText;
+        auto selectionState = fieldView->selectionState;
+        auto text = fieldView->text;
+        auto textView = fieldView->textView;
+        auto textViewCanvasGroup = fieldView->textViewCanvasGroup;
+        auto useUppercase = fieldView->useUppercase;
+
+        Object::DestroyImmediate(fieldView);
+        fieldView = gameObj->AddComponent<CustomInputFieldView*>();
+
+        fieldView->blinkingCaret = blinkingCaret;
+        fieldView->clearSearchButton = clearSearchButton;
+        fieldView->hasKeyboardAssigned = hasKeyboardAssigned;
+        fieldView->placeholderText = placeholderText;
+        fieldView->selectionState = selectionState;
+        fieldView->text = text;
+        fieldView->textView = textView;
+        fieldView->textViewCanvasGroup = textViewCanvasGroup;
+        fieldView->useUppercase = useUppercase;
+
         fieldView->useGlobalKeyboard = true;
         fieldView->textLengthLimit = 128;
-        fieldView->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 42.0f, 0.0f);
-        GameObject* placeholder = fieldView->placeholderText;
-        Object::Destroy(placeholder->GetComponent<LocalizedTextMeshProUGUI*>());
-        placeholder->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(settingsName));
+        fieldView->keyboardPositionOffset = keyboardPositionOffset;
+
+        fieldView->Awake();
+
+        Object::Destroy(placeholderText->GetComponent<LocalizedTextMeshProUGUI*>());
+        placeholderText->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(settingsName));
         fieldView->SetText(il2cpp_utils::createcsstr(currentValue));
         fieldView->onValueChanged = InputFieldView::InputFieldChanged::New_ctor();
         if(onValueChange) {
@@ -827,7 +857,7 @@ namespace QuestUI::BeatSaberUI {
 
     GameObject* CreateColorPicker(Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, ColorChangeUIEventType)> onValueChange) {
         // use QuestUI toggle as starting point to make positioning and sizing easier
-        auto fakeToggle = CreateToggle(parent, text, nullptr);
+        auto fakeToggle = CreateToggle(parent, text);
         auto gameObject = fakeToggle->get_transform()->get_parent()->get_gameObject();
         Object::Destroy(fakeToggle->get_gameObject());
         

@@ -81,17 +81,17 @@ namespace QuestUI::BeatSaberUI {
 
     void SetButtonBackground(UnityEngine::UI::Button* button, UnityEngine::Sprite* background);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::function<void()> onClick);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::function<void()> onClick = nullptr);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, std::function<void()> onClick);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, std::function<void()> onClick = nullptr);
 
     UnityEngine::UI::Image* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
@@ -111,27 +111,27 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
     
-   UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, std::function<void(bool)> onToggle);
+   UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, std::function<void(bool)> onToggle = nullptr);
 
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, std::function<void(bool)> onToggle);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, std::function<void(bool)> onToggle = nullptr);
     
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle = nullptr);
     
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle = nullptr);
 
     //UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
 
     HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
 
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange = nullptr);
     
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
 
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, std::function<void(float)> onValueChange);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, std::function<void(float)> onValueChange = nullptr);
     
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
     
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
 
     UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
 
@@ -139,9 +139,11 @@ namespace QuestUI::BeatSaberUI {
 
     //HMUI::ModalView* CreateModalView(UnityEngine::Transform* parent);
 
-    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, std::function<void(std::string)> onValueChange);
+    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, std::function<void(std::string)> onValueChange = nullptr);
 
-    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string)> onValueChange);
+    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string)> onValueChange = nullptr);
+    
+    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector3 keyboardPositionOffset, std::function<void(std::string)> onValueChange = nullptr);
  
     HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, std::function<void(std::string)> onValueChange = nullptr);
 

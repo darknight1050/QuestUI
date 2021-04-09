@@ -7,6 +7,7 @@
 #include "CustomTypes/Data/CustomDataType.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
+#include "CustomTypes/Components/CustomInputFieldView.hpp"
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
@@ -19,6 +20,7 @@
 #include "Sprites/ModSettingsButton.hpp"
 
 #include "GlobalNamespace/MainMenuViewController.hpp"
+#include "GlobalNamespace/UIKeyboardManager.hpp"
 #include "UnityEngine/SceneManagement/Scene.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
@@ -106,6 +108,22 @@ MAKE_HOOK_OFFSETLESS(SceneManager_Internal_ActiveSceneChanged, void, UnityEngine
     }
 }
 
+MAKE_HOOK_OFFSETLESS(UIKeyboardManager_OpenKeyboardFor, void, GlobalNamespace::UIKeyboardManager* self, HMUI::InputFieldView* input) {
+    static UnityEngine::Vector3 magicVector = UnityEngine::Vector3(1337.0f, 1337.0f, 1337.0f);
+    if (il2cpp_functions::class_is_assignable_from(classof(CustomInputFieldView*), input->klass) && input->keyboardPositionOffset == magicVector) {
+        auto transform = input->get_transform();
+        if(transform->get_position().y < 1.278000f) {
+            input->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 42.0f, 0.0f);
+        } else {
+            input->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 0.0f, 0.0f);
+        }
+        UIKeyboardManager_OpenKeyboardFor(self, input);
+        input->keyboardPositionOffset = magicVector;
+    } else {
+        UIKeyboardManager_OpenKeyboardFor(self, input);
+    }
+}
+
 bool didInit = false;
 
 bool DidInit(){
@@ -122,6 +140,7 @@ void QuestUI::Init() {
             CustomDataType, 
             Backgroundable, 
             ScrollViewContent, 
+            CustomInputFieldView, 
             MainThreadScheduler, 
             IncrementSetting, 
             ModSettingsButtonsViewController, 
@@ -132,6 +151,7 @@ void QuestUI::Init() {
             >();
         INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
         INSTALL_HOOK_OFFSETLESS(getLogger(), SceneManager_Internal_ActiveSceneChanged, il2cpp_utils::FindMethodUnsafe("UnityEngine.SceneManagement", "SceneManager", "Internal_ActiveSceneChanged", 2));
+        INSTALL_HOOK_OFFSETLESS(getLogger(), UIKeyboardManager_OpenKeyboardFor, il2cpp_utils::FindMethodUnsafe("", "UIKeyboardManager", "OpenKeyboardFor", 1));
         getLogger().info("Init completed!");
     }
 }
