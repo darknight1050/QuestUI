@@ -26,7 +26,7 @@ public:
 
     DECLARE_METHOD(CustomDataType*, SetDataPointer, void* data);
 
-    DECLARE_OVERRIDE_METHOD(void, Finalize, il2cpp_utils::FindMethod("System", "Object", "Finalize"));
+    DESTRUCTOR(Finalize);
 
     REGISTER_FUNCTION(CustomDataType,
         REGISTER_FIELD(data);
