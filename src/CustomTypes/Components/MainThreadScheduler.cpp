@@ -8,12 +8,10 @@ std::mutex QuestUI::MainThreadScheduler::scheduledMethodsMutex;
 
 void QuestUI::MainThreadScheduler::Update() {
     std::lock_guard<std::mutex> lock(scheduledMethodsMutex);
-    for(std::function<void()> method : scheduledMethods) {
-        method();
+    if(scheduledMethods.size() > 0) {
+        for(std::function<void()> method : scheduledMethods) {
+            method();
+        }
+        scheduledMethods.clear();
     }
-    scheduledMethods.clear();
-}
-
-void QuestUI::MainThreadScheduler::Finalize() {
-    scheduledMethods.~vector();
 }
