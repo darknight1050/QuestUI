@@ -90,7 +90,14 @@
 			"valarray": "cpp",
 			"__functional_base_03": "cpp",
 			"filesystem": "cpp",
-			"memory_resource": "cpp"
+			"memory_resource": "cpp",
+			"ranges": "cpp",
+			"coroutine": "cpp",
+			"*.tcc": "cpp",
+			"concepts": "cpp",
+			"shared_mutex": "cpp",
+			"stop_token": "cpp",
+			"cfenv": "cpp"
 		}
 	}
 }

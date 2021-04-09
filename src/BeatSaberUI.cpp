@@ -5,6 +5,7 @@
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
+#include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
 
@@ -74,6 +75,7 @@ namespace QuestUI::BeatSaberUI {
             static auto name = il2cpp_utils::createcsstr("BeatSaberUIObject", il2cpp_utils::StringType::Manual);
             beatSaberUIObject = GameObject::New_ctor(name);
             GameObject::DontDestroyOnLoad(beatSaberUIObject);
+            beatSaberUIObject->AddComponent<MainThreadScheduler*>();
         }
         if(!dropdownListPrefab) {
             GameObject* search = ArrayUtil::First(Resources::FindObjectsOfTypeAll<SimpleTextDropdown*>(), [](SimpleTextDropdown* x) { 

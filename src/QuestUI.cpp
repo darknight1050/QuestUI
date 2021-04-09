@@ -7,6 +7,7 @@
 #include "CustomTypes/Data/CustomDataType.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
+#include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
@@ -121,6 +122,7 @@ void QuestUI::Init() {
             CustomDataType, 
             Backgroundable, 
             ScrollViewContent, 
+            MainThreadScheduler, 
             IncrementSetting, 
             ModSettingsButtonsViewController, 
             ModSettingsFlowCoordinator,
