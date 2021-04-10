@@ -5,7 +5,6 @@
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
-#include "CustomTypes/Components/CustomInputFieldView.hpp"
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
@@ -735,37 +734,14 @@ namespace QuestUI::BeatSaberUI {
         gameObj->GetComponent<RectTransform*>()->set_anchoredPosition(anchoredPosition);
 
         InputFieldView* fieldView = gameObj->GetComponent<InputFieldView*>();
-        auto blinkingCaret = fieldView->blinkingCaret;
-        auto clearSearchButton = fieldView->clearSearchButton;
-        auto hasKeyboardAssigned = fieldView->hasKeyboardAssigned;
-        auto placeholderText = fieldView->placeholderText;
-        auto selectionState = fieldView->selectionState;
-        auto text = fieldView->text;
-        auto textView = fieldView->textView;
-        auto textViewCanvasGroup = fieldView->textViewCanvasGroup;
-        auto useUppercase = fieldView->useUppercase;
-
-        Object::DestroyImmediate(fieldView);
-        fieldView = gameObj->AddComponent<CustomInputFieldView*>();
-
-        fieldView->blinkingCaret = blinkingCaret;
-        fieldView->clearSearchButton = clearSearchButton;
-        fieldView->hasKeyboardAssigned = hasKeyboardAssigned;
-        fieldView->placeholderText = placeholderText;
-        fieldView->selectionState = selectionState;
-        fieldView->text = text;
-        fieldView->textView = textView;
-        fieldView->textViewCanvasGroup = textViewCanvasGroup;
-        fieldView->useUppercase = useUppercase;
-
         fieldView->useGlobalKeyboard = true;
         fieldView->textLengthLimit = 128;
         fieldView->keyboardPositionOffset = keyboardPositionOffset;
 
         fieldView->Awake();
 
-        Object::Destroy(placeholderText->GetComponent<LocalizedTextMeshProUGUI*>());
-        placeholderText->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(settingsName));
+        Object::Destroy(fieldView->placeholderText->GetComponent<LocalizedTextMeshProUGUI*>());
+        fieldView->placeholderText->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(settingsName));
         fieldView->SetText(il2cpp_utils::createcsstr(currentValue));
         fieldView->onValueChanged = InputFieldView::InputFieldChanged::New_ctor();
         if(onValueChange) {

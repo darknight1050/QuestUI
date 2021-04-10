@@ -7,7 +7,6 @@
 #include "CustomTypes/Data/CustomDataType.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
-#include "CustomTypes/Components/CustomInputFieldView.hpp"
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
@@ -110,7 +109,7 @@ MAKE_HOOK_OFFSETLESS(SceneManager_Internal_ActiveSceneChanged, void, UnityEngine
 
 MAKE_HOOK_OFFSETLESS(UIKeyboardManager_OpenKeyboardFor, void, GlobalNamespace::UIKeyboardManager* self, HMUI::InputFieldView* input) {
     static UnityEngine::Vector3 magicVector = UnityEngine::Vector3(1337.0f, 1337.0f, 1337.0f);
-    if (il2cpp_functions::class_is_assignable_from(classof(CustomInputFieldView*), input->klass) && input->keyboardPositionOffset == magicVector) {
+    if (input->keyboardPositionOffset == magicVector) {
         auto transform = input->get_transform();
         if(transform->get_position().y < 1.278000f) {
             input->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 42.0f, 0.0f);
@@ -140,7 +139,6 @@ void QuestUI::Init() {
             CustomDataType, 
             Backgroundable, 
             ScrollViewContent, 
-            CustomInputFieldView, 
             MainThreadScheduler, 
             IncrementSetting, 
             ModSettingsButtonsViewController, 
