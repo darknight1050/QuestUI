@@ -24,7 +24,7 @@ LOCAL_MODULE := codegen_0_7_0
 LOCAL_EXPORT_C_INCLUDES := extern/codegen
 LOCAL_SRC_FILES := extern/libcodegen_0_7_0.so
 include $(PREBUILT_SHARED_LIBRARY)
-# Creating prebuilt for dependency: custom-types - version: 0.7.0
+# Creating prebuilt for dependency: custom-types - version: 0.8.2
 include $(CLEAR_VARS)
 LOCAL_MODULE := custom-types
 LOCAL_EXPORT_C_INCLUDES := extern/custom-types
@@ -36,7 +36,7 @@ LOCAL_MODULE := beatsaber-hook_1_3_0
 LOCAL_EXPORT_C_INCLUDES := extern/beatsaber-hook
 LOCAL_SRC_FILES := extern/libbeatsaber-hook_1_3_0.so
 include $(PREBUILT_SHARED_LIBRARY)
-# Creating prebuilt for dependency: modloader - version: 1.1.0
+# Creating prebuilt for dependency: modloader - version: 1.0.4
 include $(CLEAR_VARS)
 LOCAL_MODULE := modloader
 LOCAL_EXPORT_C_INCLUDES := extern/modloader

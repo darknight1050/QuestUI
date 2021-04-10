@@ -17,7 +17,3 @@ UnityEngine::Component* QuestUI::ExternalComponents::GetByType(Il2CppReflectionT
     }
     return nullptr;
 }
-
-void QuestUI::ExternalComponents::Finalize() {
-    components.~vector();
-}
