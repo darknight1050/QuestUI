@@ -16,11 +16,11 @@ DECLARE_CLASS_CODEGEN(QuestUI, ExternalComponents, UnityEngine::MonoBehaviour,
         }
 
     DECLARE_METHOD(void, Add, UnityEngine::Component* component); 
-    DECLARE_METHOD(UnityEngine::Component*, GetByType, Il2CppReflectionType* type); 
-    
-    DESTRUCTOR(Finalize);
+    DECLARE_METHOD(UnityEngine::Component*, GetByType, Il2CppReflectionType* type);
 
-    REGISTER_FUNCTION(ExternalComponents,
+    DECLARE_DTOR(Finalize);
+
+    REGISTER_FUNCTION(
         REGISTER_METHOD(Add);
         REGISTER_METHOD(GetByType);
         

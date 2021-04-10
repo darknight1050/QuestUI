@@ -12,7 +12,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, Backgroundable, UnityEngine::MonoBehaviour,
 
     DECLARE_METHOD(void, ApplyBackground, Il2CppString* name);
     
-    REGISTER_FUNCTION(Backgroundable,
+    REGISTER_FUNCTION(
         REGISTER_FIELD(background);
         
         REGISTER_METHOD(ApplyBackgroundWithAlpha);

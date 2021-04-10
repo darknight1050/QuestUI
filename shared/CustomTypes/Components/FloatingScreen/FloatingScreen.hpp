@@ -35,7 +35,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreen, UnityEngine::MonoBehaviour,
     DECLARE_METHOD(int, get_side);
     DECLARE_METHOD(void, set_side, int side);
 
-    REGISTER_FUNCTION(FloatingScreen,
+    REGISTER_FUNCTION(
         REGISTER_FIELD(bgGo);
         REGISTER_FIELD(screenSize);
         REGISTER_FIELD(screenPosition);

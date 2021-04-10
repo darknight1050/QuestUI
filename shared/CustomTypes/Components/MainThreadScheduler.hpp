@@ -18,7 +18,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, MainThreadScheduler, UnityEngine::MonoBehaviour,
     
     DECLARE_METHOD(void, Update);
 
-    REGISTER_FUNCTION(MainThreadScheduler,
+    REGISTER_FUNCTION(
         REGISTER_METHOD(Update);
 
     )

@@ -23,7 +23,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, IncrementSetting, UnityEngine::MonoBehaviour,
     DECLARE_METHOD(void, DecButtonPressed);
     DECLARE_METHOD(void, UpdateValue);
 
-    REGISTER_FUNCTION(IncrementSetting,
+    REGISTER_FUNCTION(
         REGISTER_FIELD(Decimals);
         REGISTER_FIELD(Increment);
         REGISTER_FIELD(CurrentValue);
