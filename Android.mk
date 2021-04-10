@@ -36,7 +36,7 @@ LOCAL_MODULE := beatsaber-hook_1_2_6
 LOCAL_EXPORT_C_INCLUDES := extern/beatsaber-hook
 LOCAL_SRC_FILES := extern/libbeatsaber-hook_1_2_6.so
 include $(PREBUILT_SHARED_LIBRARY)
-# Creating prebuilt for dependency: modloader - version: 1.0.4
+# Creating prebuilt for dependency: modloader - version: 1.1.0
 include $(CLEAR_VARS)
 LOCAL_MODULE := modloader
 LOCAL_EXPORT_C_INCLUDES := extern/modloader
@@ -53,7 +53,7 @@ LOCAL_SHARED_LIBRARIES += codegen_0_7_0
 LOCAL_SHARED_LIBRARIES += custom-types
 LOCAL_SHARED_LIBRARIES += beatsaber-hook_1_2_6
 LOCAL_LDLIBS += -llog 
-LOCAL_CFLAGS += -DVERSION='"0.0.1"'
+LOCAL_CFLAGS += -DVERSION='"0.6.4"'
 LOCAL_C_INCLUDES += ./include ./shared ./src ./extern ./extern/libil2cpp/il2cpp/libil2cpp ./extern/codegen/include
 LOCAL_CPP_FEATURES += exceptions
 include $(BUILD_SHARED_LIBRARY)
