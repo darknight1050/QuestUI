@@ -26,9 +26,9 @@ public:
 
     DECLARE_METHOD(CustomDataType*, SetDataPointer, void* data);
 
-    DESTRUCTOR(Finalize);
+    DECLARE_DTOR(Finalize);
 
-    REGISTER_FUNCTION(CustomDataType,
+    REGISTER_FUNCTION(
         REGISTER_FIELD(data);
         REGISTER_FIELD(allocated);
 

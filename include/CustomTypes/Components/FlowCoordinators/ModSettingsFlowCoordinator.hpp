@@ -19,7 +19,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, ModSettingsFlowCoordinator, HMUI::FlowCoordinator
 
     DECLARE_OVERRIDE_METHOD(void, BackButtonWasPressed, il2cpp_utils::FindMethodUnsafe("HMUI", "FlowCoordinator", "BackButtonWasPressed", 1), HMUI::ViewController* topViewController);
 
-    REGISTER_FUNCTION(ModSettingsFlowCoordinator,
+    REGISTER_FUNCTION(
         REGISTER_FIELD(ActiveViewController);
         REGISTER_FIELD(ModSettingsButtonsViewController);
 

@@ -15,7 +15,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, ScrollViewContent, UnityEngine::MonoBehaviour,
     DECLARE_METHOD(void, OnRectTransformDimensionsChange);
     DECLARE_METHOD(void, UpdateScrollView); 
     
-    REGISTER_FUNCTION(ScrollViewContent,
+    REGISTER_FUNCTION(
         REGISTER_FIELD(scrollView);
         REGISTER_FIELD(inSetup);
         

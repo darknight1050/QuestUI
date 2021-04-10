@@ -32,7 +32,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreenMoverPointer, UnityEngine::MonoBeha
     DECLARE_METHOD(void, Update);
     DECLARE_METHOD(void, LateUpdate);
 
-    REGISTER_FUNCTION(FloatingScreenMoverPointer,
+    REGISTER_FUNCTION(
         REGISTER_FIELD(vrPointer);
         REGISTER_FIELD(grabbingController);
         REGISTER_FIELD(floatingScreen);
