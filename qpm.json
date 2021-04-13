@@ -7,7 +7,10 @@
     "version": "0.6.7",
     "url": "https://github.com/darknight1050/questui",
     "additionalData": {
-      "overrideSoName": "libquestui.so"
+      "overrideSoName": "libquestui.so",
+      "branchName": "version-v0.6.7",
+      "soLink": "https://github.com/darknight1050/questui/releases/download/v0.6.7/libquestui.so",
+      "debugSoLink": "https://github.com/darknight1050/questui/releases/download/v0.6.7/debug_libquestui.so"
     }
   },
   "dependencies": [
