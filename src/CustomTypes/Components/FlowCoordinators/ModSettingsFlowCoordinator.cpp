@@ -38,7 +38,7 @@ void QuestUI::ModSettingsFlowCoordinator::OnOpenModSettings(ModSettingsInfos::Mo
                     layoutGameObject->GetComponent<ContentSizeFitter*>()->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
                     layoutGameObject->AddComponent<Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
                     layout->set_padding(UnityEngine::RectOffset::New_ctor(3, 4, 2, 2));
-                    TextMeshProUGUI* modInfoText = BeatSaberUI::CreateText(layout->get_transform(), info.modInfo.id + " | v" + info.modInfo.version);
+                    TextMeshProUGUI* modInfoText = BeatSaberUI::CreateText(layout->get_transform(), info.modInfo.id + " : v" + info.modInfo.version);
                     modInfoText->set_alignment(TextAlignmentOptions::Center);
                     modInfoText->set_fontSize(4.8f);
                 }
