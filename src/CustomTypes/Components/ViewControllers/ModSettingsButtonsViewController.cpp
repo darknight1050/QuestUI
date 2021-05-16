@@ -19,8 +19,8 @@ UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine:
     UnityEngine::UI::HorizontalLayoutGroup* layoutGroup = QuestUI::BeatSaberUI::CreateHorizontalLayoutGroup(parent);
     layoutGroup->set_childForceExpandHeight(false);
     layoutGroup->set_childForceExpandWidth(false);
-    layoutGroup->set_childControlHeight(true);
-    layoutGroup->set_childControlWidth(true);
+    layoutGroup->set_childControlHeight(false);
+    layoutGroup->set_childControlWidth(false);
     layoutGroup->set_childAlignment(UnityEngine::TextAnchor::MiddleLeft);
     layoutGroup->set_spacing(3.0f);
     return layoutGroup;
