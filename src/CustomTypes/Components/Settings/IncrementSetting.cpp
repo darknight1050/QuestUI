@@ -11,7 +11,7 @@
 #include "UnityEngine/Sprite.hpp"
 #include "UnityEngine/HideFlags.hpp"
 
-DEFINE_TYPE(QuestUI::IncrementSetting);
+DEFINE_TYPE(QuestUI, IncrementSetting);
 
 Il2CppString* QuestUI::IncrementSetting::GetRoundedString() {
     std::stringstream stream;

@@ -17,8 +17,4 @@ DECLARE_CLASS_CODEGEN(QuestUI, ModSettingsButtonsViewController, HMUI::ViewContr
     public:
         std::function<void(ModSettingsInfos::ModSettingsInfo&)> OnOpenModSettings;
 
-    REGISTER_FUNCTION(
-        REGISTER_METHOD(DidActivate);
-    )
-
 )

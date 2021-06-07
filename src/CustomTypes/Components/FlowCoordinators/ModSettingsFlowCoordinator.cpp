@@ -17,7 +17,7 @@
 
 #include "customlogger.hpp"
 
-DEFINE_TYPE(QuestUI::ModSettingsFlowCoordinator);
+DEFINE_TYPE(QuestUI, ModSettingsFlowCoordinator);
 
 using namespace QuestUI;
 using namespace UnityEngine;

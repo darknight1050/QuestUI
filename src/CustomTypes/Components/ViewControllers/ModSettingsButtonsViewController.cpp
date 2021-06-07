@@ -13,7 +13,7 @@
 
 #include "customlogger.hpp"
 
-DEFINE_TYPE(QuestUI::ModSettingsButtonsViewController);
+DEFINE_TYPE(QuestUI, ModSettingsButtonsViewController);
 
 UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent){
     UnityEngine::UI::HorizontalLayoutGroup* layoutGroup = QuestUI::BeatSaberUI::CreateHorizontalLayoutGroup(parent);

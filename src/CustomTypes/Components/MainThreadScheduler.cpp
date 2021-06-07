@@ -1,7 +1,7 @@
 #include "beatsaber-hook/shared/utils/utils.h"
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 
-DEFINE_TYPE(QuestUI::MainThreadScheduler);
+DEFINE_TYPE(QuestUI, MainThreadScheduler);
 
 std::vector<std::function<void()>> QuestUI::MainThreadScheduler::scheduledMethods;
 std::mutex QuestUI::MainThreadScheduler::scheduledMethodsMutex;

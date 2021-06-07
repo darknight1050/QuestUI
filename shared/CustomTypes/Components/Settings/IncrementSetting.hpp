@@ -18,24 +18,9 @@ DECLARE_CLASS_CODEGEN(QuestUI, IncrementSetting, UnityEngine::MonoBehaviour,
         std::function<void(float)> OnValueChange;
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, Text);
 
-    DECLARE_METHOD(Il2CppString*, GetRoundedString);
-    DECLARE_METHOD(void, IncButtonPressed);
-    DECLARE_METHOD(void, DecButtonPressed);
-    DECLARE_METHOD(void, UpdateValue);
+    DECLARE_INSTANCE_METHOD(Il2CppString*, GetRoundedString);
+    DECLARE_INSTANCE_METHOD(void, IncButtonPressed);
+    DECLARE_INSTANCE_METHOD(void, DecButtonPressed);
+    DECLARE_INSTANCE_METHOD(void, UpdateValue);
 
-    REGISTER_FUNCTION(
-        REGISTER_FIELD(Decimals);
-        REGISTER_FIELD(Increment);
-        REGISTER_FIELD(CurrentValue);
-        REGISTER_FIELD(HasMin);
-        REGISTER_FIELD(HasMax);
-        REGISTER_FIELD(MinValue);
-        REGISTER_FIELD(MaxValue);
-        REGISTER_FIELD(Text);
-
-        REGISTER_METHOD(GetRoundedString);
-        REGISTER_METHOD(DecButtonPressed);
-        REGISTER_METHOD(IncButtonPressed);
-        REGISTER_METHOD(UpdateValue);
-    )
 )

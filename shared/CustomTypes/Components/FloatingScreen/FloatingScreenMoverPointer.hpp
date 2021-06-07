@@ -28,23 +28,8 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreenMoverPointer, UnityEngine::MonoBeha
     DECLARE_INSTANCE_FIELD(UnityEngine::Quaternion, realRot);
     DECLARE_INSTANCE_FIELD(UnityEngine::RaycastHit, hit);
 
-    DECLARE_METHOD(void, Init, ::QuestUI::FloatingScreen* screen, VRUIControls::VRPointer* pointer);
-    DECLARE_METHOD(void, Update);
-    DECLARE_METHOD(void, LateUpdate);
+    DECLARE_INSTANCE_METHOD(void, Init, ::QuestUI::FloatingScreen* screen, VRUIControls::VRPointer* pointer);
+    DECLARE_INSTANCE_METHOD(void, Update);
+    DECLARE_INSTANCE_METHOD(void, LateUpdate);
 
-    REGISTER_FUNCTION(
-        REGISTER_FIELD(vrPointer);
-        REGISTER_FIELD(grabbingController);
-        REGISTER_FIELD(floatingScreen);
-        REGISTER_FIELD(screenHandle);
-        REGISTER_FIELD(grabPos);
-        REGISTER_FIELD(grabRot);
-        REGISTER_FIELD(realPos);
-        REGISTER_FIELD(realRot);
-        REGISTER_FIELD(hit);
-
-        REGISTER_METHOD(Init);
-        REGISTER_METHOD(Update);
-        REGISTER_METHOD(LateUpdate);
-    )
 )

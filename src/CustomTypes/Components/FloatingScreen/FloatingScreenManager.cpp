@@ -6,7 +6,7 @@
 
 #include "VRUIControls/VRPointer.hpp"
 
-DEFINE_TYPE(QuestUI::FloatingScreenManager);
+DEFINE_TYPE(QuestUI, FloatingScreenManager);
 
 void QuestUI::FloatingScreenManager::createMover(QuestUI::FloatingScreen* screen, VRUIControls::VRPointer* vrPointer){
     auto mover = vrPointer->get_gameObject()->AddComponent<QuestUI::FloatingScreenMoverPointer*>();

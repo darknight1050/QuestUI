@@ -5,9 +5,6 @@
 #include "custom-types/shared/macros.hpp"
 DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreenManager, UnityEngine::MonoBehaviour,
 
-    DECLARE_METHOD(void, createMover, QuestUI::FloatingScreen* screen, VRUIControls::VRPointer* vrPointer);
-
-    REGISTER_FUNCTION(
-        REGISTER_METHOD(createMover);
-    )
+    DECLARE_INSTANCE_METHOD(void, createMover, QuestUI::FloatingScreen* screen, VRUIControls::VRPointer* vrPointer);
+    
 )

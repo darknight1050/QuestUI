@@ -134,19 +134,7 @@ void QuestUI::Init() {
         didInit = true;
         getLogger().info("Init started...");
         il2cpp_functions::Init();
-        custom_types::Register::RegisterTypes<
-            ExternalComponents, 
-            CustomDataType, 
-            Backgroundable, 
-            ScrollViewContent, 
-            MainThreadScheduler, 
-            IncrementSetting, 
-            ModSettingsButtonsViewController, 
-            ModSettingsFlowCoordinator,
-            FloatingScreen,
-            FloatingScreenMoverPointer,
-            FloatingScreenManager
-            >();
+        custom_types::Register::AutoRegister();
         INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
         INSTALL_HOOK_OFFSETLESS(getLogger(), SceneManager_Internal_ActiveSceneChanged, il2cpp_utils::FindMethodUnsafe("UnityEngine.SceneManagement", "SceneManager", "Internal_ActiveSceneChanged", 2));
         INSTALL_HOOK_OFFSETLESS(getLogger(), UIKeyboardManager_OpenKeyboardFor, il2cpp_utils::FindMethodUnsafe("", "UIKeyboardManager", "OpenKeyboardFor", 1));

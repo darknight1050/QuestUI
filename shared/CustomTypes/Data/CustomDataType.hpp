@@ -23,17 +23,9 @@ public:
     }
 
     DECLARE_CTOR(ctor);
-
-    DECLARE_METHOD(CustomDataType*, SetDataPointer, void* data);
-
+    
     DECLARE_DTOR(Finalize);
 
-    REGISTER_FUNCTION(
-        REGISTER_FIELD(data);
-        REGISTER_FIELD(allocated);
+    DECLARE_INSTANCE_METHOD(CustomDataType*, SetDataPointer, void* data);
 
-        REGISTER_METHOD(ctor);
-        REGISTER_METHOD(SetDataPointer);
-        REGISTER_METHOD(Finalize);
-    )
 )

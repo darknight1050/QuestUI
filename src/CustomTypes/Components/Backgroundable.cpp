@@ -15,7 +15,7 @@
 
 #include "customlogger.hpp"
 
-DEFINE_TYPE(QuestUI::Backgroundable);
+DEFINE_TYPE(QuestUI, Backgroundable);
 
 std::map<std::string, std::string> backgrounds =  {
     {

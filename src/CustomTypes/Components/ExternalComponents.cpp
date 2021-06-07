@@ -1,7 +1,7 @@
 #include "beatsaber-hook/shared/utils/utils.h"
 #include "CustomTypes/Components/ExternalComponents.hpp"
 
-DEFINE_TYPE(QuestUI::ExternalComponents);
+DEFINE_TYPE(QuestUI, ExternalComponents);
 
 void QuestUI::ExternalComponents::Add(UnityEngine::Component* component) {
     components.push_back(component);

@@ -97,7 +97,8 @@
 			"concepts": "cpp",
 			"shared_mutex": "cpp",
 			"stop_token": "cpp",
-			"cfenv": "cpp"
+			"cfenv": "cpp",
+			"span": "cpp"
 		}
 	}
 }
