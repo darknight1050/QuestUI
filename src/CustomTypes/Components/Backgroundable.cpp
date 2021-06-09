@@ -118,7 +118,7 @@ void QuestUI::Backgroundable::ApplyBackgroundWithAlpha(Il2CppString* name, float
 		background->set_hideFlags(search->get_hideFlags());
 		background->set_maskable(search->get_maskable());
 		background->set_material(search->get_material());
-		background->set_name(search->get_name());
+		//background->set_name(search->get_name());
 		background->set_onCullStateChanged(search->get_onCullStateChanged());
 		background->set_overrideSprite(search->get_overrideSprite());
 		background->set_pixelsPerUnitMultiplier(search->get_pixelsPerUnitMultiplier());
