@@ -1,4 +1,5 @@
 #include "beatsaber-hook/shared/utils/utils.h"
+#include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "custom-types/shared/register.hpp"
 
 #include "QuestUI.hpp"
@@ -23,6 +24,7 @@
 #include "UnityEngine/SceneManagement/Scene.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
+#include "UnityEngine/SceneManagement/SceneManager.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
 #include "HMUI/ButtonSpriteSwap.hpp"
@@ -53,7 +55,7 @@ void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
     BeatSaberUI::GetMainFlowCoordinator()->PresentFlowCoordinator(flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
 }
 
-MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::OptionsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsViewController::DidActivate, void, GlobalNamespace::OptionsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     OptionsViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     if(firstActivation) {
         flowCoordinator = nullptr;
@@ -80,7 +82,7 @@ MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::O
     }
 }
 
-MAKE_HOOK_OFFSETLESS(SceneManager_Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
+MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
     SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
     BeatSaberUI::ClearCache();
     if(prevScene.IsValid() && nextScene.IsValid()) {
@@ -107,7 +109,7 @@ MAKE_HOOK_OFFSETLESS(SceneManager_Internal_ActiveSceneChanged, void, UnityEngine
     }
 }
 
-MAKE_HOOK_OFFSETLESS(UIKeyboardManager_OpenKeyboardFor, void, GlobalNamespace::UIKeyboardManager* self, HMUI::InputFieldView* input) {
+MAKE_HOOK_MATCH(UIKeyboardManager_OpenKeyboardFor, &GlobalNamespace::UIKeyboardManager::OpenKeyboardFor, void, GlobalNamespace::UIKeyboardManager* self, HMUI::InputFieldView* input) {
     static UnityEngine::Vector3 magicVector = UnityEngine::Vector3(1337.0f, 1337.0f, 1337.0f);
     if (input->keyboardPositionOffset == magicVector) {
         auto transform = input->get_transform();
@@ -135,9 +137,9 @@ void QuestUI::Init() {
         getLogger().info("Init started...");
         il2cpp_functions::Init();
         custom_types::Register::AutoRegister();
-        INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
-        INSTALL_HOOK_OFFSETLESS(getLogger(), SceneManager_Internal_ActiveSceneChanged, il2cpp_utils::FindMethodUnsafe("UnityEngine.SceneManagement", "SceneManager", "Internal_ActiveSceneChanged", 2));
-        INSTALL_HOOK_OFFSETLESS(getLogger(), UIKeyboardManager_OpenKeyboardFor, il2cpp_utils::FindMethodUnsafe("", "UIKeyboardManager", "OpenKeyboardFor", 1));
+        INSTALL_HOOK(getLogger(), OptionsViewController_DidActivate);
+        INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
+        INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
         getLogger().info("Init completed!");
     }
 }
