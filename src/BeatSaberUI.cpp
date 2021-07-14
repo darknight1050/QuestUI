@@ -946,10 +946,11 @@ namespace QuestUI::BeatSaberUI {
 
         // add callback
         modal->add_blockerClickedEvent(MakeDelegate(System::Action*,
-            ((std::function<void()>) [onBlockerClicked, modal] () {
-                modal->Hide(true, nullptr);
+            ((std::function<void()>) [onBlockerClicked, modal, dismissOnBlockerClicked] () {
                 if (onBlockerClicked)
                     onBlockerClicked(modal); 
+                if (dismissOnBlockerClicked)
+                    modal->Hide(true, nullptr);
             })
         ));
         return modal;
