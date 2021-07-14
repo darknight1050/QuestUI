@@ -98,7 +98,10 @@
 			"shared_mutex": "cpp",
 			"stop_token": "cpp",
 			"cfenv": "cpp",
-			"span": "cpp"
+			"span": "cpp",
+			"any": "cpp",
+			"semaphore": "cpp",
+			"variant": "cpp"
 		}
 	}
 }

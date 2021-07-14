@@ -164,27 +164,27 @@ namespace QuestUI::BeatSaberUI {
     
     /// @brief creates a modal that can be used to display information
     /// @param parent what to parent it to
-    /// @param BlockerClickedCallback callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
+    /// @param onBlockerClicked callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
     /// @param sizeDelta size of the object
     /// @param anchoredPosition position of the modal
     /// @param dismissOnBlockerClicked whether to auto dismiss when the blocker (outside) is clicked
     /// @return created modal
-    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, UnityEngine::Vector2 anchoredPosition, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked = true);
+    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, UnityEngine::Vector2 anchoredPosition, std::function<void(HMUI::ModalView*)> onBlockerClicked, bool dismissOnBlockerClicked = true);
 
     /// @brief creates a modal that can be used to display information
     /// @param parent what to parent it to
-    /// @param BlockerClickedCallback callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
+    /// @param onBlockerClicked callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
     /// @param sizeDelta size of the object
     /// @param dismissOnBlockerClicked whether to auto dismiss when the blocker (outside) is clicked
     /// @return created modal
-    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked = true);
+    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::function<void(HMUI::ModalView*)> onBlockerClicked, bool dismissOnBlockerClicked = true);
 
     /// @brief creates a modal that can be used to display information
     /// @param parent what to parent it to
-    /// @param BlockerClickedCallback callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
+    /// @param onBlockerClicked callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
     /// @param dismissOnBlockerClicked whether to auto dismiss when the blocker (outside) is clicked
     /// @return created modal
-    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked = true);
+    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, std::function<void(HMUI::ModalView*)> onBlockerClicked, bool dismissOnBlockerClicked = true);
 
     /// @brief creates a modal that can be used to display information
     /// @param parent what to parent it to

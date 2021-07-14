@@ -76,6 +76,7 @@ namespace QuestUI::BeatSaberUI {
     GameObject* beatSaberUIObject = nullptr;
     GameObject* dropdownListPrefab = nullptr;
     GameObject* modalPrefab = nullptr;
+    
     void SetupPersistentObjects() {
         getLogger().info("SetupPersistentObjects");
         if(!beatSaberUIObject) {
@@ -95,14 +96,14 @@ namespace QuestUI::BeatSaberUI {
             dropdownListPrefab->SetActive(false);
         }
         if (!modalPrefab) {
-            GameObject* search = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HMUI::ModalView*>(), [](HMUI::ModalView* x) { 
+            GameObject* search = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ModalView*>(), [](ModalView* x) { 
                     return to_utf8(csstrtostr(x->get_transform()->get_name())) == "DropdownTableView";
                 }
             )->get_gameObject();
             modalPrefab = Object::Instantiate(search, beatSaberUIObject->get_transform(), false);
             
-            modalPrefab->GetComponent<HMUI::ModalView*>()->presentPanelAnimations = search->GetComponent<HMUI::ModalView*>()->presentPanelAnimations;
-            modalPrefab->GetComponent<HMUI::ModalView*>()->dismissPanelAnimation = search->GetComponent<HMUI::ModalView*>()->dismissPanelAnimation;
+            modalPrefab->GetComponent<ModalView*>()->presentPanelAnimations = search->GetComponent<ModalView*>()->presentPanelAnimations;
+            modalPrefab->GetComponent<ModalView*>()->dismissPanelAnimation = search->GetComponent<ModalView*>()->dismissPanelAnimation;
 
             static auto name = il2cpp_utils::createcsstr("QuestUIModalPrefab", il2cpp_utils::StringType::Manual);
             modalPrefab->set_name(name);
@@ -319,7 +320,7 @@ namespace QuestUI::BeatSaberUI {
         inactive->get_texture()->set_wrapMode(TextureWrapMode::Clamp);
         active->get_texture()->set_wrapMode(TextureWrapMode::Clamp);
 
-        HMUI::ButtonSpriteSwap* spriteSwap = button->GetComponent<HMUI::ButtonSpriteSwap*>();
+        ButtonSpriteSwap* spriteSwap = button->GetComponent<ButtonSpriteSwap*>();
 
         // setting the sprites
         spriteSwap->highlightStateSprite = active;
@@ -712,44 +713,6 @@ namespace QuestUI::BeatSaberUI {
         return content;
     }
 
-    /*ModalView* CreateModalView(Transform* parent) {
-        ModalView* yoinkFromView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ModalView*>(), [](ModalView* x){ return to_utf8(csstrtostr(x->get_name())) == "DropdownTableView"; });
-        ModalView* modalView = Object::Instantiate(yoinkFromView, parent);
-        modalView->presentPanelAnimations = yoinkFromView->presentPanelAnimations;
-        modalView->dismissPanelAnimation = yoinkFromView->dismissPanelAnimation;
-        modalView->container = GetDiContainer();
-
-        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
-        if(physicsRaycaster)
-            modalView->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster = physicsRaycaster;
-
-        GameObject::DestroyImmediate(modalView->GetComponent<TableView*>());
-        GameObject::DestroyImmediate(modalView->GetComponent<TableViewScroller*>());
-        GameObject::DestroyImmediate(modalView->GetComponent<ScrollRect*>());
-        GameObject::DestroyImmediate(modalView->GetComponent<EventSystemListener*>());
-
-        for(int i = 0; i < modalView->get_transform()->get_childCount(); i++) {
-            RectTransform* child = (RectTransform*)modalView->get_transform()->GetChild(i);
-            if(to_utf8(csstrtostr(child->get_name())) == "BG") {
-                child->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
-                child->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-            }
-            else
-            {
-                GameObject::Destroy(child->get_gameObject());
-            }
-        }
-        RectTransform* rectTransform = modalView->GetComponent<RectTransform*>();
-        rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
-        rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
-        rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-
-        static auto name = il2cpp_utils::createcsstr("QuestUIModalView", il2cpp_utils::StringType::Manual);
-        modalView->get_gameObject()->set_name(name);
-
-        return modalView;
-    }*/
-
     InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, std::function<void(std::string)> onValueChange) {
         return CreateStringSetting(parent, settingsName, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
     }
@@ -844,7 +807,7 @@ namespace QuestUI::BeatSaberUI {
             screen->set_showHandle(true);
             screen->set_side(handleSide);
         }
-        auto curvedCanvasSettings = gameObject->AddComponent<HMUI::CurvedCanvasSettings*>();
+        auto curvedCanvasSettings = gameObject->AddComponent<CurvedCanvasSettings*>();
         curvedCanvasSettings->SetRadius(curvatureRadius);
 
         //background
@@ -931,12 +894,11 @@ namespace QuestUI::BeatSaberUI {
         return buttonGO;
     }
 
-    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, UnityEngine::Vector2 anchoredPosition, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked) {
+    ModalView* CreateModal(Transform* parent, UnityEngine::Vector2 sizeDelta, UnityEngine::Vector2 anchoredPosition, std::function<void(ModalView*)> onBlockerClicked, bool dismissOnBlockerClicked) {
         static auto name = il2cpp_utils::createcsstr("QuestUIModalPrefab", il2cpp_utils::StringType::Manual);
 
         // declare var
-        HMUI::ModalView* modal;
-        HMUI::ModalView* orig = modalPrefab->GetComponent<HMUI::ModalView*>();
+        ModalView* orig = modalPrefab->GetComponent<ModalView*>();
         
         // instantiate
         GameObject* modalObj = Object::Instantiate(modalPrefab, parent, false);
@@ -945,19 +907,19 @@ namespace QuestUI::BeatSaberUI {
         modalObj->SetActive(false);
 
         // get the modal
-        modal = modalObj->GetComponent<HMUI::ModalView*>();
+        ModalView* modal = modalObj->GetComponent<ModalView*>();
 
         // copy fields
         modal->presentPanelAnimations = orig->presentPanelAnimations;
         modal->dismissPanelAnimation = orig->dismissPanelAnimation;
         modal->container = GetDiContainer();
-        modalObj->GetComponent<VRUIControls::VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+        modalObj->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
 
         // destroy unneeded objects
-        Object::DestroyImmediate(modalObj->GetComponent<HMUI::TableView*>());
-        Object::DestroyImmediate(modalObj->GetComponent<UnityEngine::UI::ScrollRect*>());
-        Object::DestroyImmediate(modalObj->GetComponent<HMUI::ScrollView*>());
-        Object::DestroyImmediate(modalObj->GetComponent<HMUI::EventSystemListener*>());
+        Object::DestroyImmediate(modalObj->GetComponent<TableView*>());
+        Object::DestroyImmediate(modalObj->GetComponent<ScrollRect*>());
+        Object::DestroyImmediate(modalObj->GetComponent<ScrollView*>());
+        Object::DestroyImmediate(modalObj->GetComponent<EventSystemListener*>());
 
         // destroy all children except background
         static Il2CppString* BGname = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BG");
@@ -983,29 +945,29 @@ namespace QuestUI::BeatSaberUI {
         rect->set_anchoredPosition(anchoredPosition);
 
         // add callback
-        std::function<void()> fun;
-        if (BlockerClickedCallback) fun = std::bind(BlockerClickedCallback, modal);
-        else fun = nullptr;
-        std::function<void()> fun2 = [fun, modal](){ modal->Hide(true, nullptr); if (fun) fun(); };
-        modal->add_blockerClickedEvent(il2cpp_utils::MakeDelegate<System::Action*>(classof(System::Action*), fun2));
-
+        modal->add_blockerClickedEvent(MakeDelegate(System::Action*,
+            ((std::function<void()>) [onBlockerClicked, modal] () {
+                modal->Hide(true, nullptr);
+                if (onBlockerClicked)
+                    onBlockerClicked(modal); 
+            })
+        ));
         return modal;
     }
 
-    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked) {
-        return CreateModal(parent, sizeDelta, {0.0f, 0.0f}, BlockerClickedCallback, dismissOnBlockerClicked);
+    ModalView* CreateModal(Transform* parent, UnityEngine::Vector2 sizeDelta, std::function<void(ModalView*)> onBlockerClicked, bool dismissOnBlockerClicked) {
+        return CreateModal(parent, sizeDelta, {0.0f, 0.0f}, onBlockerClicked, dismissOnBlockerClicked);
     }
 
-    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked) {
-        return CreateModal(parent, {30.0f, 40.0f}, {0.0f, 0.0f}, BlockerClickedCallback, dismissOnBlockerClicked);
+    ModalView* CreateModal(Transform* parent, std::function<void(ModalView*)> onBlockerClicked, bool dismissOnBlockerClicked) {
+        return CreateModal(parent, {30.0f, 40.0f}, {0.0f, 0.0f}, onBlockerClicked, dismissOnBlockerClicked);
     }
 
-    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, bool dismissOnBlockerClicked) {
+    ModalView* CreateModal(Transform* parent, bool dismissOnBlockerClicked) {
         return CreateModal(parent, {30.0f, 40.0f}, {0.0f, 0.0f}, nullptr, dismissOnBlockerClicked);
     }
 
-    UnityEngine::GameObject* CreateScrollableModalContainer(HMUI::ModalView* modal) {
-        #warning not finished
+    GameObject* CreateScrollableModalContainer(ModalView* modal) {
         Vector2 sizeDelta = modal->GetComponent<RectTransform*>()->get_sizeDelta();
         float width = sizeDelta.x;
         float height = sizeDelta.y;
@@ -1019,105 +981,18 @@ namespace QuestUI::BeatSaberUI {
         scrollTransform->set_anchoredPosition({-2.5f, 0.0f});
         scrollTransform->set_sizeDelta({7.5f, 0.0f});
 
-        UnityEngine::UI::VerticalLayoutGroup* layout = content->GetComponent<UnityEngine::UI::VerticalLayoutGroup*>();
+        VerticalLayoutGroup* layout = content->GetComponent<VerticalLayoutGroup*>();
         
         layout->set_childControlWidth(true);
         layout->set_childForceExpandWidth(true);
 
-        auto layoutelem = content->AddComponent<UnityEngine::UI::LayoutElement*>();
+        auto layoutelem = content->AddComponent<LayoutElement*>();
         layoutelem->set_preferredWidth(width - 10.0f);
         layoutelem->set_preferredHeight(height);
 
         static auto name = il2cpp_utils::createcsstr("QuestUICreateScrollableModalContainer", il2cpp_utils::StringType::Manual);
 
         scrollTransform->get_gameObject()->set_name(name);
-        /*
-            CreateScrollableSettingsContainer
-            GameObject* content = CreateScrollView(parent);
-            ExternalComponents* externalComponents = content->GetComponent<ExternalComponents*>();
-            RectTransform* scrollTransform = externalComponents->Get<RectTransform*>();
-            scrollTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
-            scrollTransform->set_sizeDelta(UnityEngine::Vector2(-54.0f, 0.0f));
-            static auto name = il2cpp_utils::createcsstr("QuestUIScrollableSettingsContainer", il2cpp_utils::StringType::Manual);
-            scrollTransform->get_gameObject()->set_name(name);
-            return content;
-        */
-
-        /*
-            CreateScrollView
-
-            GameObject* CreateScrollView(Transform* parent) {
-            TextPageScrollView* textScrollView = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<ReleaseInfoViewController*>())->textPageScrollView, parent);
-            static auto textScrollViewName = il2cpp_utils::createcsstr("QuestUIScrollView", il2cpp_utils::StringType::Manual);
-            textScrollView->set_name(textScrollViewName);
-            Button* pageUpButton = textScrollView->pageUpButton;
-            Button* pageDownButton = textScrollView->pageDownButton;
-            VerticalScrollIndicator* verticalScrollIndicator = textScrollView->verticalScrollIndicator; 
-            RectTransform* viewport = textScrollView->viewport;
-
-            auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
-            if(physicsRaycaster)
-                viewport->get_gameObject()->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = physicsRaycaster;
-
-            GameObject::Destroy(textScrollView->text->get_gameObject());
-            GameObject* gameObject = textScrollView->get_gameObject();
-            GameObject::Destroy(textScrollView);
-            gameObject->SetActive(false);
-
-            ScrollView* scrollView = gameObject->AddComponent<ScrollView*>();
-            scrollView->pageUpButton = pageUpButton;
-            scrollView->pageDownButton = pageDownButton;
-            scrollView->verticalScrollIndicator = verticalScrollIndicator;
-            scrollView->viewport = viewport;
-
-            viewport->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
-            viewport->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
-
-            static auto parentObjName = il2cpp_utils::createcsstr("QuestUIScrollViewContent", il2cpp_utils::StringType::Manual);
-            GameObject* parentObj = GameObject::New_ctor(parentObjName);
-            parentObj->get_transform()->SetParent(viewport, false);
-
-            ContentSizeFitter* contentSizeFitter = parentObj->AddComponent<ContentSizeFitter*>();
-            contentSizeFitter->set_horizontalFit(ContentSizeFitter::FitMode::PreferredSize);
-            contentSizeFitter->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
-
-            VerticalLayoutGroup* verticalLayout = parentObj->AddComponent<VerticalLayoutGroup*>();
-            verticalLayout->set_childForceExpandHeight(false);
-            verticalLayout->set_childForceExpandWidth(false);
-            verticalLayout->set_childControlHeight(true);
-            verticalLayout->set_childControlWidth(true);
-            verticalLayout->set_childAlignment(TextAnchor::UpperCenter);
-
-            RectTransform* rectTransform = parentObj->GetComponent<RectTransform*>();
-            rectTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 1.0f));
-            rectTransform->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
-            rectTransform->set_sizeDelta(UnityEngine::Vector2(0.0f, 0.0f));
-            rectTransform->set_pivot(UnityEngine::Vector2(0.5f, 1.0f));
-
-            parentObj->AddComponent<ScrollViewContent*>()->scrollView = scrollView;
-
-            static auto childName = il2cpp_utils::createcsstr("QuestUIScrollViewContentContainer", il2cpp_utils::StringType::Manual);
-            GameObject* child = GameObject::New_ctor(childName);
-            child->get_transform()->SetParent(rectTransform, false);
-
-            VerticalLayoutGroup* layoutGroup = child->AddComponent<VerticalLayoutGroup*>();
-            layoutGroup->set_childControlHeight(false);
-            layoutGroup->set_childForceExpandHeight(false);
-            layoutGroup->set_childAlignment(TextAnchor::LowerCenter);
-            layoutGroup->set_spacing(0.5f);
-
-            ExternalComponents* externalComponents = child->AddComponent<ExternalComponents*>();
-            externalComponents->Add(scrollView);
-            externalComponents->Add(scrollView->get_transform());
-            externalComponents->Add(gameObject->AddComponent<LayoutElement*>());
-
-            child->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(0.0f, -1.0f));
-
-            scrollView->contentRectTransform = rectTransform;
-
-            gameObject->SetActive(true);
-            return child;
-        */
         return content;
     }
 }
