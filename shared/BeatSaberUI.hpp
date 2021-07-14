@@ -7,6 +7,7 @@
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
 #include "GlobalNamespace/ColorChangeUIEventType.hpp"
+
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/RectTransform.hpp"
 #include "UnityEngine/Vector2.hpp"
@@ -21,14 +22,17 @@
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "UnityEngine/UI/VerticalLayoutGroup.hpp"
 #include "UnityEngine/UI/ContentSizeFitter.hpp"
+
 #include "HMUI/ViewController.hpp"
 #include "HMUI/FlowCoordinator.hpp"
 #include "HMUI/HoverHint.hpp"
 #include "HMUI/InputFieldView.hpp"
 #include "HMUI/ModalView.hpp"
 #include "HMUI/SimpleTextDropdown.hpp"
+
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "TMPro/TMP_FontAsset.hpp"
+
 #include "VRUIControls/PhysicsRaycasterWithCache.hpp"
 
 namespace QuestUI::BeatSaberUI {
@@ -80,6 +84,12 @@ namespace QuestUI::BeatSaberUI {
     void SetButtonIcon(UnityEngine::UI::Button* button, UnityEngine::Sprite* icon);
 
     void SetButtonBackground(UnityEngine::UI::Button* button, UnityEngine::Sprite* background);
+
+    /// @brief sets the sprites for a given button
+    /// @param button the button to swap sprites for
+    /// @param inactive, for when not hovering over the button
+    /// @param active for when hovering over the button
+    void SetButtonSprites(UnityEngine::UI::Button* button, UnityEngine::Sprite* inactive, UnityEngine::Sprite* active);
 
     UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
 
@@ -151,5 +161,39 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius = 0, bool hasBackground = true, bool createHandle = true, int handleSide = 4);
     
     UnityEngine::GameObject* CreateColorPicker(UnityEngine::Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr);
+    
+    /// @brief creates a modal that can be used to display information
+    /// @param parent what to parent it to
+    /// @param BlockerClickedCallback callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
+    /// @param sizeDelta size of the object
+    /// @param anchoredPosition position of the modal
+    /// @param dismissOnBlockerClicked whether to auto dismiss when the blocker (outside) is clicked
+    /// @return created modal
+    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, UnityEngine::Vector2 anchoredPosition, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked = true);
 
+    /// @brief creates a modal that can be used to display information
+    /// @param parent what to parent it to
+    /// @param BlockerClickedCallback callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
+    /// @param sizeDelta size of the object
+    /// @param dismissOnBlockerClicked whether to auto dismiss when the blocker (outside) is clicked
+    /// @return created modal
+    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked = true);
+
+    /// @brief creates a modal that can be used to display information
+    /// @param parent what to parent it to
+    /// @param BlockerClickedCallback callback that gets called when clicking next to the modal, leaving it empty makes it just dismiss the modal
+    /// @param dismissOnBlockerClicked whether to auto dismiss when the blocker (outside) is clicked
+    /// @return created modal
+    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, std::function<void(HMUI::ModalView*)> BlockerClickedCallback, bool dismissOnBlockerClicked = true);
+
+    /// @brief creates a modal that can be used to display information
+    /// @param parent what to parent it to
+    /// @param dismissOnBlockerClicked whether to auto dismiss when the blocker (outside) is clicked
+    /// @return created modal
+    HMUI::ModalView* CreateModal(UnityEngine::Transform* parent, bool dismissOnBlockerClicked = true);
+
+    /// @brief creates a scrollable container for the given modal, with exact fit
+    /// @param modal the modal to create a container for
+    /// @return GameObject container
+    UnityEngine::GameObject* CreateScrollableModalContainer(HMUI::ModalView* modal);
 }
