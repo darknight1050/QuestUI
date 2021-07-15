@@ -989,7 +989,6 @@ namespace QuestUI::BeatSaberUI {
 
         auto layoutelem = content->AddComponent<LayoutElement*>();
         layoutelem->set_preferredWidth(width - 10.0f);
-        layoutelem->set_preferredHeight(height);
 
         static auto name = il2cpp_utils::createcsstr("QuestUICreateScrollableModalContainer", il2cpp_utils::StringType::Manual);
 
