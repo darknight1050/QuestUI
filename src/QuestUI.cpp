@@ -145,6 +145,7 @@ void QuestUI::Init() {
 }
 
 void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type, Register::DidActivateEvent didActivateEvent) {
+    Init();
     ModSettingsInfos::ModSettingsInfo info = {};
     info.modInfo = modInfo;
     info.showModInfo = showModInfo;
