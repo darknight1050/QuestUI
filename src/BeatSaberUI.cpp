@@ -357,7 +357,9 @@ namespace QuestUI::BeatSaberUI {
         HorizontalLayoutGroup* horiztonalLayoutGroup = button->GetComponentInChildren<HorizontalLayoutGroup*>();
         if (horiztonalLayoutGroup != nullptr)
             externalComponents->Add(horiztonalLayoutGroup);
-            
+        
+        // if the original button was for some reason not interactable, now it will be
+        button->set_interactable(true);
         return button;
     }
 
