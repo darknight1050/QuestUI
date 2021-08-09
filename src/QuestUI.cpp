@@ -104,11 +104,11 @@ MAKE_HOOK_MATCH(GameplaySetupViewController_RefreshContent, &GlobalNamespace::Ga
     {
         self->gameplayModifiersPanelController->get_gameObject()->SetActive(false);
     }
-    static auto buttonPlayerSettingsStr = il2cpp_utils::createcsstr("BUTTON_PLAYER_SETTINGS", il2cpp_utils::StringType::Manual);
+    static auto buttonPlayerSettingsStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BUTTON_PLAYER_OPTIONS");
     self->panels->Add(GlobalNamespace::GameplaySetupViewController::Panel::New_ctor(Polyglot::Localization::Get(buttonPlayerSettingsStr), reinterpret_cast<GlobalNamespace::IRefreshable*>(self->playerSettingsPanelController), self->playerSettingsPanelController->get_gameObject()));
     if (self->showEnvironmentOverrideSettings)
     {
-        static auto buttonEnvironmentsStr = il2cpp_utils::createcsstr("BUTTON_ENVIRONMENTS", il2cpp_utils::StringType::Manual);
+        static auto buttonEnvironmentsStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BUTTON_ENVIRONMENTS");
         self->panels->Add(GlobalNamespace::GameplaySetupViewController::Panel::New_ctor(Polyglot::Localization::Get(buttonEnvironmentsStr), reinterpret_cast<GlobalNamespace::IRefreshable*>(self->environmentOverrideSettingsPanelController), self->environmentOverrideSettingsPanelController->get_gameObject()));
     }
     else
@@ -117,7 +117,7 @@ MAKE_HOOK_MATCH(GameplaySetupViewController_RefreshContent, &GlobalNamespace::Ga
     }
     if (self->showColorSchemesSettings)
     {
-        static auto buttonColorsStr = il2cpp_utils::createcsstr("BUTTON_COLORS", il2cpp_utils::StringType::Manual);
+        static auto buttonColorsStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BUTTON_COLORS");
         self->panels->Add(GlobalNamespace::GameplaySetupViewController::Panel::New_ctor(Polyglot::Localization::Get(buttonColorsStr), reinterpret_cast<GlobalNamespace::IRefreshable*>(self->colorsOverrideSettingsPanelController), self->colorsOverrideSettingsPanelController->get_gameObject()));
     }
     else
@@ -125,7 +125,7 @@ MAKE_HOOK_MATCH(GameplaySetupViewController_RefreshContent, &GlobalNamespace::Ga
         self->colorsOverrideSettingsPanelController->get_gameObject()->SetActive(false);
     }
     
-    static auto asd = il2cpp_utils::createcsstr("Test", il2cpp_utils::StringType::Manual);
+    static auto asd = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Test");
     UnityEngine::GameObject* testPanel = UnityEngine::GameObject::New_ctor();
     BeatSaberUI::CreateText(testPanel->get_transform(), "Heyyy");
     self->panels->Add(GlobalNamespace::GameplaySetupViewController::Panel::New_ctor(asd, reinterpret_cast<GlobalNamespace::IRefreshable*>(testPanel->AddComponent(csTypeOf(CustomPanelController*))), testPanel));
