@@ -126,10 +126,19 @@ MAKE_HOOK_MATCH(GameplaySetupViewController_RefreshContent, &GlobalNamespace::Ga
     }
     
     static auto asd = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Test");
-    UnityEngine::GameObject* testPanel = UnityEngine::GameObject::New_ctor();
+    UnityEngine::GameObject* testPanel = BeatSaberUI::CreateScrollView(self->get_transform());
+    //testPanel->get_transform()->SetParent(self->get_transform());
+    //UnityEngine::UI::GridLayoutGroup* layout = BeatSaberUI::CreateGridLayoutGroup(testPanel->get_transform());
     BeatSaberUI::CreateText(testPanel->get_transform(), "Heyyy");
+    bool Test = false;
+    BeatSaberUI::CreateToggle(testPanel->get_transform(), "TestToggle", Test,
+        [](bool value) {
+            getLogger().debug("ToggleWasPressed");
+        });
     self->panels->Add(GlobalNamespace::GameplaySetupViewController::Panel::New_ctor(asd, reinterpret_cast<GlobalNamespace::IRefreshable*>(testPanel->AddComponent(csTypeOf(CustomPanelController*))), testPanel));
-    
+
+    testPanel->SetActive(false);
+
     System::Collections::Generic::List_1<Il2CppString*>* list = System::Collections::Generic::List_1<Il2CppString*>::New_ctor();
 	for(int i = 0; i < self->panels->get_Count(); i++)
 	{
