@@ -39,6 +39,8 @@
 #include "HMUI/TextSegmentedControl.hpp"
 #include "System/Collections/Generic/IReadOnlyList_1.hpp"
 
+#include "HMUI/TextPageScrollView.hpp"
+
 #include "customlogger.hpp"
 
 using namespace QuestUI;
@@ -94,6 +96,7 @@ MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsView
 
 MAKE_HOOK_MATCH(GameplaySetupViewController_RefreshContent, &GlobalNamespace::GameplaySetupViewController::RefreshContent, void, GlobalNamespace::GameplaySetupViewController* self) {
     GameplaySetupViewController_RefreshContent(self);
+
     self->panels = System::Collections::Generic::List_1<GlobalNamespace::GameplaySetupViewController::Panel*>::New_ctor();
     if (self->showModifiers)
     {
@@ -127,17 +130,47 @@ MAKE_HOOK_MATCH(GameplaySetupViewController_RefreshContent, &GlobalNamespace::Ga
     
     static auto asd = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Test");
     UnityEngine::GameObject* testPanel = BeatSaberUI::CreateScrollView(self->get_transform());
+    testPanel->AddComponent<UnityEngine::UI::LayoutElement*>();
     //testPanel->get_transform()->SetParent(self->get_transform());
     //UnityEngine::UI::GridLayoutGroup* layout = BeatSaberUI::CreateGridLayoutGroup(testPanel->get_transform());
-    BeatSaberUI::CreateText(testPanel->get_transform(), "Heyyy");
-    bool Test = false;
-    BeatSaberUI::CreateToggle(testPanel->get_transform(), "TestToggle", Test,
+    //UnityEngine::UI::ContentSizeFitter* contentSizeFitter = testPanel->AddComponent<UnityEngine::UI::ContentSizeFitter*>();
+    //contentSizeFitter->set_horizontalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
+    //contentSizeFitter->set_verticalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
+
+    BeatSaberUI::CreateText(testPanel->get_transform(), "Heyyy")->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(80.0f);
+    BeatSaberUI::CreateToggle(testPanel->get_transform(), "TestToggle", false,
         [](bool value) {
             getLogger().debug("ToggleWasPressed");
-        });
+        })->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(80.0f);
     self->panels->Add(GlobalNamespace::GameplaySetupViewController::Panel::New_ctor(asd, reinterpret_cast<GlobalNamespace::IRefreshable*>(testPanel->AddComponent(csTypeOf(CustomPanelController*))), testPanel));
 
     testPanel->SetActive(false);
+
+    //static auto asd1 = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Test1");
+    //UnityEngine::GameObject* testPanel1 = BeatSaberUI::CreateScrollView(self->get_transform());
+    //testPanel1->AddComponent<UnityEngine::UI::LayoutElement*>();
+
+    //BeatSaberUI::CreateText(testPanel1->get_transform(), "Heyyy1")->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(80.0f);
+    //BeatSaberUI::CreateToggle(testPanel1->get_transform(), "TestToggle1", false,
+    //    [](bool value) {
+    //        getLogger().debug("Toggle1WasPressed");
+    //    })->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(80.0f);
+    //self->panels->Add(GlobalNamespace::GameplaySetupViewController::Panel::New_ctor(asd1, reinterpret_cast<GlobalNamespace::IRefreshable*>(testPanel1->AddComponent(csTypeOf(CustomPanelController*))), testPanel1));
+
+    //testPanel1->SetActive(false);
+
+    //static auto asd2 = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Test2");
+    //UnityEngine::GameObject* testPanel2 = BeatSaberUI::CreateScrollView(self->get_transform());
+    //testPanel2->AddComponent<UnityEngine::UI::LayoutElement*>();
+
+    //BeatSaberUI::CreateText(testPanel2->get_transform(), "Heyyy2")->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(80.0f);
+    //BeatSaberUI::CreateToggle(testPanel2->get_transform(), "TestToggle2", false,
+    //    [](bool value) {
+    //        getLogger().debug("Toggle2WasPressed");
+    //    })->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(80.0f);
+    //self->panels->Add(GlobalNamespace::GameplaySetupViewController::Panel::New_ctor(asd2, reinterpret_cast<GlobalNamespace::IRefreshable*>(testPanel2->AddComponent(csTypeOf(CustomPanelController*))), testPanel2));
+
+    //testPanel2->SetActive(false);
 
     System::Collections::Generic::List_1<Il2CppString*>* list = System::Collections::Generic::List_1<Il2CppString*>::New_ctor();
 	for(int i = 0; i < self->panels->get_Count(); i++)
@@ -145,6 +178,10 @@ MAKE_HOOK_MATCH(GameplaySetupViewController_RefreshContent, &GlobalNamespace::Ga
         list->Add(self->panels->get_Item(i)->title);
 	}
     self->selectionSegmentedControl->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
+
+    //BeatSaberUI::CreateScrollView(selectionSegmentedControl->get_transform());
+
+    //self->selectionSegmentedControl->get_transform()->GetParent()->get_gameObject()->AddComponent<HMUI::TextPageScrollView*>();
 }
 
 MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
