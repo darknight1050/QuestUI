@@ -3,7 +3,7 @@
 
 #include "customlogger.hpp"
 
-DEFINE_CLASS(QuestUI::CustomPanelController);
+DEFINE_TYPE(QuestUI, CustomPanelController);
 
 void QuestUI::CustomPanelController::Refresh() {
     getLogger().info("CustomPanelController Refresh");
