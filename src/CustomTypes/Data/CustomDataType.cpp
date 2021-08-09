@@ -1,7 +1,7 @@
 
 #include "CustomTypes/Data/CustomDataType.hpp"
 
-DEFINE_CLASS(QuestUI::CustomDataType);
+DEFINE_TYPE(QuestUI, CustomDataType);
 
 void QuestUI::CustomDataType::ctor() {
     this->data = nullptr;

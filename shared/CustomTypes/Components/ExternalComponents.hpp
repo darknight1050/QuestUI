@@ -15,10 +15,11 @@ DECLARE_CLASS_CODEGEN(QuestUI, ExternalComponents, UnityEngine::MonoBehaviour,
             return (T)GetByType(csTypeOf(T));
         }
 
-    DECLARE_METHOD(void, Add, UnityEngine::Component* component); 
-    DECLARE_METHOD(UnityEngine::Component*, GetByType, Il2CppReflectionType* type); 
+    DECLARE_INSTANCE_METHOD(void, Add, UnityEngine::Component* component); 
+    DECLARE_INSTANCE_METHOD(UnityEngine::Component*, GetByType, Il2CppReflectionType* type);
     
-    REGISTER_FUNCTION(ExternalComponents,
-        REGISTER_METHOD(GetByType);
-    )
+    DECLARE_DEFAULT_CTOR();
+
+    DECLARE_SIMPLE_DTOR();
+
 )

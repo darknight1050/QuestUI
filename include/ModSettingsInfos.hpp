@@ -5,7 +5,6 @@
 #include "QuestUI.hpp"
 
 namespace QuestUI::ModSettingsInfos {
-    
     typedef struct ModSettingsInfo {
         ModInfo modInfo;
         bool showModInfo;

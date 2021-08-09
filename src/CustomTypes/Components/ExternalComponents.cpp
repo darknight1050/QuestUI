@@ -1,11 +1,10 @@
 #include "beatsaber-hook/shared/utils/utils.h"
 #include "CustomTypes/Components/ExternalComponents.hpp"
 
-DEFINE_CLASS(QuestUI::ExternalComponents);
+DEFINE_TYPE(QuestUI, ExternalComponents);
 
 void QuestUI::ExternalComponents::Add(UnityEngine::Component* component) {
-    if(component)
-        components.push_back(component);
+    components.push_back(component);
 }
 
 UnityEngine::Component* QuestUI::ExternalComponents::GetByType(Il2CppReflectionType* type) {

@@ -1,4 +1,5 @@
 #include "beatsaber-hook/shared/utils/utils.h"
+#include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "custom-types/shared/register.hpp"
 
 #include "QuestUI.hpp"
@@ -8,8 +9,12 @@
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/CustomPanelController.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
+#include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
+#include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
+#include "CustomTypes/Components/FloatingScreen/FloatingScreenMoverPointer.hpp"
 
 #include "BeatSaberUI.hpp"
 #include "InternalBeatSaberUI.hpp"
@@ -22,8 +27,11 @@
 #include "GlobalNamespace/PlayerSettingsPanelController.hpp"
 #include "GlobalNamespace/EnvironmentOverrideSettingsPanelController.hpp"
 #include "GlobalNamespace/ColorsOverrideSettingsPanelController.hpp"
+#include "GlobalNamespace/UIKeyboardManager.hpp"
+#include "UnityEngine/SceneManagement/Scene.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
+#include "UnityEngine/SceneManagement/SceneManager.hpp"
 #include "Polyglot/Localization.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
@@ -57,11 +65,10 @@ void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
     BeatSaberUI::GetMainFlowCoordinator()->PresentFlowCoordinator(flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
 }
 
-MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::OptionsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsViewController::DidActivate, void, GlobalNamespace::OptionsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     OptionsViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     if(firstActivation) {
         flowCoordinator = nullptr;
-        BeatSaberUI::ClearCache();
         if(GetModsCount() > 0) {
             UnityEngine::UI::Button* avatarButton = self->settingsButton;
             UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
@@ -85,7 +92,7 @@ MAKE_HOOK_OFFSETLESS(OptionsViewController_DidActivate, void, GlobalNamespace::O
     }
 }
 
-MAKE_HOOK_OFFSETLESS(GameplaySetupViewController_RefreshContent, void, GlobalNamespace::GameplaySetupViewController* self) {
+MAKE_HOOK_MATCH(GameplaySetupViewController_RefreshContent, &GlobalNamespace::GameplaySetupViewController::RefreshContent, void, GlobalNamespace::GameplaySetupViewController* self) {
     GameplaySetupViewController_RefreshContent(self);
     self->panels = System::Collections::Generic::List_1<GlobalNamespace::GameplaySetupViewController::Panel*>::New_ctor();
     if (self->showModifiers)
@@ -131,25 +138,74 @@ MAKE_HOOK_OFFSETLESS(GameplaySetupViewController_RefreshContent, void, GlobalNam
     self->selectionSegmentedControl->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
 }
 
+    }
+}
+
+MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
+    SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
+    BeatSaberUI::ClearCache();
+    if(prevScene.IsValid() && nextScene.IsValid()) {
+        std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
+        std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+        getLogger().info("Scene change from %s to %s", prevSceneName.c_str(), nextSceneName.c_str());
+        static bool hasInited = false;
+        if(prevSceneName == "QuestInit"){
+            hasInited = true;
+        }
+        if(hasInited && prevSceneName == "EmptyTransition" && nextSceneName.find("Menu") != std::string::npos) {
+            hasInited = false;
+            BeatSaberUI::SetupPersistentObjects();
+        }
+    } else {
+        if(prevScene.IsValid()) {
+            std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
+            getLogger().info("Scene change from %s to null", prevSceneName.c_str());
+        } 
+        if(nextScene.IsValid()) {
+            std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+            getLogger().info("Scene change from null to %s", nextSceneName.c_str());
+        }
+    }
+}
+
+MAKE_HOOK_MATCH(UIKeyboardManager_OpenKeyboardFor, &GlobalNamespace::UIKeyboardManager::OpenKeyboardFor, void, GlobalNamespace::UIKeyboardManager* self, HMUI::InputFieldView* input) {
+    static UnityEngine::Vector3 magicVector = UnityEngine::Vector3(1337.0f, 1337.0f, 1337.0f);
+    if (input->keyboardPositionOffset == magicVector) {
+        auto transform = input->get_transform();
+        if(transform->get_position().y < 1.278000f) {
+            input->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 42.0f, 0.0f);
+        } else {
+            input->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 0.0f, 0.0f);
+        }
+        UIKeyboardManager_OpenKeyboardFor(self, input);
+        input->keyboardPositionOffset = magicVector;
+    } else {
+        UIKeyboardManager_OpenKeyboardFor(self, input);
+    }
+}
+
+bool didInit = false;
+
+bool DidInit(){
+    return didInit;
+}
+
 void QuestUI::Init() {
-    static bool init = false;
-    if(!init) {
-        init = true;
+    if(!didInit) {
+        didInit = true;
+        getLogger().info("Init started...");
         il2cpp_functions::Init();
-        custom_types::Register::RegisterType<CustomDataType>();
-        custom_types::Register::RegisterType<ExternalComponents>();
-        custom_types::Register::RegisterType<Backgroundable>();
-        custom_types::Register::RegisterType<CustomPanelController>();
-        custom_types::Register::RegisterType<ScrollViewContent>();
-        custom_types::Register::RegisterType<IncrementSetting>();
-        custom_types::Register::RegisterType<ModSettingsButtonsViewController>();
-        custom_types::Register::RegisterType<ModSettingsFlowCoordinator>();
-        INSTALL_HOOK_OFFSETLESS(getLogger(), OptionsViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "OptionsViewController", "DidActivate", 3));
-        INSTALL_HOOK_OFFSETLESS(getLogger(), GameplaySetupViewController_RefreshContent, il2cpp_utils::FindMethodUnsafe("", "GameplaySetupViewController", "RefreshContent", 0));
+        custom_types::Register::AutoRegister();
+        INSTALL_HOOK(getLogger(), OptionsViewController_DidActivate);
+        INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
+        INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
+        INSTALL_HOOK(getLogger(), GameplaySetupViewController_RefreshContent);
+        getLogger().info("Init completed!");
     }
 }
 
 void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type, Register::DidActivateEvent didActivateEvent) {
+    Init();
     ModSettingsInfos::ModSettingsInfo info = {};
     info.modInfo = modInfo;
     info.showModInfo = showModInfo;

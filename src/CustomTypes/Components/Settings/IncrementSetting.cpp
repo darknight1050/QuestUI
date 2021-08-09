@@ -11,7 +11,7 @@
 #include "UnityEngine/Sprite.hpp"
 #include "UnityEngine/HideFlags.hpp"
 
-DEFINE_CLASS(QuestUI::IncrementSetting);
+DEFINE_TYPE(QuestUI, IncrementSetting);
 
 Il2CppString* QuestUI::IncrementSetting::GetRoundedString() {
     std::stringstream stream;
@@ -36,6 +36,6 @@ void QuestUI::IncrementSetting::UpdateValue() {
         CurrentValue = MaxValue;
     Text->SetText(GetRoundedString());
     if(OnValueChange)
-        OnValueChange->Invoke(CurrentValue);
+        OnValueChange(CurrentValue);
 }
 

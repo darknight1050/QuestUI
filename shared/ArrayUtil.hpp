@@ -42,6 +42,18 @@ namespace QuestUI::ArrayUtil {
         }
         return nullptr;
     }
+
+    template <class T, class Predicate>
+    inline Array<T*>* Where(Array<T*>* array, Predicate pred)
+    {
+        List<T*>* newArray = List<T*>::New_ctor();
+        for (int i = 0; i < array->Length(); i++) {
+            T* item = array->values[i];
+            if(pred(item))
+                newArray->Add(item);
+        }
+        return newArray->ToArray();
+    }
     
     template <class Out, class T, class Predicate>
     inline Array<Out>* Select(Array<T*>* array, Predicate pred)
@@ -61,6 +73,36 @@ namespace QuestUI::ArrayUtil {
                 return true;
         }
         return false;
+    }
+
+    template <class Out, class T, class Predicate>
+    inline Out Min(Array<T*>* array, Predicate pred)
+    {
+        bool first = true;
+        Out min;
+        for (int i = 0; i < array->Length(); i++) {
+            auto value = pred(array->values[i]);
+            if(first || value < min){
+                first = false;
+                min = value;
+            }
+        }
+        return min;
+    }
+
+    template <class Out, class T, class Predicate>
+    inline Out Max(Array<T*>* array, Predicate pred)
+    {
+        bool first = true;
+        Out max;
+        for (int i = 0; i < array->Length(); i++) {
+            auto value = pred(array->values[i]);
+            if(first || value > max){
+                first = false;
+                max = value;
+            }
+        }
+        return max;
     }
 
 }

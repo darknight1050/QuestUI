@@ -23,17 +23,9 @@ public:
     }
 
     DECLARE_CTOR(ctor);
+    
+    DECLARE_DTOR(Finalize);
 
-    DECLARE_METHOD(CustomDataType*, SetDataPointer, void* data);
+    DECLARE_INSTANCE_METHOD(CustomDataType*, SetDataPointer, void* data);
 
-    DECLARE_OVERRIDE_METHOD(void, Finalize, il2cpp_utils::FindMethod("System", "Object", "Finalize"));
-
-    REGISTER_FUNCTION(CustomDataType,
-        REGISTER_FIELD(data);
-        REGISTER_FIELD(allocated);
-
-        REGISTER_METHOD(ctor);
-        REGISTER_METHOD(SetDataPointer);
-        REGISTER_METHOD(Finalize);
-    )
 )

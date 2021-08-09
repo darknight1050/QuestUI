@@ -11,7 +11,7 @@
 using namespace UnityEngine;
 using namespace UnityEngine::UI;
 
-DEFINE_CLASS(QuestUI::ScrollViewContent);
+DEFINE_TYPE(QuestUI, ScrollViewContent);
 
 void QuestUI::ScrollViewContent::Start() {
     LayoutRebuilder::ForceRebuildLayoutImmediate(GetComponent<RectTransform*>());
@@ -23,9 +23,9 @@ void QuestUI::ScrollViewContent::OnEnable() {
 }
 
 void QuestUI::ScrollViewContent::Update() {
-    if(!inSetup) 
+    if(!inSetup || !scrollView) 
         return;
-    if(reinterpret_cast<RectTransform*>(get_transform()->GetChild(0))->get_sizeDelta().y != -1.0f){
+    if(scrollView->contentRectTransform->get_sizeDelta().y != -1.0f) {
         inSetup = false;
         UpdateScrollView();
     }
@@ -38,6 +38,5 @@ void QuestUI::ScrollViewContent::OnRectTransformDimensionsChange() {
 void QuestUI::ScrollViewContent::UpdateScrollView() {
     if(!scrollView) 
         return;
-    scrollView->SetContentHeight(reinterpret_cast<RectTransform*>(get_transform()->GetChild(0))->get_rect().get_height());
-    scrollView->RefreshButtons();
+    scrollView->UpdateContentSize();
 }

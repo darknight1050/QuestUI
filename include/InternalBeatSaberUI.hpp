@@ -2,4 +2,6 @@
 
 namespace QuestUI::BeatSaberUI {
 
+    void SetupPersistentObjects();
+
 }
