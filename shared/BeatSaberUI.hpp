@@ -28,6 +28,7 @@
 #include "HMUI/HoverHint.hpp"
 #include "HMUI/InputFieldView.hpp"
 #include "HMUI/ModalView.hpp"
+#include "HMUI/ImageView.hpp"
 #include "HMUI/SimpleTextDropdown.hpp"
 
 #include "TMPro/TextMeshProUGUI.hpp"
@@ -103,7 +104,7 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, std::function<void()> onClick = nullptr);
 
-    UnityEngine::UI::Image* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
+    HMUI::ImageView* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
     UnityEngine::Sprite* Base64ToSprite(std::string& base64, int width, int height);   
 
