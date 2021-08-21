@@ -1,4 +1,4 @@
-#include "CustomTypes/Components/CustomCellListTableData.hpp"
+#include "CustomTypes/Components/List/CustomCellListTableData.hpp"
 #include "HMUI/Touchable.hpp"
 
 DEFINE_TYPE(QuestUI, CustomCellListTableData);
