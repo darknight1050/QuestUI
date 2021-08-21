@@ -1,4 +1,5 @@
 #include "CustomTypes/Components/List/CustomCellListTableData.hpp"
+#include "CustomTypes/Components/List/CustomListWrapper.hpp"
 #include "HMUI/Touchable.hpp"
 
 DEFINE_TYPE(QuestUI, CustomCellListTableData);
@@ -10,12 +11,20 @@ namespace QuestUI
     /* -- CustomCellListTableData -- */
     void CustomCellListTableData::ctor()
     {
-        data = List<Il2CppObject*>::New_ctor();
+        INVOKE_CTOR();
+    }
+
+    void CustomCellListTableData::dtor()
+    {
+        if (listWrapper) delete listWrapper;
+        Finalize();
     }
 
     HMUI::TableCell* CustomCellListTableData::CellForIdx(HMUI::TableView* tableView, int idx)
     {
         auto tableCell = UnityEngine::GameObject::New_ctor()->AddComponent<CustomCellTableCell*>();
+        if (listWrapper) listWrapper->SetupCell(tableCell, idx);
+
         if (clickableCells)
         {
             tableCell->get_gameObject()->AddComponent<HMUI::Touchable*>();
@@ -35,7 +44,7 @@ namespace QuestUI
 
     int CustomCellListTableData::NumberOfCells()
     {
-        return data->get_Count();
+        return listWrapper ? listWrapper->GetDataSize() : 0;
     }
     #pragma endregion
 
