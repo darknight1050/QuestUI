@@ -39,6 +39,7 @@
 #include "HMUI/HoverHintController.hpp"
 #include "HMUI/TableView.hpp"
 #include "HMUI/TableView_CellsGroup.hpp"
+#include "HMUI/TableView_ScrollPositionType.hpp"
 #include "HMUI/ImageView.hpp"
 #include "HMUI/TextPageScrollView.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
@@ -56,11 +57,12 @@
 #include "System/Convert.hpp"
 #include "System/Action_2.hpp"
 #include "System/Action.hpp"
+#include "System/Collections/Generic/HashSet_1.hpp"
 
 #include "Zenject/DiContainer.hpp"
 
 #include "customlogger.hpp"
-
+#include "Sprites/carats.hpp"
 #define DEFAULT_BUTTONTEMPLATE "PracticeButton"
 
 using namespace GlobalNamespace;
@@ -270,7 +272,7 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->SetParent(parent, false);
         textMesh->set_font(GetMainTextFont());
         textMesh->set_fontSharedMaterial(GetMainUIFontMaterial());
-        textMesh->set_text(il2cpp_utils::createcsstr(italic ? ("<i>" + text + "</i>") : text));
+        textMesh->set_text(il2cpp_utils::createcsstr(italic ? string_format("<i>%s</i>", text.data()) : text));
         textMesh->set_fontSize(4.0f);
         textMesh->set_color(UnityEngine::Color::get_white());
         textMesh->set_richText(true);
@@ -348,13 +350,16 @@ namespace QuestUI::BeatSaberUI {
         ExternalComponents* externalComponents = button->get_gameObject()->AddComponent<ExternalComponents*>();
 
         TextMeshProUGUI* textMesh = button->GetComponentInChildren<TextMeshProUGUI*>();
-        textMesh->set_richText(true);
-        textMesh->set_alignment(TextAlignmentOptions::Center);
-        externalComponents->Add(textMesh);
-
+        if (textMesh)
+        {
+            textMesh->set_richText(true);
+            textMesh->set_alignment(TextAlignmentOptions::Center);
+            externalComponents->Add(textMesh);
+        }
         RectTransform* rectTransform = (RectTransform*)button->get_transform();
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_pivot(UnityEngine::Vector2(0.5f, 0.5f));
 
         SetButtonText(button, buttonText);
 
@@ -1003,17 +1008,52 @@ namespace QuestUI::BeatSaberUI {
         scrollTransform->get_gameObject()->set_name(name);
         return content;
     }
-
-    HMUI::TableView* CreateList(Transform* parent, CustomListWrapper* listWrapper)
+    
+    CustomCellListTableData* CreateList(Transform* parent, Vector2 anchoredPosition, Vector2 sizeDelta, CustomListWrapper* listWrapper)
     {
-        static auto BSMLCustomListContainer_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BSMLCustomListContainer");
-        auto container = GameObject::New_ctor(BSMLCustomListContainer_cs)->AddComponent<RectTransform*>();;
+        auto list = CreateList(parent, listWrapper);
+        auto rect = list->GetComponent<RectTransform*>();
+
+        rect->set_sizeDelta(sizeDelta);
+        rect->set_anchoredPosition(anchoredPosition);
+        
+        auto layout = list->GetComponent<LayoutElement*>();
+        layout->set_flexibleHeight(sizeDelta.y);
+        layout->set_minHeight(sizeDelta.y);
+        layout->set_preferredHeight(sizeDelta.y);
+        layout->set_flexibleHeight(sizeDelta.x);
+        layout->set_minHeight(sizeDelta.x);
+        layout->set_preferredHeight(sizeDelta.x);
+
+        return list;
+    }
+
+    CustomCellListTableData* CreateList(Transform* parent, Vector2 sizeDelta, CustomListWrapper* listWrapper)
+    {
+        auto list = CreateList(parent, listWrapper);
+        auto rect = list->GetComponent<RectTransform*>();
+        rect->set_sizeDelta(sizeDelta);
+        auto layout = list->get_transform()->get_parent()->GetComponentInParent<LayoutElement*>();
+        layout->set_flexibleHeight(sizeDelta.y);
+        layout->set_minHeight(sizeDelta.y);
+        layout->set_preferredHeight(sizeDelta.y);
+        layout->set_flexibleHeight(sizeDelta.x);
+        layout->set_minHeight(sizeDelta.x);
+        layout->set_preferredHeight(sizeDelta.x);
+
+        return list;
+    }
+
+    // BSML CustomListTag
+    CustomCellListTableData* CreateList(Transform* parent, CustomListWrapper* listWrapper)
+    {
+        static auto QuestUICustomListContainer_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUICustomListContainer");
+        auto container = GameObject::New_ctor(QuestUICustomListContainer_cs)->AddComponent<RectTransform*>();;
         auto layoutElement = container->get_gameObject()->AddComponent<LayoutElement*>();
         container->SetParent(parent, false);
 
-
-        static auto BSMLCustomList_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BSMLCustomList");
-        auto gameObject = GameObject::New_ctor(BSMLCustomList_cs);
+        static auto QuestUICustomList_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUICustomList");
+        auto gameObject = GameObject::New_ctor(QuestUICustomList_cs);
         gameObject->get_transform()->SetParent(container, false);
         gameObject->SetActive(false);
 
@@ -1074,7 +1114,95 @@ namespace QuestUI::BeatSaberUI {
         // reinterpret cast because interfaces are not explicitly inherited
         tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(tableData), false);
         tableView->get_gameObject()->SetActive(true);
-        return tableView;
+        return tableData;
+    }
+
+    Button* CreatePageButton(std::string name, Transform* parent, std::string buttonTemplate, Vector2 anchoredPosition, Vector2 sizeDelta, std::function<void(void)> onClick, Sprite* icon = nullptr)
+    {
+        Il2CppString* templCS = il2cpp_utils::newcsstr(buttonTemplate.data());
+        auto orig = ArrayUtil::Last(Resources::FindObjectsOfTypeAll<Button*>(), [&](auto x) {
+            return x->get_name()->Equals(templCS);
+        });
+
+        if (!icon)
+            icon = orig->GetComponentInChildren<Image*>()->get_sprite();
+        
+        auto btn = Object::Instantiate(orig, parent, false);
+        btn->GetComponentInChildren<Image*>()->set_sprite(icon);
+        btn->set_name(il2cpp_utils::newcsstr(name.data()));
+        btn->set_interactable(true);
+        auto iconrect = btn->GetComponentInChildren<Image*>()->get_rectTransform();
+        
+        auto rect = reinterpret_cast<RectTransform*>(btn->get_transform());
+        rect->set_anchorMin(Vector2(0.0f, 0.0f));
+        rect->set_anchorMax(Vector2(1.0f, 1.0f));
+        rect->set_anchoredPosition(anchoredPosition);
+        rect->set_sizeDelta(sizeDelta);
+        rect->set_pivot(Vector2(0.5f, 0.5f));
+
+        SetButtonText(btn, "");
+
+        btn->set_onClick(Button::ButtonClickedEvent::New_ctor());
+
+        if (onClick)
+            btn->get_onClick()->AddListener(MakeDelegate(UnityAction*, onClick));
+
+        return btn;
+    }
+    
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper)
+    {
+        return CreateScrollableList(parent, {60.0f, 35.0f}, listWrapper);
+    }
+
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper)
+    {
+        return CreateScrollableList(parent, {0.0f, 0.0f}, sizeDelta, listWrapper);
+    }
+    
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper)
+    {
+        auto vertical = CreateVerticalLayoutGroup(parent);
+        vertical->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.35f);
+        auto layout = vertical->get_gameObject()->AddComponent<LayoutElement*>(); 
+        vertical->get_rectTransform()->set_sizeDelta(sizeDelta);
+        vertical->get_rectTransform()->set_anchoredPosition(anchoredPosition);
+        vertical->set_childForceExpandHeight(false);
+        vertical->set_childControlHeight(false);
+        vertical->set_childScaleHeight(false);
+        layout->set_preferredHeight(sizeDelta.y);
+        layout->set_preferredWidth(sizeDelta.x);
+
+        auto list = CreateList(vertical->get_transform(), Vector2 (sizeDelta.x, sizeDelta.y - 16.0f), listWrapper);
+        auto rect = list->GetComponent<RectTransform*>();
+
+        auto up = CreatePageButton("QuestUIPageUpButton", vertical->get_transform(), "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){ 
+            int idx = reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrolledRow();
+            idx -= 5;
+            idx = idx > 0 ? idx : 0;
+            list->tableView->ScrollToCellWithIdx(idx, HMUI::TableView::ScrollPositionType::Beginning, true);
+        });
+        up->get_transform()->SetAsFirstSibling();
+
+        auto down = CreatePageButton("QuestUIPageDownButton", vertical->get_transform(), "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){
+            int idx = reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrolledRow();
+            idx += 5;
+            int max = list->tableView->get_dataSource()->NumberOfCells();
+            idx = max <= idx ? max - 1 : idx;
+            list->tableView->ScrollToCellWithIdx(idx, HMUI::TableView::ScrollPositionType::Beginning, true);
+        });
+        down->get_transform()->SetAsLastSibling();
+        
+        reinterpret_cast<RectTransform*>(up->get_transform()->GetChild(0))->set_sizeDelta({8.0f, 8.0f});
+        reinterpret_cast<RectTransform*>(down->get_transform()->GetChild(0))->set_sizeDelta({8.0f, 8.0f});
+        auto carat_up_sprite = Base64ToSprite(carat_up);
+        auto carat_down_sprite = Base64ToSprite(carat_down);
+        auto carat_up_inactive_sprite = Base64ToSprite(carat_up_inactive);
+        auto carat_down_inactive_sprite = Base64ToSprite(carat_down_inactive);
+        SetButtonSprites(up, carat_up_inactive_sprite, carat_up_sprite);
+        SetButtonSprites(down, carat_down_inactive_sprite, carat_down_sprite);
+
+        return list;
     }
 
 }
