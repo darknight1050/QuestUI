@@ -1073,6 +1073,7 @@ namespace QuestUI::BeatSaberUI {
 
         // reinterpret cast because interfaces are not explicitly inherited
         tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(tableData), false);
+        tableView->get_gameObject()->SetActive(true);
         return tableView;
     }
 

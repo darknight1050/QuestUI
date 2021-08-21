@@ -31,9 +31,9 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomCellListTableData, Il2CppType
 )
 
 DECLARE_CLASS_CODEGEN(QuestUI, CustomCellTableCell, HMUI::TableCell,
-    DECLARE_INSTANCE_FIELD(List<UnityEngine::GameObject*>*, selected);
-    DECLARE_INSTANCE_FIELD(List<UnityEngine::GameObject*>*, hovered);
-    DECLARE_INSTANCE_FIELD(List<UnityEngine::GameObject*>*, neither);
+    DECLARE_INSTANCE_FIELD(List<UnityEngine::GameObject*>*, selectedGroup);
+    DECLARE_INSTANCE_FIELD(List<UnityEngine::GameObject*>*, hoveredGroup);
+    DECLARE_INSTANCE_FIELD(List<UnityEngine::GameObject*>*, neitherGroup);
 
     DECLARE_CTOR(ctor);
 

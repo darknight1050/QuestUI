@@ -9,20 +9,24 @@ namespace QuestUI {
             /// @brief a method to call for setting up the table
             /// use this to add to the selected / highlighted / neither groups of the cell, so you can get different behaviour
             virtual void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) = 0;
+            /// @brief what to do when a cell with idx is selected
+            virtual void OnCellSelected(QuestUI::CustomCellTableCell* cell, int idx) = 0;
             /// @brief a dotr so you can clear up your data if needed
-            virtual ~CustomListWrapper() = 0;
+            virtual ~CustomListWrapper() {};
     };
 
     class LambdaListWrapper : public CustomListWrapper {
         public:
-            LambdaListWrapper(std::function<int(LambdaListWrapper*)> getDataSize, std::function<void(LambdaListWrapper*, QuestUI::CustomCellTableCell*, int)> setupCell, std::function<void(LambdaListWrapper*)> dtor) : getDataSize(getDataSize), setupCell(setupCell), dtor(dtor) {}; 
+            LambdaListWrapper(std::function<int(LambdaListWrapper*)> getDataSize, std::function<void(LambdaListWrapper*, QuestUI::CustomCellTableCell*, int)> setupCell, std::function<void(LambdaListWrapper*, QuestUI::CustomCellTableCell*, int)> onCellSelected, std::function<void(LambdaListWrapper*)> dtor) : getDataSize(getDataSize), setupCell(setupCell), onCellSelected(onCellSelected), dtor(dtor) {}; 
 
             std::function<int(LambdaListWrapper*)> getDataSize;
             std::function<void(LambdaListWrapper*, QuestUI::CustomCellTableCell*, int)> setupCell;
+            std::function<void(LambdaListWrapper*, QuestUI::CustomCellTableCell*, int)> onCellSelected;
             std::function<void(LambdaListWrapper*)> dtor;
 
             int GetDataSize() { return getDataSize(this); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { setupCell(this, createdCell, idx); };
+            void OnCellSelected(QuestUI::CustomCellTableCell* cell, int idx) { onCellSelected(this, cell, idx); };
             ~LambdaListWrapper() { dtor(this); };
     };
 
@@ -34,6 +38,7 @@ namespace QuestUI {
             int GetDataSize() { return data.size(); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { SetupVectorCell(createdCell, data[idx]); };
             void virtual SetupVectorCell(QuestUI::CustomCellTableCell* createdCell, const T& data) = 0;
+            virtual void OnCellSelected(QuestUI::CustomCellTableCell* cell, int idx) = 0;
             virtual ~VectorListWrapper() = 0;
     };
 
@@ -45,6 +50,7 @@ namespace QuestUI {
             int GetDataSize() { return data->Length(); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { SetupVectorCell(createdCell, data->values[idx]); };
             void virtual SetupArrayCell(QuestUI::CustomCellTableCell* createdCell, const T& data) = 0;
+            virtual void OnCellSelected(QuestUI::CustomCellTableCell* cell, int idx) = 0;
             virtual ~ArrayListWrapper() = 0;
     };
 
@@ -56,6 +62,7 @@ namespace QuestUI {
             int GetDataSize() { return data->get_Count(); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { SetupVectorCell(createdCell, data->items->values[idx]); };
             void virtual SetupListCell(QuestUI::CustomCellTableCell* createdCell, const T& data) = 0;
+            virtual void OnCellSelected(QuestUI::CustomCellTableCell* cell, int idx) = 0;
             virtual ~ListListWrapper() = 0;
     };
 }

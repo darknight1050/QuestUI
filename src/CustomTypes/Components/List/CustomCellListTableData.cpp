@@ -1,9 +1,12 @@
 #include "CustomTypes/Components/List/CustomCellListTableData.hpp"
 #include "CustomTypes/Components/List/CustomListWrapper.hpp"
+#include "CustomTypes/Components/List/QuestUITableView.hpp"
 #include "HMUI/Touchable.hpp"
 
 DEFINE_TYPE(QuestUI, CustomCellListTableData);
 DEFINE_TYPE(QuestUI, CustomCellTableCell);
+
+extern Logger& getLogger();
 
 namespace QuestUI
 {
@@ -12,6 +15,8 @@ namespace QuestUI
     void CustomCellListTableData::ctor()
     {
         INVOKE_CTOR();
+        cellSize = 8.5f;
+        clickableCells = true;
     }
 
     void CustomCellListTableData::dtor()
@@ -22,6 +27,7 @@ namespace QuestUI
 
     HMUI::TableCell* CustomCellListTableData::CellForIdx(HMUI::TableView* tableView, int idx)
     {
+        // no dequeueing as of yet, needs to be properly handled which it is not yet at this point
         auto tableCell = UnityEngine::GameObject::New_ctor()->AddComponent<CustomCellTableCell*>();
         if (listWrapper) listWrapper->SetupCell(tableCell, idx);
 
@@ -52,18 +58,27 @@ namespace QuestUI
     /* -- CustomCellTableCell -- */
     void CustomCellTableCell::ctor()
     {
-        selected = List<UnityEngine::GameObject*>::New_ctor();
-        hovered = List<UnityEngine::GameObject*>::New_ctor();
-        neither = List<UnityEngine::GameObject*>::New_ctor();
+        selectedGroup = List<UnityEngine::GameObject*>::New_ctor();
+        hoveredGroup = List<UnityEngine::GameObject*>::New_ctor();
+        neitherGroup = List<UnityEngine::GameObject*>::New_ctor();
     }
 
     void CustomCellTableCell::SelectionDidChange(HMUI::SelectableCell::TransitionType transitionType)
     {
+        getLogger().info("Selection Changed");
         RefreshVisuals();
+        // if we are now selected
+        if (get_selected())
+        {
+            QuestUI::TableView* tableView = reinterpret_cast<QuestUI::TableView*>(get_tableCellOwner());
+            CustomCellListTableData* dataSource = reinterpret_cast<CustomCellListTableData*>(tableView->get_dataSource());
+            if (dataSource->listWrapper) dataSource->listWrapper->OnCellSelected(this, idx);
+        }
     }
 
     void CustomCellTableCell::HighlightDidChange(HMUI::SelectableCell::TransitionType transitionType)
     {
+        getLogger().info("Highlight Changed");
         RefreshVisuals();
     }
 
@@ -76,11 +91,11 @@ namespace QuestUI
     void CustomCellTableCell::RefreshVisuals()
     {
         bool isSelected = get_selected();
-        bool isHighlighted = get_highlighted();
+        bool isHighlighted = get_highlighted(); 
 
-        UpdateGOList(selected, isSelected);
-        UpdateGOList(hovered, isHighlighted);
-        UpdateGOList(neither, !(isSelected || isHighlighted));
+        UpdateGOList(selectedGroup, isSelected);
+        UpdateGOList(hoveredGroup, isHighlighted);
+        UpdateGOList(neitherGroup, !(isSelected || isHighlighted));
     }
     #pragma endregion
 }

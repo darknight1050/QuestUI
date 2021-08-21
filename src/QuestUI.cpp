@@ -140,6 +140,24 @@ void QuestUI::Init() {
         INSTALL_HOOK(getLogger(), OptionsViewController_DidActivate);
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
+
+        Register::RegisterModSettingsViewController({"questui", VERSION}, "testList", [](HMUI::ViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+            auto container = BeatSaberUI::CreateScrollableSettingsContainer(self->get_transform());
+            BeatSaberUI::CreateText(container->get_transform(), "Cool list header text or something idk");
+            auto listWrapper = new LambdaListWrapper([](LambdaListWrapper*){ getLogger().info("GetTableSize"); return 20; }, [](LambdaListWrapper*, QuestUI::CustomCellTableCell* cell, int idx){
+                getLogger().info("Setup cell %d", idx);
+                auto vertical = BeatSaberUI::CreateVerticalLayoutGroup(cell->get_transform());
+                auto horizontal = BeatSaberUI::CreateHorizontalLayoutGroup(vertical->get_transform());
+                cell->CustomCellTableCell::selectedGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("selected-%d", idx))->get_gameObject());
+                cell->CustomCellTableCell::hoveredGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("highlighted-%d", idx))->get_gameObject());
+                cell->CustomCellTableCell::neitherGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("neither-%d", idx))->get_gameObject());
+            }, [](LambdaListWrapper*, QuestUI::CustomCellTableCell* cell, int idx){
+                getLogger().info("cell %d selected!", idx);
+            }, [](LambdaListWrapper*){});
+
+            auto tableView = BeatSaberUI::CreateList(container->get_transform(), listWrapper);
+            tableView->ReloadData();
+        });
         getLogger().info("Init completed!");
     }
 }

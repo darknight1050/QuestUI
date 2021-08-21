@@ -7,7 +7,8 @@ namespace QuestUI
 {
     void TableView::ReloadData()
     {
-        this->HMUI::TableView::ReloadData();
+        auto reload = il2cpp_utils::FindMethodUnsafe("HMUI", "TableView", "ReloadData", 0);
+        il2cpp_utils::RunMethod(this, reload);
         if (tableType == HMUI::TableView::TableType::Horizontal)
         {
             contentTransform->set_anchorMin({0.0f, 0.0f});
