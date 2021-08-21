@@ -8,6 +8,7 @@
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
+#include "CustomTypes/Components/List/QuestUITableView.hpp"
 
 #include "GlobalNamespace/UIKeyboardManager.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
@@ -28,6 +29,7 @@
 #include "UnityEngine/TextureWrapMode.hpp"
 #include "UnityEngine/ImageConversion.hpp"
 #include "UnityEngine/Material.hpp"
+#include "UnityEngine/UI/RectMask2D.hpp"
 #include "UnityEngine/UI/ScrollRect.hpp"
 #include "UnityEngine/UI/CanvasScaler.hpp"
 #include "UnityEngine/Events/UnityAction_1.hpp"
@@ -36,6 +38,7 @@
 #include "HMUI/Touchable.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "HMUI/TableView.hpp"
+#include "HMUI/TableView_CellsGroup.hpp"
 #include "HMUI/ImageView.hpp"
 #include "HMUI/TextPageScrollView.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
@@ -1000,4 +1003,77 @@ namespace QuestUI::BeatSaberUI {
         scrollTransform->get_gameObject()->set_name(name);
         return content;
     }
+
+    HMUI::TableView* CreateList(Transform* parent, CustomListWrapper* listWrapper)
+    {
+        static auto BSMLCustomListContainer_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BSMLCustomListContainer");
+        auto container = GameObject::New_ctor(BSMLCustomListContainer_cs)->AddComponent<RectTransform*>();;
+        auto layoutElement = container->get_gameObject()->AddComponent<LayoutElement*>();
+        container->SetParent(parent, false);
+
+
+        static auto BSMLCustomList_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BSMLCustomList");
+        auto gameObject = GameObject::New_ctor(BSMLCustomList_cs);
+        gameObject->get_transform()->SetParent(container, false);
+        gameObject->SetActive(false);
+
+        static auto DropdownTableView_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("DropdownTableView");
+        auto canvasTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Canvas*>(), [&](auto x) { return x->get_name()->Equals(DropdownTableView_cs); });
+
+        gameObject->AddComponent<ScrollRect*>();
+        auto canvas = gameObject->AddComponent<Canvas*>();
+        // copy the template canvas
+        canvas->set_additionalShaderChannels(canvasTemplate->get_additionalShaderChannels());
+        canvas->set_overrideSorting(canvasTemplate->get_overrideSorting());
+        canvas->set_pixelPerfect(canvasTemplate->get_pixelPerfect());
+        canvas->set_referencePixelsPerUnit(canvasTemplate->get_referencePixelsPerUnit());
+        canvas->set_renderMode(canvasTemplate->get_renderMode());
+        canvas->set_scaleFactor(canvasTemplate->get_scaleFactor());
+        canvas->set_sortingLayerID(canvasTemplate->get_sortingLayerID());
+        canvas->set_sortingOrder(canvasTemplate->get_sortingOrder());
+        canvas->set_worldCamera(canvasTemplate->get_worldCamera());
+
+        gameObject->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+        gameObject->AddComponent<Touchable*>();
+        gameObject->AddComponent<EventSystemListener*>();
+        auto scrollView = gameObject->AddComponent<ScrollView*>();
+
+        HMUI::TableView* tableView = gameObject->AddComponent<QuestUI::TableView*>();
+        auto tableData = container->get_gameObject()->AddComponent<CustomCellListTableData*>();
+        tableData->listWrapper = listWrapper;
+        tableData->tableView = tableView;
+        
+        tableView->preallocatedCells = Array<TableView::CellsGroup*>::NewLength(0);
+        tableView->isInitialized = false;
+        tableView->scrollView = scrollView;
+
+        static auto Viewport_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Viewport");
+        auto viewport = GameObject::New_ctor(Viewport_cs)->AddComponent<RectTransform*>();
+        viewport->SetParent(gameObject->GetComponent<RectTransform*>(), false);
+        viewport->get_gameObject()->AddComponent<RectMask2D*>();
+        gameObject->GetComponent<ScrollRect*>()->set_viewport(viewport);
+
+        static auto Content_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Content");
+        auto content = GameObject::New_ctor(Content_cs)->AddComponent<RectTransform*>();
+        content->SetParent(viewport, false);
+
+        scrollView->contentRectTransform = content;
+        scrollView->viewport = viewport;
+
+        viewport->set_anchorMin({0.0f, 0.0f});
+        viewport->set_anchorMax({1.0f, 1.0f});
+        viewport->set_sizeDelta({0.0f, 0.0f});
+        viewport->set_anchoredPosition({0.0f, 0.0f});
+        
+        auto tableViewRectT = tableView->GetComponent<RectTransform*>();
+        tableViewRectT->set_anchorMin({0.0f, 0.0f});
+        tableViewRectT->set_anchorMax({1.0f, 1.0f});
+        tableViewRectT->set_sizeDelta({0.0f, 0.0f});
+        tableViewRectT->set_anchoredPosition({0.0f, 0.0f});
+
+        // reinterpret cast because interfaces are not explicitly inherited
+        tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(tableData), false);
+        return tableView;
+    }
+
 }

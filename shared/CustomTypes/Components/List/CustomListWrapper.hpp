@@ -37,22 +37,22 @@ namespace QuestUI {
             virtual ~VectorListWrapper() = 0;
     };
 
-    template<typename T, typename arr = Array<T>>
+    template<typename T, typename arr = Array<T>*>
     class ArrayListWrapper : public CustomListWrapper {
-        arr* data;
+        arr data;
         public:
-            ArrayListWrapper(arr* data) { this->data = data; };
+            ArrayListWrapper(arr data) : data(data) {};
             int GetDataSize() { return data->Length(); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { SetupVectorCell(createdCell, data->values[idx]); };
             void virtual SetupArrayCell(QuestUI::CustomCellTableCell* createdCell, const T& data) = 0;
             virtual ~ArrayListWrapper() = 0;
     };
 
-        template<typename T, typename list = List<T>>
+        template<typename T, typename list = List<T>*>
     class ListListWrapper : public CustomListWrapper {
         list* data;
         public:
-            ListListWrapper(list* data) : data(data) {};
+            ListListWrapper(list data) : data(data) {};
             int GetDataSize() { return data->get_Count(); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { SetupVectorCell(createdCell, data->items->values[idx]); };
             void virtual SetupListCell(QuestUI::CustomCellTableCell* createdCell, const T& data) = 0;

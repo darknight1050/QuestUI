@@ -3,6 +3,7 @@
 #include "ArrayUtil.hpp"
 
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
+#include "CustomTypes/Components/List/CustomListWrapper.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
@@ -197,4 +198,9 @@ namespace QuestUI::BeatSaberUI {
     /// @param modal the modal to create a container for
     /// @return GameObject container
     UnityEngine::GameObject* CreateScrollableModalContainer(HMUI::ModalView* modal);
+
+    /// @brief creates a custom celled list
+    /// @param parent what to parent it to
+    /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
+    HMUI::TableView* CreateList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper);
 }
