@@ -202,5 +202,44 @@ namespace QuestUI::BeatSaberUI {
     /// @brief creates a custom celled list
     /// @param parent what to parent it to
     /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
-    HMUI::TableView* CreateList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper);
+    /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
+    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper);
+    
+    /// @brief creates a custom celled list
+    /// @param parent what to parent it to
+    /// @param sizeDelta the size of the list
+    /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
+    /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
+    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper);
+
+    /// @brief creates a custom celled list
+    /// @param parent what to parent it to
+    /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
+    /// @param anchoredPosition the position of the list
+    /// @param sizeDelta the size of the list
+    /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
+    /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
+    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper);
+
+    /// @brief creates a custom celled list
+    /// @param parent what to parent it to
+    /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
+    /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper);
+
+    /// @brief creates a custom celled list
+    /// @param parent what to parent it to
+    /// @param sizeDelta the size of the list
+    /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
+    /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper);\
+
+    /// @brief creates a custom celled list
+    /// @param parent what to parent it to
+    /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
+    /// @param anchoredPosition the position of the list
+    /// @param sizeDelta the size of the list
+    /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
+    /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper);
 }

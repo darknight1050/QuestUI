@@ -1178,7 +1178,7 @@ namespace QuestUI::BeatSaberUI {
 
         auto up = CreatePageButton("QuestUIPageUpButton", vertical->get_transform(), "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){ 
             int idx = reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrolledRow();
-            idx -= 5;
+            idx -= reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrollDistance();
             idx = idx > 0 ? idx : 0;
             list->tableView->ScrollToCellWithIdx(idx, HMUI::TableView::ScrollPositionType::Beginning, true);
         });
@@ -1186,7 +1186,7 @@ namespace QuestUI::BeatSaberUI {
 
         auto down = CreatePageButton("QuestUIPageDownButton", vertical->get_transform(), "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){
             int idx = reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrolledRow();
-            idx += 5;
+            idx += reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrollDistance();
             int max = list->tableView->get_dataSource()->NumberOfCells();
             idx = max <= idx ? max - 1 : idx;
             list->tableView->ScrollToCellWithIdx(idx, HMUI::TableView::ScrollPositionType::Beginning, true);
