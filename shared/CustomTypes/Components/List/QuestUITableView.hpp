@@ -2,7 +2,6 @@
 
 #include "custom-types/shared/macros.hpp"
 #include "HMUI/TableView.hpp"
-#include "HMUI/TableView_ScrollPositionType.hpp"
 
 DECLARE_CLASS_CODEGEN(QuestUI, TableView, HMUI::TableView,
     DECLARE_OVERRIDE_METHOD(void, ReloadData, il2cpp_utils::il2cpp_type_check::MetadataGetter<&HMUI::TableView::ReloadData>::get());
@@ -11,5 +10,4 @@ DECLARE_CLASS_CODEGEN(QuestUI, TableView, HMUI::TableView,
     DECLARE_INSTANCE_FIELD(int, selectedRow);
     DECLARE_INSTANCE_METHOD(int, get_scrolledRow);
     DECLARE_INSTANCE_METHOD(int, get_scrollDistance);
-    //DECLARE_INSTANCE_METHOD(void, ReloadData);
 );

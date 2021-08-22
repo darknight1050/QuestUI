@@ -1116,7 +1116,9 @@ namespace QuestUI::BeatSaberUI {
         tableView->get_gameObject()->SetActive(true);
         return tableData;
     }
-
+    
+    // not used anymore, but might be useful to keep around?
+    /*
     Button* CreatePageButton(std::string name, Transform* parent, std::string buttonTemplate, Vector2 anchoredPosition, Vector2 sizeDelta, std::function<void(void)> onClick, Sprite* icon = nullptr)
     {
         Il2CppString* templCS = il2cpp_utils::newcsstr(buttonTemplate.data());
@@ -1149,6 +1151,7 @@ namespace QuestUI::BeatSaberUI {
 
         return btn;
     }
+    */
     
     CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper)
     {
@@ -1176,7 +1179,7 @@ namespace QuestUI::BeatSaberUI {
         auto list = CreateList(vertical->get_transform(), Vector2 (sizeDelta.x, sizeDelta.y - 16.0f), listWrapper);
         auto rect = list->GetComponent<RectTransform*>();
 
-        auto up = CreatePageButton("QuestUIPageUpButton", vertical->get_transform(), "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){ 
+        auto up = CreateUIButton(vertical->get_transform(), "", "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){ 
             int idx = reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrolledRow();
             idx -= reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrollDistance();
             idx = idx > 0 ? idx : 0;
@@ -1184,7 +1187,7 @@ namespace QuestUI::BeatSaberUI {
         });
         up->get_transform()->SetAsFirstSibling();
 
-        auto down = CreatePageButton("QuestUIPageDownButton", vertical->get_transform(), "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){
+        auto down = CreateUIButton(vertical->get_transform(), "", "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){
             int idx = reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrolledRow();
             idx += reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrollDistance();
             int max = list->tableView->get_dataSource()->NumberOfCells();

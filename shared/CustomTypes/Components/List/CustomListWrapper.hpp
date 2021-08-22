@@ -18,6 +18,7 @@ namespace QuestUI {
 
     class LambdaListWrapper : public CustomListWrapper {
         public:
+            /// @brief a type that wraps 4 lambdas to provide the same functionality as just inheriting the class and setting up a proper instance
             LambdaListWrapper(std::function<int(LambdaListWrapper*)> getDataSize, std::function<void(LambdaListWrapper*, QuestUI::CustomCellTableCell*, int)> setupCell, std::function<void(LambdaListWrapper*, QuestUI::CustomCellTableCell*, int)> onCellSelected, std::function<void(LambdaListWrapper*)> dtor) : getDataSize(getDataSize), setupCell(setupCell), onCellSelected(onCellSelected), dtor(dtor) {}; 
 
             std::function<int(LambdaListWrapper*)> getDataSize;
@@ -35,6 +36,7 @@ namespace QuestUI {
     class VectorListWrapper : public CustomListWrapper {
         vec data;
         public:
+            /// @brief a type that wraps a vector to make you need to define less methods;
             VectorListWrapper(vec data) : data(data) {};
             int GetDataSize() { return data.size(); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { SetupVectorCell(createdCell, data[idx]); };
@@ -47,6 +49,7 @@ namespace QuestUI {
     class ArrayListWrapper : public CustomListWrapper {
         arr data;
         public:
+            /// @brief a type that wraps an array to make you need to define less methods;
             ArrayListWrapper(arr data) : data(data) {};
             int GetDataSize() { return data->Length(); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { SetupVectorCell(createdCell, data->values[idx]); };
@@ -57,8 +60,9 @@ namespace QuestUI {
 
         template<typename T, typename list = List<T>*>
     class ListListWrapper : public CustomListWrapper {
-        list* data;
+        list data;
         public:
+            /// @brief a type that wraps a list to make you need to define less methods;
             ListListWrapper(list data) : data(data) {};
             int GetDataSize() { return data->get_Count(); };
             void SetupCell(QuestUI::CustomCellTableCell* createdCell, int idx) { SetupVectorCell(createdCell, data->items->values[idx]); };
