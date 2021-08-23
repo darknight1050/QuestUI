@@ -22,7 +22,7 @@ namespace QuestUI
     void CustomListTableData::ctor()
     {
         INVOKE_CTOR();
-        cellSize = 8.5f;
+        set_listStyle(CustomListTableData::ListStyle::List);
         expandCell = false;
         reuseIdentifier = il2cpp_utils::newcsstr("QuestUIListTableCell");
         tableView = nullptr;
@@ -35,6 +35,7 @@ namespace QuestUI
 
     void CustomListTableData::set_listStyle(CustomListTableData::ListStyle value)
     {
+        this->listStyle = value;
         switch (value)
         {
             case ListStyle::List:

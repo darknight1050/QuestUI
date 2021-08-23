@@ -1033,7 +1033,7 @@ namespace QuestUI::BeatSaberUI {
         auto list = CreateCustomCellList(parent, listWrapper);
         auto rect = list->GetComponent<RectTransform*>();
         rect->set_sizeDelta(sizeDelta);
-        auto layout = list->get_transform()->get_parent()->GetComponentInParent<LayoutElement*>();
+        auto layout = list->GetComponent<LayoutElement*>();
         layout->set_flexibleHeight(sizeDelta.y);
         layout->set_minHeight(sizeDelta.y);
         layout->set_preferredHeight(sizeDelta.y);
@@ -1223,7 +1223,16 @@ namespace QuestUI::BeatSaberUI {
     {
         static auto QuestUIListContainer_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIListContainer");
         auto container = GameObject::New_ctor(QuestUIListContainer_cs)->AddComponent<RectTransform*>();
+        container->set_anchoredPosition(anchoredPosition);
+        container->set_sizeDelta(sizeDelta);
         auto layoutElement = container->get_gameObject()->AddComponent<LayoutElement*>();
+        layoutElement->set_flexibleHeight(sizeDelta.y);
+        layoutElement->set_minHeight(sizeDelta.y);
+        layoutElement->set_preferredHeight(sizeDelta.y);
+        layoutElement->set_flexibleHeight(sizeDelta.x);
+        layoutElement->set_minHeight(sizeDelta.x);
+        layoutElement->set_preferredHeight(sizeDelta.x);
+
         container->SetParent(parent, false);
 
         static auto QuestUIList_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIList");
@@ -1286,7 +1295,6 @@ namespace QuestUI::BeatSaberUI {
 
         // reinterpret cast because interfaces are not explicitly inherited
         tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(tableData), false);
-        tableView->get_gameObject()->SetActive(true);
 
         if (onCellWithIdxClicked)
         {
@@ -1297,6 +1305,8 @@ namespace QuestUI::BeatSaberUI {
             auto delegate = il2cpp_utils::MakeDelegate<DelegateType*>(classof(DelegateType*), fun);
             tableView->add_didSelectCellWithIdxEvent(delegate);
         }
+
+        tableView->get_gameObject()->SetActive(true);
         return tableData;
     }
 
@@ -1343,6 +1353,7 @@ namespace QuestUI::BeatSaberUI {
         });
         down->get_transform()->SetAsLastSibling();
         
+        // replace sprites
         reinterpret_cast<RectTransform*>(up->get_transform()->GetChild(0))->set_sizeDelta({8.0f, 8.0f});
         reinterpret_cast<RectTransform*>(down->get_transform()->GetChild(0))->set_sizeDelta({8.0f, 8.0f});
         auto carat_up_sprite = Base64ToSprite(carat_up);

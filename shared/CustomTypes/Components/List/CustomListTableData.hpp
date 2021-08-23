@@ -35,6 +35,9 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomListTableData, Il2CppTypeEnum
         std::string subText;
         UnityEngine::Sprite* icon;
 
+        CustomCellInfo(std::string text = "", std::string subText = "", UnityEngine::Sprite* icon = nullptr) : text(text), subText(subText), icon(icon) {};
+        CustomCellInfo(std::string text, UnityEngine::Sprite* icon) : text(text), subText(""), icon(icon) {};
+        
         Il2CppString* get_text();
         Il2CppString* get_subText();
         Il2CppString* get_combinedText();
