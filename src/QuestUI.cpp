@@ -113,7 +113,7 @@ MAKE_HOOK_MATCH(UIKeyboardManager_OpenKeyboardFor, &GlobalNamespace::UIKeyboardM
     static UnityEngine::Vector3 magicVector = UnityEngine::Vector3(1337.0f, 1337.0f, 1337.0f);
     if (input->keyboardPositionOffset == magicVector) {
         auto transform = input->get_transform();
-        if(transform->get_position().y < 1.278000f) {
+        if(transform->get_position().y < 1.72f) {
             input->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 42.0f, 0.0f);
         } else {
             input->keyboardPositionOffset = UnityEngine::Vector3(0.0f, 0.0f, 0.0f);
