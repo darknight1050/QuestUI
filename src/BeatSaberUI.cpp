@@ -1009,9 +1009,9 @@ namespace QuestUI::BeatSaberUI {
         return content;
     }
     
-    CustomCellListTableData* CreateList(Transform* parent, Vector2 anchoredPosition, Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
+    CustomCellListTableData* CreateCustomCellList(Transform* parent, Vector2 anchoredPosition, Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
-        auto list = CreateList(parent, listWrapper);
+        auto list = CreateCustomCellList(parent, listWrapper);
         auto rect = list->GetComponent<RectTransform*>();
 
         rect->set_sizeDelta(sizeDelta);
@@ -1028,9 +1028,9 @@ namespace QuestUI::BeatSaberUI {
         return list;
     }
 
-    CustomCellListTableData* CreateList(Transform* parent, Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
+    CustomCellListTableData* CreateCustomCellList(Transform* parent, Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
-        auto list = CreateList(parent, listWrapper);
+        auto list = CreateCustomCellList(parent, listWrapper);
         auto rect = list->GetComponent<RectTransform*>();
         rect->set_sizeDelta(sizeDelta);
         auto layout = list->get_transform()->get_parent()->GetComponentInParent<LayoutElement*>();
@@ -1045,7 +1045,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     // BSML CustomListTag
-    CustomCellListTableData* CreateList(Transform* parent, CustomCellListWrapper* listWrapper)
+    CustomCellListTableData* CreateCustomCellList(Transform* parent, CustomCellListWrapper* listWrapper)
     {
         static auto QuestUICustomListContainer_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUICustomListContainer");
         auto container = GameObject::New_ctor(QuestUICustomListContainer_cs)->AddComponent<RectTransform*>();;
@@ -1153,17 +1153,17 @@ namespace QuestUI::BeatSaberUI {
     }
     */
     
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, CustomCellListWrapper* listWrapper)
+    CustomCellListTableData* CreateScrollableCustomCellList(UnityEngine::Transform* parent, CustomCellListWrapper* listWrapper)
     {
-        return CreateScrollableList(parent, {60.0f, 35.0f}, listWrapper);
+        return CreateScrollableCustomCellList(parent, {60.0f, 35.0f}, listWrapper);
     }
 
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
+    CustomCellListTableData* CreateScrollableCustomCellList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
-        return CreateScrollableList(parent, {0.0f, 0.0f}, sizeDelta, listWrapper);
+        return CreateScrollableCustomCellList(parent, {0.0f, 0.0f}, sizeDelta, listWrapper);
     }
     
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
+    CustomCellListTableData* CreateScrollableCustomCellList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
         auto vertical = CreateVerticalLayoutGroup(parent);
         vertical->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.35f);
@@ -1176,7 +1176,7 @@ namespace QuestUI::BeatSaberUI {
         layout->set_preferredHeight(sizeDelta.y);
         layout->set_preferredWidth(sizeDelta.x);
 
-        auto list = CreateList(vertical->get_transform(), Vector2 (sizeDelta.x, sizeDelta.y - 16.0f), listWrapper);
+        auto list = CreateCustomCellList(vertical->get_transform(), Vector2 (sizeDelta.x, sizeDelta.y - 16.0f), listWrapper);
         auto rect = list->GetComponent<RectTransform*>();
 
         auto up = CreateUIButton(vertical->get_transform(), "", "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){ 
@@ -1208,4 +1208,150 @@ namespace QuestUI::BeatSaberUI {
         return list;
     }
 
+    CustomListTableData* CreateList(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateList(parent, {35.0f, 60.0f}, onCellWithIdxClicked);
+    }
+
+    CustomListTableData* CreateList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateList(parent, {0.0f, 0.0f}, sizeDelta, onCellWithIdxClicked);
+    }
+
+    // BSML ListTag
+    CustomListTableData* CreateList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked)
+    {
+        static auto QuestUIListContainer_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIListContainer");
+        auto container = GameObject::New_ctor(QuestUIListContainer_cs)->AddComponent<RectTransform*>();
+        auto layoutElement = container->get_gameObject()->AddComponent<LayoutElement*>();
+        container->SetParent(parent, false);
+
+        static auto QuestUIList_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIList");
+        auto gameObject = GameObject::New_ctor(QuestUIList_cs);
+        gameObject->get_transform()->SetParent(container, false);
+        gameObject->SetActive(false);
+
+        static auto DropdownTableView_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("DropdownTableView");
+        auto canvasTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Canvas*>(), [&](auto x) { return x->get_name()->Equals(DropdownTableView_cs); });
+
+        gameObject->AddComponent<ScrollRect*>();
+        auto canvas = gameObject->AddComponent<Canvas*>();
+        // copy the template canvas
+        canvas->set_additionalShaderChannels(canvasTemplate->get_additionalShaderChannels());
+        canvas->set_overrideSorting(canvasTemplate->get_overrideSorting());
+        canvas->set_pixelPerfect(canvasTemplate->get_pixelPerfect());
+        canvas->set_referencePixelsPerUnit(canvasTemplate->get_referencePixelsPerUnit());
+        canvas->set_renderMode(canvasTemplate->get_renderMode());
+        canvas->set_scaleFactor(canvasTemplate->get_scaleFactor());
+        canvas->set_sortingLayerID(canvasTemplate->get_sortingLayerID());
+        canvas->set_sortingOrder(canvasTemplate->get_sortingOrder());
+        canvas->set_worldCamera(canvasTemplate->get_worldCamera());
+
+        gameObject->AddComponent<VRGraphicRaycaster*>()->physicsRaycaster = GetPhysicsRaycasterWithCache();
+        gameObject->AddComponent<Touchable*>();
+        gameObject->AddComponent<EventSystemListener*>();
+        auto scrollView = gameObject->AddComponent<ScrollView*>();
+
+        HMUI::TableView* tableView = gameObject->AddComponent<QuestUI::TableView*>();
+        auto tableData = container->get_gameObject()->AddComponent<CustomListTableData*>();
+        tableData->tableView = tableView;
+        
+        tableView->preallocatedCells = Array<TableView::CellsGroup*>::NewLength(0);
+        tableView->isInitialized = false;
+        tableView->scrollView = scrollView;
+
+        static auto Viewport_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Viewport");
+        auto viewport = GameObject::New_ctor(Viewport_cs)->AddComponent<RectTransform*>();
+        viewport->SetParent(gameObject->GetComponent<RectTransform*>(), false);
+        viewport->get_gameObject()->AddComponent<RectMask2D*>();
+        gameObject->GetComponent<ScrollRect*>()->set_viewport(viewport);
+
+        static auto Content_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Content");
+        auto content = GameObject::New_ctor(Content_cs)->AddComponent<RectTransform*>();
+        content->SetParent(viewport, false);
+
+        scrollView->contentRectTransform = content;
+        scrollView->viewport = viewport;
+
+        viewport->set_anchorMin({0.0f, 0.0f});
+        viewport->set_anchorMax({1.0f, 1.0f});
+        viewport->set_sizeDelta({0.0f, 0.0f});
+        viewport->set_anchoredPosition({0.0f, 0.0f});
+        
+        auto tableViewRectT = tableView->GetComponent<RectTransform*>();
+        tableViewRectT->set_anchorMin({0.0f, 0.0f});
+        tableViewRectT->set_anchorMax({1.0f, 1.0f});
+        tableViewRectT->set_sizeDelta({0.0f, 0.0f});
+        tableViewRectT->set_anchoredPosition({0.0f, 0.0f});
+
+        // reinterpret cast because interfaces are not explicitly inherited
+        tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(tableData), false);
+        tableView->get_gameObject()->SetActive(true);
+
+        if (onCellWithIdxClicked)
+        {
+            using DelegateType = System::Action_2<HMUI::TableView*, int>;
+            std::function<void(HMUI::TableView*, int)> fun = [onCellWithIdxClicked](HMUI::TableView*, int idx){
+                onCellWithIdxClicked(idx);
+            };
+            auto delegate = il2cpp_utils::MakeDelegate<DelegateType*>(classof(DelegateType*), fun);
+            tableView->add_didSelectCellWithIdxEvent(delegate);
+        }
+        return tableData;
+    }
+
+    CustomListTableData* CreateScrollableList(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateScrollableList(parent, {35.0f, 60.0f}, onCellWithIdxClicked);
+    }
+
+    CustomListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateScrollableList(parent, {0.0f, 0.0f}, sizeDelta, onCellWithIdxClicked);
+    }
+
+    CustomListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked)
+    {
+        auto vertical = CreateVerticalLayoutGroup(parent);
+        vertical->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.35f);
+        auto layout = vertical->get_gameObject()->AddComponent<LayoutElement*>(); 
+        vertical->get_rectTransform()->set_sizeDelta(sizeDelta);
+        vertical->get_rectTransform()->set_anchoredPosition(anchoredPosition);
+        vertical->set_childForceExpandHeight(false);
+        vertical->set_childControlHeight(false);
+        vertical->set_childScaleHeight(false);
+        layout->set_preferredHeight(sizeDelta.y);
+        layout->set_preferredWidth(sizeDelta.x);
+
+        auto list = CreateList(vertical->get_transform(), Vector2 (sizeDelta.x, sizeDelta.y - 16.0f), onCellWithIdxClicked);
+        auto rect = list->GetComponent<RectTransform*>();
+
+        auto up = CreateUIButton(vertical->get_transform(), "", "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){ 
+            int idx = reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrolledRow();
+            idx -= reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrollDistance();
+            idx = idx > 0 ? idx : 0;
+            list->tableView->ScrollToCellWithIdx(idx, HMUI::TableView::ScrollPositionType::Beginning, true);
+        });
+        up->get_transform()->SetAsFirstSibling();
+
+        auto down = CreateUIButton(vertical->get_transform(), "", "SettingsButton", Vector2(0.0f, 0.0f), Vector2(8.0f, 8.0f), [list](){
+            int idx = reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrolledRow();
+            idx += reinterpret_cast<QuestUI::TableView*>(list->tableView)->get_scrollDistance();
+            int max = list->tableView->get_dataSource()->NumberOfCells();
+            idx = max <= idx ? max - 1 : idx;
+            list->tableView->ScrollToCellWithIdx(idx, HMUI::TableView::ScrollPositionType::Beginning, true);
+        });
+        down->get_transform()->SetAsLastSibling();
+        
+        reinterpret_cast<RectTransform*>(up->get_transform()->GetChild(0))->set_sizeDelta({8.0f, 8.0f});
+        reinterpret_cast<RectTransform*>(down->get_transform()->GetChild(0))->set_sizeDelta({8.0f, 8.0f});
+        auto carat_up_sprite = Base64ToSprite(carat_up);
+        auto carat_down_sprite = Base64ToSprite(carat_down);
+        auto carat_up_inactive_sprite = Base64ToSprite(carat_up_inactive);
+        auto carat_down_inactive_sprite = Base64ToSprite(carat_down_inactive);
+        SetButtonSprites(up, carat_up_inactive_sprite, carat_up_sprite);
+        SetButtonSprites(down, carat_down_inactive_sprite, carat_down_sprite);
+
+        return list;
+    }
 }

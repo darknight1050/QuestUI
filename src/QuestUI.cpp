@@ -158,7 +158,7 @@ void QuestUI::Init() {
                 getLogger().info("cell %d selected!", idx);
             }, [](LambdaCellListWrapper*){});
 
-            auto tableData = BeatSaberUI::CreateScrollableList(container->get_transform(), {80.0f, 50.0f}, listWrapper);
+            auto tableData = BeatSaberUI::CreateScrollableCustomCellList(container->get_transform(), {80.0f, 50.0f}, listWrapper);
             tableData->tableView->ReloadData();
         });
         getLogger().info("Init completed!");
