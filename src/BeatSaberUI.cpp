@@ -1009,7 +1009,7 @@ namespace QuestUI::BeatSaberUI {
         return content;
     }
     
-    CustomCellListTableData* CreateList(Transform* parent, Vector2 anchoredPosition, Vector2 sizeDelta, CustomListWrapper* listWrapper)
+    CustomCellListTableData* CreateList(Transform* parent, Vector2 anchoredPosition, Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
         auto list = CreateList(parent, listWrapper);
         auto rect = list->GetComponent<RectTransform*>();
@@ -1028,7 +1028,7 @@ namespace QuestUI::BeatSaberUI {
         return list;
     }
 
-    CustomCellListTableData* CreateList(Transform* parent, Vector2 sizeDelta, CustomListWrapper* listWrapper)
+    CustomCellListTableData* CreateList(Transform* parent, Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
         auto list = CreateList(parent, listWrapper);
         auto rect = list->GetComponent<RectTransform*>();
@@ -1045,7 +1045,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     // BSML CustomListTag
-    CustomCellListTableData* CreateList(Transform* parent, CustomListWrapper* listWrapper)
+    CustomCellListTableData* CreateList(Transform* parent, CustomCellListWrapper* listWrapper)
     {
         static auto QuestUICustomListContainer_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUICustomListContainer");
         auto container = GameObject::New_ctor(QuestUICustomListContainer_cs)->AddComponent<RectTransform*>();;
@@ -1153,17 +1153,17 @@ namespace QuestUI::BeatSaberUI {
     }
     */
     
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper)
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, CustomCellListWrapper* listWrapper)
     {
         return CreateScrollableList(parent, {60.0f, 35.0f}, listWrapper);
     }
 
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper)
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
         return CreateScrollableList(parent, {0.0f, 0.0f}, sizeDelta, listWrapper);
     }
     
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper)
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
         auto vertical = CreateVerticalLayoutGroup(parent);
         vertical->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.35f);

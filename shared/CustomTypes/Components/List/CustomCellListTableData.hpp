@@ -9,10 +9,11 @@
 #include "HMUI/SelectableCell.hpp"
 
 namespace QuestUI {
-    class CustomListWrapper;
+    class CustomCellListWrapper;
 }
 
 //DECLARE_CLASS_CODEGEN_INTERFACES_FIX(QuestUI, CustomCellListTableData, UnityEngine::MonoBehaviour, { classof(HMUI::TableView::IDataSource*) },
+// we are bypassing the actual macro because it's a bitch and doesn't work properly
 ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomCellListTableData, Il2CppTypeEnum::IL2CPP_TYPE_CLASS, UnityEngine::MonoBehaviour, "QuestUI", { classof(HMUI::TableView::IDataSource*) }, 0, nullptr,
     DECLARE_INSTANCE_FIELD(Il2CppString*, cellTemplate);
     DECLARE_INSTANCE_FIELD(float, cellSize);
@@ -27,7 +28,7 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomCellListTableData, Il2CppType
     DECLARE_OVERRIDE_METHOD(int, NumberOfCells, il2cpp_utils::il2cpp_type_check::MetadataGetter<&HMUI::TableView::IDataSource::NumberOfCells>::get());
 
     public:
-        CustomListWrapper* listWrapper = nullptr;
+        CustomCellListWrapper* listWrapper = nullptr;
 )
 
 DECLARE_CLASS_CODEGEN(QuestUI, CustomCellTableCell, HMUI::TableCell,

@@ -144,7 +144,7 @@ void QuestUI::Init() {
         Register::RegisterModSettingsViewController({"questui", VERSION}, "testList", [](HMUI::ViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
             auto container = BeatSaberUI::CreateScrollableSettingsContainer(self->get_transform());
             BeatSaberUI::CreateText(container->get_transform(), "Cool list header text or something idk");
-            auto listWrapper = new LambdaListWrapper([](LambdaListWrapper*){ getLogger().info("GetTableSize"); return 100; }, [](LambdaListWrapper*, QuestUI::CustomCellTableCell* cell, int idx){
+            auto listWrapper = new LambdaCellListWrapper([](LambdaCellListWrapper*){ getLogger().info("GetTableSize"); return 100; }, [](LambdaCellListWrapper*, QuestUI::CustomCellTableCell* cell, int idx){
                 getLogger().info("Setup cell %d", idx);
                 cell->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.5f);
                 auto vertical = BeatSaberUI::CreateVerticalLayoutGroup(cell->get_transform());
@@ -154,9 +154,9 @@ void QuestUI::Init() {
                 cell->CustomCellTableCell::selectedGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("selected-%d", idx))->get_gameObject());
                 cell->CustomCellTableCell::hoveredGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("highlighted-%d", idx))->get_gameObject());
                 cell->CustomCellTableCell::neitherGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("neither-%d", idx))->get_gameObject());
-            }, [](LambdaListWrapper*, QuestUI::CustomCellTableCell* cell, int idx){
+            }, [](LambdaCellListWrapper*, QuestUI::CustomCellTableCell* cell, int idx){
                 getLogger().info("cell %d selected!", idx);
-            }, [](LambdaListWrapper*){});
+            }, [](LambdaCellListWrapper*){});
 
             auto tableData = BeatSaberUI::CreateScrollableList(container->get_transform(), {80.0f, 50.0f}, listWrapper);
             tableData->tableView->ReloadData();

@@ -3,7 +3,7 @@
 #include "ArrayUtil.hpp"
 
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
-#include "CustomTypes/Components/List/CustomListWrapper.hpp"
+#include "CustomTypes/Components/List/CustomCellListWrapper.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
@@ -203,14 +203,14 @@ namespace QuestUI::BeatSaberUI {
     /// @param parent what to parent it to
     /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
     /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
-    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper);
+    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, CustomCellListWrapper* listWrapper);
     
     /// @brief creates a custom celled list
     /// @param parent what to parent it to
     /// @param sizeDelta the size of the list
     /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
     /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
-    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper);
+    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper);
 
     /// @brief creates a custom celled list
     /// @param parent what to parent it to
@@ -219,20 +219,20 @@ namespace QuestUI::BeatSaberUI {
     /// @param sizeDelta the size of the list
     /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
     /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
-    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper);
+    CustomCellListTableData* CreateList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper);
 
     /// @brief creates a custom celled list
     /// @param parent what to parent it to
     /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
     /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, CustomListWrapper* listWrapper);
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, CustomCellListWrapper* listWrapper);
 
     /// @brief creates a custom celled list
     /// @param parent what to parent it to
     /// @param sizeDelta the size of the list
     /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
     /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper);\
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper);\
 
     /// @brief creates a custom celled list
     /// @param parent what to parent it to
@@ -241,5 +241,5 @@ namespace QuestUI::BeatSaberUI {
     /// @param sizeDelta the size of the list
     /// @param listWrapper a wrapper to determine the way the cells will look and where the data comes from, allocate with c++ new!
     /// @return CustomCellListTableData* useful if you need to talk to the specific instance of the datasource
-    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomListWrapper* listWrapper);
+    CustomCellListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper);
 }
