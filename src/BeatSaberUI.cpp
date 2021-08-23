@@ -36,6 +36,7 @@
 #include "HMUI/Touchable.hpp"
 #include "HMUI/HoverHintController.hpp"
 #include "HMUI/TableView.hpp"
+#include "HMUI/ImageView.hpp"
 #include "HMUI/TextPageScrollView.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
 #include "HMUI/TextSegmentedControl.hpp"
@@ -396,10 +397,12 @@ namespace QuestUI::BeatSaberUI {
         return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, anchoredPosition, sizeDelta, onClick);
     }
 
-    Image* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
+    ImageView* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
         static auto name = il2cpp_utils::createcsstr("QuestUIImage", il2cpp_utils::StringType::Manual);
         GameObject* gameObj = GameObject::New_ctor(name);
-        Image* image = gameObj->AddComponent<Image*>();
+        auto mat_UINoGlow = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Material*>(), [](Material* x) { return to_utf8(csstrtostr(x->get_name())) == "UINoGlow"; });
+        ImageView* image = gameObj->AddComponent<ImageView*>();
+        image->set_material(mat_UINoGlow);
         image->get_transform()->SetParent(parent, false);
         image->set_sprite(sprite);
         RectTransform* rectTransform = (RectTransform*)image->get_transform();
