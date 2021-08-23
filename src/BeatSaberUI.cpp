@@ -1166,7 +1166,6 @@ namespace QuestUI::BeatSaberUI {
     CustomCellListTableData* CreateScrollableCustomCellList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, CustomCellListWrapper* listWrapper)
     {
         auto vertical = CreateVerticalLayoutGroup(parent);
-        vertical->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.35f);
         auto layout = vertical->get_gameObject()->AddComponent<LayoutElement*>(); 
         vertical->get_rectTransform()->set_sizeDelta(sizeDelta);
         vertical->get_rectTransform()->set_anchoredPosition(anchoredPosition);
@@ -1323,7 +1322,6 @@ namespace QuestUI::BeatSaberUI {
     CustomListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked)
     {
         auto vertical = CreateVerticalLayoutGroup(parent);
-        vertical->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.35f);
         auto layout = vertical->get_gameObject()->AddComponent<LayoutElement*>(); 
         vertical->get_rectTransform()->set_sizeDelta(sizeDelta);
         vertical->get_rectTransform()->set_anchoredPosition(anchoredPosition);
@@ -1460,7 +1458,6 @@ namespace QuestUI::BeatSaberUI {
     HMUI::TableView::IDataSource* CreateScrollableCustomSourceList(System::Type* type, UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked)
     {
         auto vertical = CreateVerticalLayoutGroup(parent);
-        vertical->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.35f);
         auto layout = vertical->get_gameObject()->AddComponent<LayoutElement*>(); 
         vertical->get_rectTransform()->set_sizeDelta(sizeDelta);
         vertical->get_rectTransform()->set_anchoredPosition(anchoredPosition);
