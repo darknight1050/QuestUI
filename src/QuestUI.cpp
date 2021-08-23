@@ -140,53 +140,6 @@ void QuestUI::Init() {
         INSTALL_HOOK(getLogger(), OptionsViewController_DidActivate);
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
-        /*
-        Register::RegisterModSettingsViewController({"questui", VERSION}, "testList", [](HMUI::ViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
-            auto container = BeatSaberUI::CreateScrollableSettingsContainer(self->get_transform());
-            BeatSaberUI::CreateText(container->get_transform(), "Cool list header text or something idk");
-            auto listWrapper = new LambdaCellListWrapper([](LambdaCellListWrapper*){ getLogger().info("GetTableSize"); return 100; }, [](LambdaCellListWrapper*, QuestUI::CustomCellTableCell* cell, int idx){
-                getLogger().info("Setup cell %d", idx);
-                cell->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.5f);
-                auto vertical = BeatSaberUI::CreateVerticalLayoutGroup(cell->get_transform());
-                auto horizontal = BeatSaberUI::CreateHorizontalLayoutGroup(vertical->get_transform());
-                horizontal->get_gameObject()->AddComponent<Backgroundable*>()->ApplyBackgroundWithAlpha(il2cpp_utils::newcsstr("round-rect-panel"), 0.8f);
-
-                cell->CustomCellTableCell::selectedGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("selected-%d", idx))->get_gameObject());
-                cell->CustomCellTableCell::hoveredGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("highlighted-%d", idx))->get_gameObject());
-                cell->CustomCellTableCell::neitherGroup->Add(BeatSaberUI::CreateText(horizontal->get_transform(), string_format("neither-%d", idx))->get_gameObject());
-            }, [](LambdaCellListWrapper*, QuestUI::CustomCellTableCell* cell, int idx){
-                getLogger().info("cell %d selected!", idx);
-            }, [](LambdaCellListWrapper*){});
-
-            auto tableData = BeatSaberUI::CreateScrollableCustomCellList(container->get_transform(), {80.0f, 50.0f}, listWrapper);
-            tableData->tableView->ReloadData();
-        });
-        */
-
-        Register::RegisterModSettingsViewController({"questui", VERSION}, "testList", [](HMUI::ViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
-            auto container = BeatSaberUI::CreateScrollableSettingsContainer(self->get_transform());
-            BeatSaberUI::CreateText(container->get_transform(), "Cool list header text or something idk");
-
-            auto tableData = BeatSaberUI::CreateScrollableList(container->get_transform(), {50.0f, 50.0f}, [](int idx){
-                getLogger().info("idx %d selected!", idx);
-            });
-
-            tableData->data.emplace_back("dicks", "bullshit", nullptr);
-            tableData->data.emplace_back("pink cute", "no denyin", nullptr);
-            tableData->data.emplace_back("this shit rocks", "if it works at all", nullptr);
-            tableData->data.emplace_back("whatcha got there", "", nullptr);
-            tableData->data.emplace_back("a", "smoothie", nullptr);
-            tableData->data.emplace_back("", "just sub", nullptr);
-
-            for (int i = 0; i < 100; i++)
-            {
-                tableData->data.emplace_back(string_format("text-%d", i), string_format("%d-subText", i));
-            }
-            
-            tableData->tableView->ReloadData();
-            BeatSaberUI::CreateText(container->get_transform(), "this is the bottom of the VC");
-        });
-        getLogger().info("Init completed!");
     }
 }
 
