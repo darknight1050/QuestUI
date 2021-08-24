@@ -50,6 +50,7 @@
 #include "HMUI/EventSystemListener.hpp"
 #include "HMUI/DropdownWithTableView.hpp"
 #include "HMUI/ButtonSpriteSwap.hpp"
+#include "HMUI/TimeSlider.hpp"
 
 #include "VRUIControls/VRGraphicRaycaster.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
@@ -640,6 +641,67 @@ namespace QuestUI::BeatSaberUI {
         gameObject->SetActive(true);    
 
         return setting;
+    }
+
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange)
+    {
+        return CreateSliderSetting(parent, text, increment, value, minValue, maxValue, {0.0f, 0.0f}, onValueChange);
+    }
+
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange)
+    {
+        auto valueControllerTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](auto x) { return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale"; });
+
+        FormattedFloatListSettingsValueController* baseSetting = Object::Instantiate(valueControllerTemplate, parent, false);
+        static auto QuestUISliderSetting_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUISliderSetting");
+        baseSetting->set_name(QuestUISliderSetting_cs);
+
+        auto gameObject = baseSetting->get_gameObject();
+
+        auto sliderSetting = gameObject->AddComponent<QuestUI::SliderSetting*>();
+        static auto ValuePicker_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("ValuePicker");
+        Object::Destroy(gameObject->get_transform()->Find(ValuePicker_cs)->get_gameObject());
+
+        auto timeSliderTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<TimeSlider*>(), [](auto s) { 
+            if (to_utf8(csstrtostr(s->get_name())) != "RangeValuesTextSlider") return false;
+            auto parent = s->get_transform()->get_parent();
+            if (!parent) return false; 
+            return to_utf8(csstrtostr(parent->get_name())) == "SongStart";
+            });
+
+        sliderSetting->slider = Object::Instantiate(timeSliderTemplate, gameObject->get_transform(), false);
+        sliderSetting->Setup(minValue, maxValue, increment, onValueChange);
+        static auto QuestUISlider_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUISlider");
+        sliderSetting->slider->set_name(QuestUISlider_cs);
+        sliderSetting->slider->GetComponentInChildren<TextMeshProUGUI*>()->set_enableWordWrapping(false);
+        
+        auto rectTransform = reinterpret_cast<RectTransform*>(sliderSetting->slider->get_transform());
+        rectTransform->set_anchorMin(Vector2(1, 0));
+        rectTransform->set_anchorMax(Vector2(1, 1));
+        rectTransform->set_sizeDelta(Vector2(40, 0));
+        rectTransform->set_pivot(Vector2(1, 0.5f));
+        rectTransform->set_anchoredPosition(Vector2(0, 0));
+
+        Object::Destroy(baseSetting);
+
+        static auto NameText_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("NameText"); 
+        auto nameText = gameObject->get_transform()->Find(NameText_cs)->get_gameObject();
+        Polyglot::LocalizedTextMeshProUGUI* localizedText = nameText->GetComponent<Polyglot::LocalizedTextMeshProUGUI*>();
+        localizedText->set_enabled(false);
+        localizedText->set_Key(System::String::_get_Empty());
+
+        auto text = nameText->GetComponent<TextMeshProUGUI*>();
+        text->set_text(il2cpp_utils::newcsstr(name));
+
+        auto externalComponents = gameObject->AddComponent<ExternalComponents*>();
+        externalComponents->Add(text);
+        externalComponents->Add(localizedText);
+
+        gameObject->GetComponent<LayoutElement*>()->set_preferredWidth(90);
+
+        gameObject->SetActive(true);
+        gameObject->GetComponent<RectTransform*>()->set_anchoredPosition(anchoredPosition);
+        return sliderSetting;
     }
 
     GameObject* CreateScrollView(Transform* parent) {
