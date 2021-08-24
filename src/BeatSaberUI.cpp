@@ -643,12 +643,22 @@ namespace QuestUI::BeatSaberUI {
         return setting;
     }
 
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange)
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange)
     {
-        return CreateSliderSetting(parent, text, increment, value, minValue, maxValue, {0.0f, 0.0f}, onValueChange);
+        return CreateSliderSetting(parent, name, increment, value, minValue, maxValue, 1.0f, {0.0f, 0.0f}, onValueChange);
+    }
+
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, float applyValueTime, std::function<void(float)> onValueChange)
+    {
+        return CreateSliderSetting(parent, name, increment, value, minValue, maxValue, applyValueTime, {0.0f, 0.0f}, onValueChange);
     }
 
     QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange)
+    {
+        return CreateSliderSetting(parent, name, increment, value, minValue, maxValue, 1.0f, anchoredPosition, onValueChange);
+    }
+
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, float applyValueTime, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange)
     {
         auto valueControllerTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](auto x) { return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale"; });
 
@@ -670,7 +680,7 @@ namespace QuestUI::BeatSaberUI {
             });
 
         sliderSetting->slider = Object::Instantiate(timeSliderTemplate, gameObject->get_transform(), false);
-        sliderSetting->Setup(minValue, maxValue, increment, onValueChange);
+        sliderSetting->Setup(minValue, maxValue, increment, applyValueTime, onValueChange);
         static auto QuestUISlider_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUISlider");
         sliderSetting->slider->set_name(QuestUISlider_cs);
         sliderSetting->slider->GetComponentInChildren<TextMeshProUGUI*>()->set_enableWordWrapping(false);

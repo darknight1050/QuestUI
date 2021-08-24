@@ -24,7 +24,7 @@ namespace QuestUI
         return 0.0f;
     }
 
-    void SliderSetting::Setup(float min, float max, float increments, std::function<void(float)> callback)
+    void SliderSetting::Setup(float min, float max, float increments, float applyTime, std::function<void(float)> callback)
     {
         // if it's a whole number
         if (fabs(increments - round(increments)) < 0.000001) isInt = true;
@@ -37,6 +37,8 @@ namespace QuestUI
 
         std::function<void(HMUI::RangeValuesTextSlider*, float)> fun = std::bind(&SliderSetting::OnChange, this, std::placeholders::_1, std::placeholders::_2);
         slider->add_valueDidChangeEvent(il2cpp_utils::MakeDelegate<System::Action_2<HMUI::RangeValuesTextSlider*, float>*>(classof(System::Action_2<HMUI::RangeValuesTextSlider*, float>*), fun));
+
+        timerResetValue = applyTime;
 
         OnValueChange = callback;
 
@@ -54,12 +56,26 @@ namespace QuestUI
     void SliderSetting::OnChange(HMUI::RangeValuesTextSlider* _, float val)
     {
         if (text) text->set_text(TextForValue(val));
-        ranCallback = false;
-        timer = 1.0f;
+        if (timerResetValue > 0.0f)
+        {
+            ranCallback = false;
+            timer = timerResetValue;
+        }
+        else
+        {
+            if (OnValueChange)
+            {
+                if (isInt)
+                    OnValueChange(round(get_value()));
+                else
+                    OnValueChange(get_value());
+            }
+        }
     }
 
     void SliderSetting::Update()
     {
+        if (timerResetValue <= 0.0f) return;
         if (timer > 0.0f) timer -= UnityEngine::Time::get_deltaTime();
         if (timer < 0.0f && !ranCallback) 
         {

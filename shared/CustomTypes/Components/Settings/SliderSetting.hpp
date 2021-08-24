@@ -15,6 +15,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, SliderSetting, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_FIELD(HMUI::RangeValuesTextSlider*, slider);
     DECLARE_INSTANCE_FIELD(bool, isInt);
     DECLARE_INSTANCE_FIELD(float, increments);
+    DECLARE_INSTANCE_FIELD(float, timerResetValue);
     DECLARE_INSTANCE_FIELD(float, timer);
     DECLARE_INSTANCE_FIELD(bool, ranCallback);
 
@@ -27,6 +28,6 @@ DECLARE_CLASS_CODEGEN(QuestUI, SliderSetting, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_METHOD(void, OnChange, HMUI::RangeValuesTextSlider* _, float val);
     
     public:
-        void Setup(float min, float max, float increments, std::function<void(float)> callback);
+        void Setup(float min, float max, float increments, float applyTime, std::function<void(float)> callback);
         std::function<void(float)> OnValueChange = nullptr;
 )

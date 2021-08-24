@@ -187,7 +187,7 @@ void QuestUI::Init() {
             tableData->tableView->ReloadData();
             BeatSaberUI::CreateText(container->get_transform(), "this is the bottom of the VC");
 
-            BeatSaberUI::CreateSliderSetting(container->get_transform(), "dick size (in)", 0.05f, 69.0f, 0.0f, 100.0f, [](float val){
+            BeatSaberUI::CreateSliderSetting(container->get_transform(), "dick size (in)", 0.05f, 69.0f, 0.0f, 100.0f, 0.0f, [](float val){
                 getLogger().info("My dick is %.2f inches long", val);
             });
 
