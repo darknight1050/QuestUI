@@ -1086,6 +1086,7 @@ namespace QuestUI::BeatSaberUI {
             if (child->get_gameObject()->get_name()->Equals(BGname)) {
                 child->set_anchoredPosition(Vector2::get_zero());
                 child->set_sizeDelta(Vector2::get_zero());
+                child->GetComponent<Image*>()->set_raycastTarget(true);
             }
             else {
                 // yeet the child

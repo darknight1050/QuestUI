@@ -56,6 +56,6 @@ namespace QuestUI
     void ModalColorPicker::OnChange(UnityEngine::Color color, GlobalNamespace::ColorChangeUIEventType type)
     {
         if (onChange) onChange(color);
-        currentColor = color;
+        set_color(color);
     }
 }
