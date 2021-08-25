@@ -3,6 +3,7 @@
 #include "ArrayUtil.hpp"
 
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
+#include "CustomTypes/Components/Settings/SliderSetting.hpp"
 #include "CustomTypes/Components/List/CustomCellListWrapper.hpp"
 #include "CustomTypes/Components/List/CustomListTableData.hpp"
 
@@ -145,6 +146,50 @@ namespace QuestUI::BeatSaberUI {
     QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
     
     QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+
+    /// @brief Creates a slider setting
+    /// @param parent what to parent it to
+    /// @param text the text displayed in front to let the user know what they are editing
+    /// @param increment the increment each "tick" should do
+    /// @param value the initial value it should be
+    /// @param minValue the minimum value for the slider
+    /// @param maxValue the maximum value for the slider
+    /// @param onValueChange callback called after the user has not interacted with the slider for 1 second
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange = nullptr);
+
+    /// @brief Creates a slider setting
+    /// @param parent what to parent it to
+    /// @param text the text displayed in front to let the user know what they are editing
+    /// @param increment the increment each "tick" should do
+    /// @param value the initial value it should be
+    /// @param minValue the minimum value for the slider
+    /// @param maxValue the maximum value for the slider
+    /// @param applyValueTime the amount of seconds to wait after the user stopped interacting to call the callback
+    /// @param onValueChange callback called after the user has not interacted with the slider for 1 second
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, float applyValueTime, std::function<void(float)> onValueChange = nullptr);
+
+    /// @brief Creates a slider setting
+    /// @param parent what to parent it to
+    /// @param text the text displayed in front to let the user know what they are editing
+    /// @param increment the increment each "tick" should do
+    /// @param value the initial value it should be
+    /// @param minValue the minimum value for the slider
+    /// @param maxValue the maximum value for the slider
+    /// @param anchoredPosition the position
+    /// @param onValueChange callback called after the user has not interacted with the slider for 1 second
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+
+    /// @brief Creates a slider setting
+    /// @param parent what to parent it to
+    /// @param text the text displayed in front to let the user know what they are editing
+    /// @param increment the increment each "tick" should do
+    /// @param value the initial value it should be
+    /// @param minValue the minimum value for the slider
+    /// @param maxValue the maximum value for the slider
+    /// @param applyValueTime the amount of seconds to wait after the user stopped interacting to call the callback
+    /// @param anchoredPosition the position
+    /// @param onValueChange callback called after the user has not interacted with the slider for 1 second
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, float applyValueTime, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
 
     UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
 
