@@ -6,6 +6,7 @@
 #include "CustomTypes/Components/Settings/SliderSetting.hpp"
 #include "CustomTypes/Components/List/CustomCellListWrapper.hpp"
 #include "CustomTypes/Components/List/CustomListTableData.hpp"
+#include "CustomTypes/Components/ModalColorPicker.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
@@ -209,6 +210,15 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius = 0, bool hasBackground = true, bool createHandle = true, int handleSide = 4);
     
     UnityEngine::GameObject* CreateColorPicker(UnityEngine::Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr);
+    
+    /// @brief Creates a color picker modal
+    /// @param parent what to parent it to
+    /// @param name the text to display
+    /// @param defaultColor the color to start off with
+    /// @param onDone the callback to call when color picking is done
+    /// @param onCancel the callback to call when the user cancels
+    /// @param onChange the callback to call when the color changes at all
+    QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, std::string name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone = nullptr, std::function<void()> onCancel = nullptr, std::function<void(UnityEngine::Color)> onChange = nullptr);
     
     /// @brief creates a modal that can be used to display information
     /// @param parent what to parent it to

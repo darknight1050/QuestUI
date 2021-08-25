@@ -51,6 +51,7 @@
 #include "HMUI/DropdownWithTableView.hpp"
 #include "HMUI/ButtonSpriteSwap.hpp"
 #include "HMUI/TimeSlider.hpp"
+#include "HMUI/ColorGradientSlider.hpp"
 
 #include "VRUIControls/VRGraphicRaycaster.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
@@ -977,6 +978,76 @@ namespace QuestUI::BeatSaberUI {
         ExternalComponents* externalComponents = buttonGO->AddComponent<ExternalComponents*>();
         externalComponents->Add(pickerModalGORect);
         return buttonGO;
+    }
+
+    QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, std::string name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone, std::function<void()> onCancel, std::function<void(UnityEngine::Color)> onChange)
+    {
+        // base.CreateObject
+        auto modal = CreateModal(parent, Vector2(135, 75), Vector2(0, 0), nullptr, false);
+        auto gameObject = modal->get_gameObject();
+
+        auto windowTransform = reinterpret_cast<RectTransform*>(gameObject->get_transform());
+        
+        static auto QuestUIModalColorPicker_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIModalColorPicker");
+        windowTransform->set_name(QuestUIModalColorPicker_cs);
+
+        auto colorPicker = gameObject->AddComponent<ModalColorPicker*>();
+        colorPicker->Setup(defaultColor, onChange, onDone, onCancel);
+        colorPicker->modalView = modal;
+
+        auto rgbTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<RGBPanelController*>(), [](auto x){ return to_utf8(csstrtostr(x->get_name())) == "RGBColorPicker"; });
+        auto hsvTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HSVPanelController*>(), [](auto x){ return to_utf8(csstrtostr(x->get_name())) == "HSVColorPicker"; });
+        auto currentColorTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ImageView*>(), [](auto x){ 
+            if (to_utf8(csstrtostr(x->get_gameObject()->get_name())) != "SaberColorA") return false;
+            auto parent = x->get_transform()->get_parent();
+            if (!parent) return false;
+            return to_utf8(csstrtostr(parent->get_name())) == "ColorSchemeView";
+        });
+
+        auto rgbController = Object::Instantiate(rgbTemplate, gameObject->get_transform(), false);
+        static auto QuestUIRGBPanel_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIRGBPanel");
+        rgbController->set_name(QuestUIRGBPanel_cs);
+        auto rectTransform = reinterpret_cast<RectTransform*>(rgbController->get_transform());
+        rectTransform->set_anchoredPosition(Vector2(0, 3));
+        rectTransform->set_anchorMin(Vector2(0, 0.25f));
+        rectTransform->set_anchorMax(Vector2(0, 0.25f));
+        colorPicker->rgbPanel = rgbController;
+        
+        std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> OnChange = std::bind(&ModalColorPicker::OnChange, colorPicker, std::placeholders::_1, std::placeholders::_2);
+        auto delegate = il2cpp_utils::MakeDelegate<System::Action_2<UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType>*>(classof(System::Action_2<UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType>*), OnChange);
+        rgbController->add_colorDidChangeEvent(delegate);
+
+        auto hsvController = Object::Instantiate(hsvTemplate, gameObject->get_transform(), false);
+        static auto QuestUIHSVPanel_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIHSVPanel");
+        hsvController->set_name(QuestUIHSVPanel_cs);
+        rectTransform = reinterpret_cast<RectTransform*>(hsvController->get_transform());
+        rectTransform->set_anchoredPosition(Vector2(0, 3));
+        rectTransform->set_anchorMin(Vector2(0.75f, 0.5f));
+        rectTransform->set_anchorMax(Vector2(0.75f, 0.5f));
+        colorPicker->hsvPanel = hsvController;
+        
+        hsvController->add_colorDidChangeEvent(delegate);
+
+        auto colorImage = Object::Instantiate(currentColorTemplate, gameObject->get_transform(), false);
+        static auto QuestUICurrentColor_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUICurrentColor");
+        colorImage->set_name(QuestUICurrentColor_cs);
+        rectTransform = reinterpret_cast<RectTransform*>(colorImage->get_transform());
+        rectTransform->set_anchoredPosition(Vector2(0, 0));
+        rectTransform->set_anchorMin(Vector2(0.5f, 0.5f));
+        rectTransform->set_anchorMax(Vector2(0.5f, 0.5f));
+        colorPicker->colorImage = colorImage;
+
+        colorPicker->set_color(defaultColor);
+
+        auto horizontal = CreateHorizontalLayoutGroup(gameObject->get_transform());
+        horizontal->get_rectTransform()->set_anchoredPosition(Vector2(0.0, -30));
+        horizontal->set_spacing(2);
+        horizontal->get_gameObject()->AddComponent<ContentSizeFitter*>()->set_horizontalFit(ContentSizeFitter::FitMode::PreferredSize);
+
+        auto cancel = CreateUIButton(horizontal->get_transform(), "Cancel", Vector2(0.0, 0.0), Vector2(30, 8), std::bind(&ModalColorPicker::CancelPressed, colorPicker));
+        auto done = CreateUIButton(horizontal->get_transform(), "Done", Vector2(0.0, 0.0), Vector2(30, 8), std::bind(&ModalColorPicker::DonePressed, colorPicker));
+        
+        return colorPicker;
     }
 
     ModalView* CreateModal(Transform* parent, UnityEngine::Vector2 sizeDelta, UnityEngine::Vector2 anchoredPosition, std::function<void(ModalView*)> onBlockerClicked, bool dismissOnBlockerClicked) {
