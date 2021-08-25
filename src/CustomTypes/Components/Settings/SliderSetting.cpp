@@ -28,13 +28,14 @@ namespace QuestUI
         return 0.0f;
     }
 
-    void SliderSetting::Setup(float min, float max, float increments, float applyTime, std::function<void(float)> callback)
+    void SliderSetting::Setup(float min, float max, float current, float increments, float applyTime, std::function<void(float)> callback)
     {
         // if it's a whole number
         if (fabs(increments - round(increments)) < 0.000001) isInt = true;
         if (!slider) slider = GetComponentInChildren<HMUI::RangeValuesTextSlider*>();
         slider->set_minValue(min);
         slider->set_maxValue(max);
+        slider->set_value(current);
 
         int numSteps = ((max - min) / increments) + 1;
         slider->set_numberOfSteps(numSteps);

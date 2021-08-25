@@ -680,7 +680,7 @@ namespace QuestUI::BeatSaberUI {
             });
 
         sliderSetting->slider = Object::Instantiate(timeSliderTemplate, gameObject->get_transform(), false);
-        sliderSetting->Setup(minValue, maxValue, increment, applyValueTime, onValueChange);
+        sliderSetting->Setup(minValue, maxValue, value, increment, applyValueTime, onValueChange);
         static auto QuestUISlider_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUISlider");
         sliderSetting->slider->set_name(QuestUISlider_cs);
         sliderSetting->slider->GetComponentInChildren<TextMeshProUGUI*>()->set_enableWordWrapping(false);

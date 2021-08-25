@@ -29,7 +29,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, SliderSetting, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_METHOD(void, OnChange, HMUI::RangeValuesTextSlider* _, float val);
 
     public:
-        void Setup(float min, float max, float increments, float applyTime, std::function<void(float)> callback);
+        void Setup(float min, float max, float current, float increments, float applyTime, std::function<void(float)> callback);
         std::function<void(float)> OnValueChange = nullptr;
         custom_types::Helpers::Coroutine SetTextOnEnable();
 )
