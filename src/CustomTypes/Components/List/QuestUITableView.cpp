@@ -2,6 +2,7 @@
 #include "UnityEngine/Vector2.hpp"
 #include "UnityEngine/RectTransform.hpp"
 #include "UnityEngine/Rect.hpp"
+#include "System/Collections/Generic/HashSet_1.hpp"
 
 DEFINE_TYPE(QuestUI, TableView);
 
@@ -19,12 +20,19 @@ namespace QuestUI
         }
     }
 
+    int TableView::get_selectedRow()
+    {
+        if (reinterpret_cast<System::Collections::ICollection*>(selectedCellIdxs)->get_Count() <= 0) return -1;
+        auto enumerator = selectedCellIdxs->GetEnumerator();
+        if (!enumerator.MoveNext()) return -1;
+        return enumerator.current;
+    }
+
     void TableView::DidSelectCellWithIdx(int idx)
     {
         // keep track of which idx is selected
         auto DidSelect = il2cpp_utils::FindMethodUnsafe("HMUI", "TableView", "DidSelectCellWithIdx", 1);
         il2cpp_utils::RunMethod(this, DidSelect, idx);
-        selectedRow = idx;
     }
 
     int TableView::get_scrolledRow()
