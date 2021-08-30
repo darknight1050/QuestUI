@@ -126,6 +126,7 @@ namespace QuestUI
     void GameplaySetup::OnDisable()
     {
         moddedController->segmentedControl->SelectCellWithNumber(0);
+        SwitchGameplayTab(0);
         moddedController->get_gameObject()->SetActive(false);
     }
 
