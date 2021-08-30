@@ -25,6 +25,7 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomTextSegmentedControlData, Il2
     DECLARE_DTOR(dtor);
     public:
         void set_texts(std::initializer_list<std::u16string> list);
+        void set_texts(std::vector<std::u16string> list);
         void add_text(std::u16string_view addedText);
         float fontSize = 4.0f;
         bool hideCellBackground = false;

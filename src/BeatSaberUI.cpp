@@ -1653,21 +1653,22 @@ namespace QuestUI::BeatSaberUI {
             if (to_utf8(csstrtostr(x->get_name())) != "TextSegmentedControl") return false;
             auto parent = x->get_transform()->get_parent();
             if (!parent) return false;
-            return to_utf8(csstrtostr(parent->get_name())) == "GameplaySetupViewController";
+            std::string parentName = to_utf8(csstrtostr(parent->get_name()));
+            return parentName == "GameplaySetupViewController" || parentName == "BaseGameplaySetupWrapper";
         });
 
-        auto segmentedControl = Object::Instantiate(segmentedControlTemplate->get_gameObject(), parent, false);
+        auto segmentedControlObj = Object::Instantiate(segmentedControlTemplate->get_gameObject(), parent, false);
+        segmentedControlObj->SetActive(false);
         static auto QuestUITextSegmentedControl_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUITextSegmentedControl");
-        segmentedControl->set_name(QuestUITextSegmentedControl_cs);
-        auto rectTransform = reinterpret_cast<RectTransform*>(segmentedControl->get_transform());
+        segmentedControlObj->set_name(QuestUITextSegmentedControl_cs);
+        auto rectTransform = reinterpret_cast<RectTransform*>(segmentedControlObj->get_transform());
         rectTransform->set_sizeDelta(sizeDelta);
         rectTransform->set_anchoredPosition(anchoredPosition);
-        int childCount = rectTransform->get_childCount();
-        for (int i = 0; i < childCount; i++) Object::Destroy(rectTransform->GetChild(i));
 
-        Object::Destroy(segmentedControl->GetComponent<HMUI::TextSegmentedControl*>());
-        auto control = segmentedControl->AddComponent<HMUI::SegmentedControl*>();
-        auto result = segmentedControl->AddComponent<QuestUI::CustomTextSegmentedControlData*>();
+
+        Object::DestroyImmediate(segmentedControlObj->GetComponent<HMUI::TextSegmentedControl*>());
+        auto control = segmentedControlObj->AddComponent<HMUI::SegmentedControl*>();
+        auto result = segmentedControlObj->AddComponent<QuestUI::CustomTextSegmentedControlData*>();
         
         result->firstCellPrefab = segmentedControlTemplate->firstCellPrefab;
         result->lastCellPrefab = segmentedControlTemplate->lastCellPrefab;
@@ -1683,8 +1684,17 @@ namespace QuestUI::BeatSaberUI {
             auto delegate = il2cpp_utils::MakeDelegate<System::Action_2<HMUI::SegmentedControl*, int>*>(classof(System::Action_2<HMUI::SegmentedControl*, int>*), fun);
             control->add_didSelectCellEvent(delegate);
         }
+
+        int childCount = result->get_transform()->get_childCount();
+        for (int i = 0; i < childCount; i++) 
+        {
+            getLogger().info("child %d/%d", i, childCount);
+            Object::DestroyImmediate(result->get_transform()->GetChild(0)->get_gameObject());
+        }
+        
         result->set_texts(values);
 
+        segmentedControlObj->SetActive(true);
         return result;
     }
 
@@ -1703,5 +1713,18 @@ namespace QuestUI::BeatSaberUI {
         return CreateTextSegmentedControl(parent, {0, 0}, {80, 10}, {}, onCellWithIdxClicked);
     }
 
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::vector<std::u16string> values, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateTextSegmentedControl(parent, {0, 0}, sizeDelta, values, onCellWithIdxClicked);
+    }
 
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::vector<std::u16string> values, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateTextSegmentedControl(parent, {0, 0}, {80, 10}, values, onCellWithIdxClicked);
+    }
+
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::vector<std::u16string> values, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateTextSegmentedControl(parent, anchoredPosition, sizeDelta, values, onCellWithIdxClicked);
+    }
 }

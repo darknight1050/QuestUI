@@ -19,7 +19,6 @@ namespace QuestUI
     void CustomTextSegmentedControlData::ctor()
     {
         INVOKE_CTOR();
-        
     }
 
     void CustomTextSegmentedControlData::dtor()
@@ -65,13 +64,15 @@ namespace QuestUI
         return result;
     }
 
+    void CustomTextSegmentedControlData::set_texts(std::vector<std::u16string> list)
+    {
+        texts = list;
+        if (segmentedControl) segmentedControl->ReloadData();
+    }
+
     void CustomTextSegmentedControlData::set_texts(std::initializer_list<std::u16string> list)
     {
-        texts.clear();
-        for (auto s : list)
-        {
-            texts.emplace_back(s);
-        }
+        texts = list;
         if (segmentedControl) segmentedControl->ReloadData();
     }
 
