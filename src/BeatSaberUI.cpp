@@ -52,6 +52,7 @@
 #include "HMUI/ButtonSpriteSwap.hpp"
 #include "HMUI/TimeSlider.hpp"
 #include "HMUI/ColorGradientSlider.hpp"
+#include "HMUI/TextSegmentedControl.hpp"
 
 #include "VRUIControls/VRGraphicRaycaster.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
@@ -1645,4 +1646,62 @@ namespace QuestUI::BeatSaberUI {
 
         return list;
     }
+
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked)
+    {
+        auto segmentedControlTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HMUI::TextSegmentedControl*>(), [](auto x){ 
+            if (to_utf8(csstrtostr(x->get_name())) != "TextSegmentedControl") return false;
+            auto parent = x->get_transform()->get_parent();
+            if (!parent) return false;
+            return to_utf8(csstrtostr(parent->get_name())) == "GameplaySetupViewController";
+        });
+
+        auto segmentedControl = Object::Instantiate(segmentedControlTemplate->get_gameObject(), parent, false);
+        static auto QuestUITextSegmentedControl_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUITextSegmentedControl");
+        segmentedControl->set_name(QuestUITextSegmentedControl_cs);
+        auto rectTransform = reinterpret_cast<RectTransform*>(segmentedControl->get_transform());
+        rectTransform->set_sizeDelta(sizeDelta);
+        rectTransform->set_anchoredPosition(anchoredPosition);
+        int childCount = rectTransform->get_childCount();
+        for (int i = 0; i < childCount; i++) Object::Destroy(rectTransform->GetChild(i));
+
+        Object::Destroy(segmentedControl->GetComponent<HMUI::TextSegmentedControl*>());
+        auto control = segmentedControl->AddComponent<HMUI::SegmentedControl*>();
+        auto result = segmentedControl->AddComponent<QuestUI::CustomTextSegmentedControlData*>();
+        
+        result->firstCellPrefab = segmentedControlTemplate->firstCellPrefab;
+        result->lastCellPrefab = segmentedControlTemplate->lastCellPrefab;
+        result->middleCellPrefab = segmentedControlTemplate->middleCellPrefab;
+        result->singleCellPrefab = segmentedControlTemplate->singleCellPrefab;
+
+        result->segmentedControl = control;
+        control->dataSource = reinterpret_cast<HMUI::SegmentedControl::IDataSource*>(result);
+        
+        if (onCellWithIdxClicked)
+        {
+            std::function<void(HMUI::SegmentedControl*, int)> fun = [onCellWithIdxClicked](HMUI::SegmentedControl* cell, int idx){ onCellWithIdxClicked(idx); };
+            auto delegate = il2cpp_utils::MakeDelegate<System::Action_2<HMUI::SegmentedControl*, int>*>(classof(System::Action_2<HMUI::SegmentedControl*, int>*), fun);
+            control->add_didSelectCellEvent(delegate);
+        }
+        result->set_texts(values);
+
+        return result;
+    }
+
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateTextSegmentedControl(parent, {0, 0}, sizeDelta, values, onCellWithIdxClicked);
+    }
+
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateTextSegmentedControl(parent, {0, 0}, {80, 10}, values, onCellWithIdxClicked);
+    }
+
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked)
+    {
+        return CreateTextSegmentedControl(parent, {0, 0}, {80, 10}, {}, onCellWithIdxClicked);
+    }
+
+
 }

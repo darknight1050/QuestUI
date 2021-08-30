@@ -6,6 +6,7 @@
 #include "CustomTypes/Components/Settings/SliderSetting.hpp"
 #include "CustomTypes/Components/List/CustomCellListWrapper.hpp"
 #include "CustomTypes/Components/List/CustomListTableData.hpp"
+#include "CustomTypes/Components/SegmentedControl/CustomTextSegmentedControlData.hpp"
 #include "CustomTypes/Components/ModalColorPicker.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
@@ -424,4 +425,30 @@ namespace QuestUI::BeatSaberUI {
     {
         return (T)CreateScrollableCustomSourceList(reinterpret_cast<System::Type*>(csTypeOf(T)), parent, anchoredPosition, sizeDelta, onCellWithIdxClicked);
     }
+
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param anchoredPosition the position
+    /// @param sizeDelta the sizeDelta
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked = nullptr);
+    
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param sizeDelta the sizeDelta
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked = nullptr);
+    
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it o
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked = nullptr);
+    
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked = nullptr);
 }
