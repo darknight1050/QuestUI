@@ -163,31 +163,6 @@ void QuestUI::Init() {
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
         INSTALL_HOOK(getLogger(), GameplaySetupViewController_DidActivate);
-
-        Register::RegisterGameplaySetupMenu({"mod a", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
-            if (!first) return;
-            BeatSaberUI::CreateText(go->get_transform(), "Pink Cute");
-        });
-
-        Register::RegisterGameplaySetupMenu({"potato", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
-            if (!first) return;
-            BeatSaberUI::CreateText(go->get_transform(), "BMBF when");
-        });
-
-        Register::RegisterGameplaySetupMenu({"bitch", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
-            if (!first) return;
-            BeatSaberUI::CreateText(go->get_transform(), "85\% done");
-        });
-
-        Register::RegisterGameplaySetupMenu({"Noodle ????", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
-            if (!first) return;
-            BeatSaberUI::CreateText(go->get_transform(), "noodle done");
-        });
-
-        Register::RegisterGameplaySetupMenu({"sc2fish when", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
-            if (!first) return;
-            BeatSaberUI::CreateText(go->get_transform(), "william gay");
-        });
     }
 }
 
