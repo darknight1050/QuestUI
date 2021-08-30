@@ -34,8 +34,8 @@ namespace QuestUI
         auto canvas = BeatSaberUI::CreateCanvas();
         canvas->get_transform()->SetParent(get_transform(), false);
         auto controlRect = reinterpret_cast<UnityEngine::RectTransform*>(canvas->get_transform());
-        auto control = BeatSaberUI::CreateTextSegmentedControl(controlRect, {0, 0}, {80, 5.5}, {u"vanilla", u"mods"}, std::bind(&GameplaySetup::SwitchGameplayTab, this, std::placeholders::_1));
-        auto layout = control->get_gameObject()->AddComponent<UnityEngine::UI::LayoutElement*>();
+        moddedController = BeatSaberUI::CreateTextSegmentedControl(controlRect, {0, 0}, {80, 5.5}, {u"vanilla", u"mods"}, std::bind(&GameplaySetup::SwitchGameplayTab, this, std::placeholders::_1));
+        auto layout = moddedController->get_gameObject()->AddComponent<UnityEngine::UI::LayoutElement*>();
         layout->set_preferredWidth(100);
 
         controlRect->set_anchoredPosition({0, 45});
@@ -88,12 +88,16 @@ namespace QuestUI
         auto carat_right_inactive_sprite = BeatSaberUI::Base64ToSprite(carat_right_inactive);
         BeatSaberUI::SetButtonSprites(left, carat_left_inactive_sprite, carat_left_sprite);
         BeatSaberUI::SetButtonSprites(right, carat_right_inactive_sprite, carat_right_sprite);
+
+        leftButton = left;
+        rightButton = right;
     }
 
     void GameplaySetup::MoveModMenus(int offset)
     {
-        currentFirst += offset;
         int size = currentTabs.size();
+        if (size == 0) return;
+        currentFirst += offset;
         if (currentFirst < 0) currentFirst += size;
         if (currentFirst >= currentTabs.size()) currentFirst -= size;
 
@@ -112,10 +116,17 @@ namespace QuestUI
 
         if (currentTabs.size() > 0) 
         {
+            moddedController->get_gameObject()->SetActive(true);
             currentMenu = currentTabs[currentFirst + segmentedController->segmentedControl->get_selectedCellNumber()];
             if (!currentMenu->gameObject) currentMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
             currentMenu->Activate();
         }
+    }
+
+    void GameplaySetup::OnDisable()
+    {
+        moddedController->segmentedControl->SelectCellWithNumber(0);
+        moddedController->get_gameObject()->SetActive(false);
     }
 
     Register::MenuType GameplaySetup::GetMenuType()

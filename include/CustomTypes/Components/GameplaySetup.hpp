@@ -5,9 +5,15 @@
 #include "QuestUI.hpp"
 #include "GameplaySetupMenuTabs.hpp"
 #include "CustomTypes/Components/SegmentedControl/CustomTextSegmentedControlData.hpp"
+#include "UnityEngine/UI/Button.hpp"
 
 DECLARE_CLASS_CODEGEN(QuestUI, GameplaySetup, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_FIELD(QuestUI::CustomTextSegmentedControlData*, segmentedController);
+    DECLARE_INSTANCE_FIELD(QuestUI::CustomTextSegmentedControlData*, moddedController);
+    DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, leftButton);
+    DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, rightButton);
+
+    DECLARE_INSTANCE_METHOD(void, OnDisable);
     DECLARE_CTOR(ctor);
     
     public:

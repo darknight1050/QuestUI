@@ -9,7 +9,7 @@ namespace QuestUI::GameplaySetupMenuTabs {
     struct GameplaySetupMenu {
         ModInfo modInfo;
         std::string title;
-        Register::MenuType type;
+        int type;
         System::Type* il2cpp_type;
         UnityEngine::GameObject* gameObject;
         Register::GameplaySetupMenuEvent gameplaySetupMenuEvent;

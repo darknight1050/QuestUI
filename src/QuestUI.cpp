@@ -164,27 +164,27 @@ void QuestUI::Init() {
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
         INSTALL_HOOK(getLogger(), GameplaySetupViewController_DidActivate);
 
-        Register::RegisterGameplaySetupMenu({"mod a", VERSION}, Register::MenuType::All, [](auto go, bool first){
+        Register::RegisterGameplaySetupMenu({"mod a", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
             if (!first) return;
             BeatSaberUI::CreateText(go->get_transform(), "Pink Cute");
         });
 
-        Register::RegisterGameplaySetupMenu({"potato", VERSION}, Register::MenuType::All, [](auto go, bool first){
+        Register::RegisterGameplaySetupMenu({"potato", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
             if (!first) return;
             BeatSaberUI::CreateText(go->get_transform(), "BMBF when");
         });
 
-        Register::RegisterGameplaySetupMenu({"bitch", VERSION}, Register::MenuType::All, [](auto go, bool first){
+        Register::RegisterGameplaySetupMenu({"bitch", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
             if (!first) return;
             BeatSaberUI::CreateText(go->get_transform(), "85\% done");
         });
 
-        Register::RegisterGameplaySetupMenu({"Noodle ????", VERSION}, Register::MenuType::All, [](auto go, bool first){
+        Register::RegisterGameplaySetupMenu({"Noodle ????", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
             if (!first) return;
             BeatSaberUI::CreateText(go->get_transform(), "noodle done");
         });
 
-        Register::RegisterGameplaySetupMenu({"sc2fish when", VERSION}, Register::MenuType::All, [](auto go, bool first){
+        Register::RegisterGameplaySetupMenu({"sc2fish when", VERSION}, Register::MenuType::Solo, [](auto go, bool first){
             if (!first) return;
             BeatSaberUI::CreateText(go->get_transform(), "william gay");
         });
@@ -205,7 +205,7 @@ void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::strin
     ModSettingsInfos::add(info);
 }
 
-void Register::RegisterGameplaySetupMenu(ModInfo modInfo, std::string_view title, Il2CppReflectionType* il2cpp_type, MenuType type, GameplaySetupMenuEvent setupEvent) {
+void Register::RegisterGameplaySetupMenu(ModInfo modInfo, std::string_view title, Il2CppReflectionType* il2cpp_type, int type, GameplaySetupMenuEvent setupEvent) {
     Init();
     GameplaySetupMenuTabs::GameplaySetupMenu* menu = new GameplaySetupMenuTabs::GameplaySetupMenu();
     menu->modInfo = modInfo;
