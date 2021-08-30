@@ -31,6 +31,11 @@ namespace QuestUI
     
     void GameplaySetup::Setup()
     {
+        for(auto& info : GameplaySetupMenuTabs::get()) {
+            info->gameObject = nullptr;
+            info->activatedBefore = false;
+        }
+
         auto canvas = BeatSaberUI::CreateCanvas();
         canvas->get_transform()->SetParent(get_transform(), false);
         auto controlRect = reinterpret_cast<UnityEngine::RectTransform*>(canvas->get_transform());
