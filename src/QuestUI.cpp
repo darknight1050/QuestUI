@@ -4,6 +4,7 @@
 
 #include "QuestUI.hpp"
 #include "ModSettingsInfos.hpp"
+#include "MainMenuModSettingInfos.hpp"
 #include "GameplaySetupMenuTabs.hpp"
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Data/CustomDataType.hpp"
@@ -13,6 +14,7 @@
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Components/ViewControllers/MainMenuModSettingsViewController.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenMoverPointer.hpp"
@@ -31,6 +33,10 @@
 #include "GlobalNamespace/ColorsOverrideSettingsPanelController.hpp"
 #include "GlobalNamespace/EnvironmentOverrideSettingsPanelController.hpp"
 
+#include "GlobalNamespace/PlayerOptionsViewController.hpp"
+#include "GlobalNamespace/PlayerStatisticsViewController.hpp"
+
+
 #include "UnityEngine/SceneManagement/Scene.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Component.hpp"
@@ -39,8 +45,11 @@
 #include "UnityEngine/SceneManagement/SceneManager.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
+#include "HMUI/ViewController_AnimationType.hpp"
 #include "HMUI/ButtonSpriteSwap.hpp"
 #include "HMUI/TextSegmentedControl.hpp"
+
+#include "Polyglot/Localization.hpp"
 
 #include "customlogger.hpp"
 
@@ -104,6 +113,65 @@ MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsView
     }
 }
 
+MAKE_HOOK_MATCH(MainFlowCoordinator_DidActivate, &GlobalNamespace::MainFlowCoordinator::DidActivate, void, GlobalNamespace::MainFlowCoordinator* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
+{
+    getLogger().info("MainFlowCoordinator_DidActivate called!");
+	// when activating, we want to provide our own view controller for the left screen, so just take whatever is activated and display ours for right
+    
+    if (firstActivation && MainMenuModSettingInfos::get().size() > 0)
+    {
+        getLogger().info("first activation!");
+        auto vc = BeatSaberUI::CreateViewController<MainMenuModSettingsViewController*>();
+        self->providedLeftScreenViewController = vc;
+    	MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
+        self->providedLeftScreenViewController = vc;
+        self->SetLeftScreenViewController(vc, HMUI::ViewController::AnimationType::In);
+    }
+    else MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
+}
+
+MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespace::MainFlowCoordinator::TopViewControllerWillChange, void, GlobalNamespace::MainFlowCoordinator* self, HMUI::ViewController* oldViewController, HMUI::ViewController* newViewController, HMUI::ViewController::AnimationType animationType)
+{
+    // doesnt call orig!
+    if (newViewController->Equals(self->mainMenuViewController))
+	{
+		self->SetLeftScreenViewController(self->providedLeftScreenViewController, animationType);
+		self->SetRightScreenViewController(self->providedRightScreenViewController, animationType);
+		self->SetBottomScreenViewController(nullptr, animationType);
+	}
+	else
+	{
+		self->SetLeftScreenViewController(nullptr, animationType);
+		self->SetRightScreenViewController(nullptr, animationType);
+		self->SetBottomScreenViewController(nullptr, animationType);
+	}
+
+	if (newViewController->Equals(self->howToPlayViewController))
+	{
+        static auto LABEL_HOW_TO_PLAY = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("LABEL_HOW_TO_PLAY");
+        self->SetTitle(Polyglot::Localization::Get(LABEL_HOW_TO_PLAY), animationType);
+		self->SetBottomScreenViewController(self->playerStatisticsViewController, animationType);
+        self->set_showBackButton(true);
+		return;
+	}
+	if (newViewController->Equals(self->playerOptionsViewController))
+	{
+        static auto BUTTON_PLAYER_OPTIONS = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BUTTON_PLAYER_OPTIONS");
+        self->SetTitle(Polyglot::Localization::Get(BUTTON_PLAYER_OPTIONS), animationType);
+        self->set_showBackButton(true);
+		return;
+	}
+	if (newViewController->Equals(self->optionsViewController))
+	{
+        static auto LABEL_OPTIONS = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("LABEL_OPTIONS");
+        self->SetTitle(Polyglot::Localization::Get(LABEL_OPTIONS), animationType);
+        self->set_showBackButton(true);
+		return;
+	}
+	self->SetTitle(il2cpp_utils::newcsstr(""), animationType);
+    self->set_showBackButton(false);
+}
+
 MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
     SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
     BeatSaberUI::ClearCache();
@@ -163,6 +231,8 @@ void QuestUI::Init() {
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
         INSTALL_HOOK(getLogger(), GameplaySetupViewController_DidActivate);
+        INSTALL_HOOK(getLogger(), MainFlowCoordinator_DidActivate);
+        INSTALL_HOOK_ORIG(getLogger(), MainFlowCoordinator_TopViewControllerWillChange);
     }
 }
 
@@ -190,6 +260,20 @@ void Register::RegisterGameplaySetupMenu(ModInfo modInfo, std::string_view title
     menu->gameObject = nullptr;
     menu->gameplaySetupMenuEvent = setupEvent;
     GameplaySetupMenuTabs::add(menu);
+}
+
+void Register::RegisterMainMenuModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type, Register::DidActivateEvent didActivateEvent) {
+    Init();
+    ModSettingsInfos::ModSettingsInfo info = {};
+    info.modInfo = modInfo;
+    info.showModInfo = showModInfo;
+    info.title = title;
+    info.type = type;
+    info.il2cpp_type = reinterpret_cast<System::Type*>(il2cpp_type);
+    info.viewController = nullptr;
+    info.flowCoordinator = nullptr;
+    info.didActivateEvent = didActivateEvent;
+    MainMenuModSettingInfos::add(info);
 }
 
 #include "Sprites/carats.hpp"
