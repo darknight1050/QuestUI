@@ -21,7 +21,6 @@ namespace GlobalNamespace {
     using LevelPackTableCell = AnnotatedBeatmapLevelCollectionTableCell;
 }
 
-
 ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomListTableData, Il2CppTypeEnum::IL2CPP_TYPE_CLASS, UnityEngine::MonoBehaviour, "QuestUI", { classof(HMUI::TableView::IDataSource*) }, 0, nullptr,
     public:
     enum ListStyle {

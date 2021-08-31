@@ -6,6 +6,7 @@
 #include "CustomTypes/Components/Settings/SliderSetting.hpp"
 #include "CustomTypes/Components/List/CustomCellListWrapper.hpp"
 #include "CustomTypes/Components/List/CustomListTableData.hpp"
+#include "CustomTypes/Components/SegmentedControl/CustomTextSegmentedControlData.hpp"
 #include "CustomTypes/Components/ModalColorPicker.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
@@ -343,8 +344,8 @@ namespace QuestUI::BeatSaberUI {
     /// @return CustomListTableData* so you can add your data to the list
     CustomListTableData* CreateScrollableList(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked = nullptr);
     
-    /// @brief creates a List with a custom IDataSource
-    /// @param type type of class that implements IDataSource
+    /// @brief creates a List with a custom HMUI::TableView::IDataSource
+    /// @tparam T class that implements HMUI::TableView::IDataSource & is a component (Monobehaviour)
     /// @param parent what to parent it to
     /// @param anchoredPosition the position
     /// @param sizeDelta the sizeDelta
@@ -352,7 +353,7 @@ namespace QuestUI::BeatSaberUI {
     HMUI::TableView::IDataSource* CreateCustomSourceList(System::Type* type, UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked = nullptr);
 
     /// @brief creates a list with a custom data source passed in by the modder
-    /// @tparam T class that implements IDataSource
+    /// @tparam T class that implements HMUI::TableView::IDataSource & is a component (Monobehaviour)
     /// @param parent what to parent it to
     /// @param onCellWithIdxClicked the callback called when a cell is clicked
     template<typename T>
@@ -362,7 +363,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     /// @brief creates a list with a custom data source passed in by the modder
-    /// @tparam T class that implements IDataSource
+    /// @tparam T class that implements HMUI::TableView::IDataSource & is a component (Monobehaviour)
     /// @param parent what to parent it to
     /// @param sizeDelta the sizeDelta
     /// @param onCellWithIdxClicked the callback called when a cell is clicked
@@ -373,7 +374,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     /// @brief creates a list with a custom data source passed in by the modder
-    /// @tparam T class that implements IDataSource
+    /// @tparam T class that implements HMUI::TableView::IDataSource & is a component (Monobehaviour)
     /// @param parent what to parent it to
     /// @param anchoredPosition the position
     /// @param sizeDelta the sizeDelta
@@ -385,7 +386,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     /// @brief creates a List with a custom IDataSource
-    /// @param type type of class that implements IDataSource
+    /// @param type type of class that implements HMUI::TableView::IDataSource
     /// @param parent what to parent it to
     /// @param anchoredPosition the position
     /// @param sizeDelta the sizeDelta
@@ -393,7 +394,7 @@ namespace QuestUI::BeatSaberUI {
     HMUI::TableView::IDataSource* CreateScrollableCustomSourceList(System::Type* type, UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void(int)> onCellWithIdxClicked = nullptr);
 
     /// @brief creates a list with a custom data source passed in by the modder
-    /// @tparam T class that implements IDataSource
+    /// @tparam T class that implements HMUI::TableView::IDataSource & is a component (Monobehaviour)
     /// @param parent what to parent it to
     /// @param onCellWithIdxClicked the callback called when a cell is clicked
     template<typename T>
@@ -403,7 +404,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     /// @brief creates a list with a custom data source passed in by the modder
-    /// @tparam T class that implements IDataSource
+    /// @tparam T class that implements HMUI::TableView::IDataSource & is a component (Monobehaviour)
     /// @param parent what to parent it to
     /// @param sizeDelta the sizeDelta
     /// @param onCellWithIdxClicked the callback called when a cell is clicked
@@ -414,7 +415,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     /// @brief creates a list with a custom data source passed in by the modder
-    /// @tparam T class that implements IDataSource
+    /// @tparam T class that implements HMUI::TableView::IDataSource & is a component (Monobehaviour)
     /// @param parent what to parent it to
     /// @param anchoredPosition the position
     /// @param sizeDelta the sizeDelta
@@ -424,4 +425,56 @@ namespace QuestUI::BeatSaberUI {
     {
         return (T)CreateScrollableCustomSourceList(reinterpret_cast<System::Type*>(csTypeOf(T)), parent, anchoredPosition, sizeDelta, onCellWithIdxClicked);
     }
+
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param anchoredPosition the position
+    /// @param sizeDelta the sizeDelta
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked = nullptr);
+    
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param sizeDelta the sizeDelta
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked = nullptr);
+    
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::initializer_list<std::u16string> values, std::function<void(int)> onCellWithIdxClicked = nullptr);
+    
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked = nullptr);
+
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param sizeDelta the sizeDelta
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 sizeDelta, std::vector<std::u16string> values, std::function<void(int)> onCellWithIdxClicked);
+    
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::vector<std::u16string> values, std::function<void(int)> onCellWithIdxClicked);
+
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked);
+    
+    /// @brief creates a text segmented control like the one on the gameplay setup view controller
+    /// @param parent what to parent it to
+    /// @param anchoredPosition the position
+    /// @param sizeDelta the sizeDelta
+    /// @param values list of text values to give to the controller
+    /// @param onCellWithIdxClicked callback called when a cell is clicked
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::vector<std::u16string> values, std::function<void(int)> onCellWithIdxClicked);
 }
