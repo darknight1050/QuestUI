@@ -249,23 +249,23 @@ namespace QuestUI::BeatSaberUI {
         return flowCoordinator;
     }
 
-    TextMeshProUGUI* CreateText(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition) {
+    TextMeshProUGUI* CreateText(Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition) {
         return CreateText(parent, text, true, anchoredPosition);
     }
 
-    TextMeshProUGUI* CreateText(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
+    TextMeshProUGUI* CreateText(Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
         return CreateText(parent, text, true, anchoredPosition, sizeDelta);
     }
 
-    TextMeshProUGUI* CreateText(Transform* parent, std::string text, bool italic) {
+    TextMeshProUGUI* CreateText(Transform* parent, std::u16string_view text, bool italic) {
         return CreateText(parent, text, italic, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(60.0f, 10.0f));
     }
 
-    TextMeshProUGUI* CreateText(Transform* parent, std::string text, bool italic, UnityEngine::Vector2 anchoredPosition) {
+    TextMeshProUGUI* CreateText(Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition) {
         return CreateText(parent, text, italic, anchoredPosition, UnityEngine::Vector2(60.0f, 10.0f));
     }
 
-    TextMeshProUGUI* CreateText(Transform* parent, std::string text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
+    TextMeshProUGUI* CreateText(Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
         static auto name = il2cpp_utils::createcsstr("QuestUIText", il2cpp_utils::StringType::Manual);
         GameObject* gameObj = GameObject::New_ctor(name);
         gameObj->SetActive(false);
@@ -275,7 +275,10 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->SetParent(parent, false);
         textMesh->set_font(GetMainTextFont());
         textMesh->set_fontSharedMaterial(GetMainUIFontMaterial());
-        textMesh->set_text(il2cpp_utils::createcsstr(italic ? string_format("<i>%s</i>", text.data()) : text));
+        Il2CppString* text_cs = nullptr;
+        if (italic) text_cs = il2cpp_utils::newcsstr(u"<i>" + std::u16string(text) + u"</i>");
+        else text_cs = il2cpp_utils::newcsstr(text);
+        textMesh->set_text(text_cs);
         textMesh->set_fontSize(4.0f);
         textMesh->set_color(UnityEngine::Color::get_white());
         textMesh->set_richText(true);
@@ -290,13 +293,13 @@ namespace QuestUI::BeatSaberUI {
         return textMesh;
     }
 
-    void SetButtonText(Button* button, std::string text) {
+    void SetButtonText(Button* button, std::u16string_view text) {
         LocalizedTextMeshProUGUI* localizer = button->GetComponentInChildren<LocalizedTextMeshProUGUI*>();
         if (localizer)
             Object::Destroy(localizer);
         TextMeshProUGUI* textMesh = button->GetComponentInChildren<TextMeshProUGUI*>();
         if(textMesh)
-            textMesh->set_text(il2cpp_utils::createcsstr(text));
+            textMesh->set_text(il2cpp_utils::newcsstr(text));
     }
 
     void SetButtonTextSize(Button* button, float fontSize) {
@@ -339,8 +342,8 @@ namespace QuestUI::BeatSaberUI {
         spriteSwap->normalStateSprite = inactive;
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, std::function<void()> onClick) {
-        Button* button = Object::Instantiate(ArrayUtil::Last(Resources::FindObjectsOfTypeAll<Button*>(), [&buttonTemplate](Button* x) { return to_utf8(csstrtostr(x->get_name())) == buttonTemplate; }), parent, false);
+    Button* CreateUIButton(Transform* parent, std::u16string_view buttonText, std::string_view buttonTemplate, std::function<void()> onClick) {
+        Button* button = Object::Instantiate(ArrayUtil::Last(Resources::FindObjectsOfTypeAll<Button*>(), [&buttonTemplate](Button* x) { return !strcmp(to_utf8(csstrtostr(x->get_name())).c_str(), buttonTemplate.data()); }), parent, false);
         button->set_onClick(Button::ButtonClickedEvent::New_ctor());
         static auto name = il2cpp_utils::createcsstr("QuestUIButton", il2cpp_utils::StringType::Manual);
         button->set_name(name);
@@ -375,13 +378,13 @@ namespace QuestUI::BeatSaberUI {
         return button;
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick) {
+    Button* CreateUIButton(Transform* parent, std::u16string_view buttonText, std::string_view buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick) {
         Button* button = CreateUIButton(parent, buttonText, buttonTemplate, onClick);
         button->GetComponent<RectTransform*>()->set_anchoredPosition(anchoredPosition);
         return button;
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick) {
+    Button* CreateUIButton(Transform* parent, std::u16string_view buttonText, std::string_view buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick) {
         Button* button = CreateUIButton(parent, buttonText, buttonTemplate, anchoredPosition, onClick);
         button->GetComponent<RectTransform*>()->set_sizeDelta(sizeDelta);
         LayoutElement* layoutElement = button->GetComponent<LayoutElement*>();
@@ -396,15 +399,15 @@ namespace QuestUI::BeatSaberUI {
         return button;
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonText, std::function<void()> onClick) {
+    Button* CreateUIButton(Transform* parent, std::u16string_view buttonText, std::function<void()> onClick) {
         return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, onClick);
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick) {
+    Button* CreateUIButton(Transform* parent, std::u16string_view buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick) {
         return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, anchoredPosition, onClick);
     }
 
-    Button* CreateUIButton(Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick) {
+    Button* CreateUIButton(Transform* parent, std::u16string_view buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick) {
         return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, anchoredPosition, sizeDelta, onClick);
     }
 
@@ -426,27 +429,25 @@ namespace QuestUI::BeatSaberUI {
         return image;
     }
 
-    Sprite* Base64ToSprite(std::string& base64, int width, int height)
-    {
-        return Base64ToSprite(base64);
-    }
-
-    Sprite* Base64ToSprite(std::string& base64)
+    Sprite* Base64ToSprite(std::string_view base64)
     {
         Array<uint8_t>* bytes = System::Convert::FromBase64String(il2cpp_utils::createcsstr(base64));
         return ArrayToSprite(bytes);
     }
 
-    Sprite* FileToSprite(std::string& filePath, int width, int height)
+    Sprite* FileToSprite(std::string_view filePath)
     {
-        return FileToSprite(filePath);
-    }
+        std::ifstream instream(filePath, std::ios::in | std::ios::binary | std::ios::ate);
+        unsigned long size = instream.tellg();
+        instream.seekg(0, instream.beg);
 
-    Sprite* FileToSprite(std::string& filePath)
-    {
-        std::ifstream instream(filePath, std::ios::in | std::ios::binary);
-        std::vector<uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
-        Array<uint8_t>* bytes = il2cpp_utils::vectorToArray(data);
+        //std::vector<uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
+        //Array<uint8_t>* bytes = il2cpp_utils::vectorToArray(data);
+        
+        // this way we skip the copy step from vector to array, and just read directly into the array, making it quicker
+        Array<uint8_t>* bytes = Array<uint8_t>::NewLength(size);
+        instream.read(reinterpret_cast<char*>(bytes->values), size);
+        
         return ArrayToSprite(bytes);
     }
 
@@ -514,22 +515,22 @@ namespace QuestUI::BeatSaberUI {
         gameObject->AddComponent<LayoutElement*>();
         return layout;
     }
-    Toggle* CreateToggle(Transform* parent, std::string text, std::function<void(bool)> onValueChange)
+    Toggle* CreateToggle(Transform* parent, std::u16string_view text, std::function<void(bool)> onValueChange)
     {
         return CreateToggle(parent, text, false, onValueChange);
     }
 
-    Toggle* CreateToggle(Transform* parent, std::string text, bool currentValue, std::function<void(bool)> onValueChange)
+    Toggle* CreateToggle(Transform* parent, std::u16string_view text, bool currentValue, std::function<void(bool)> onValueChange)
     {
         return CreateToggle(parent, text, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
     }
 
-    Toggle* CreateToggle(Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onValueChange)
+    Toggle* CreateToggle(Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onValueChange)
     {
         return CreateToggle(parent, text, false, anchoredPosition, onValueChange);
     }
     
-    Toggle* CreateToggle(Transform* parent, std::string text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onValueChange)
+    Toggle* CreateToggle(Transform* parent, std::u16string_view text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onValueChange)
     {
         GameObject* gameObject = Object::Instantiate(ArrayUtil::First(ArrayUtil::Select<GameObject*>(Resources::FindObjectsOfTypeAll<Toggle*>(), [](Toggle* x){ return x->get_transform()->get_parent()->get_gameObject(); }), [](GameObject* x){ return to_utf8(csstrtostr(x->get_name())) == "Fullscreen";}), parent, false);
         GameObject* nameText = gameObject->get_transform()->Find(il2cpp_utils::createcsstr("NameText"))->get_gameObject();
@@ -549,7 +550,7 @@ namespace QuestUI::BeatSaberUI {
         if(onValueChange)
             toggle->onValueChanged->AddListener(MakeDelegate(UnityAction_1<bool>*, onValueChange));
         TextMeshProUGUI* textMesh = nameText->GetComponent<TextMeshProUGUI*>();
-        textMesh->SetText(il2cpp_utils::createcsstr(text));
+        textMesh->SetText(il2cpp_utils::newcsstr(text));
         textMesh->set_richText(true);
         RectTransform* rectTransform = gameObject->GetComponent<RectTransform*>();
         rectTransform->set_anchoredPosition(anchoredPosition);
@@ -574,30 +575,30 @@ namespace QuestUI::BeatSaberUI {
         return loadingIndicator;
     }*/
 
-    HoverHint* AddHoverHint(GameObject* gameObject, std::string text){
+    HoverHint* AddHoverHint(GameObject* gameObject, std::u16string_view text){
         HoverHint* hoverHint = gameObject->AddComponent<HoverHint*>();
-        hoverHint->set_text(il2cpp_utils::createcsstr(text));
+        hoverHint->set_text(il2cpp_utils::newcsstr(text));
         hoverHint->hoverHintController = ArrayUtil::First(Resources::FindObjectsOfTypeAll<HoverHintController*>());
         return hoverHint;
     }
 
-    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange) {
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange) {
         return CreateIncrementSetting(parent, text, decimals, increment, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
     }
 
-    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, std::function<void(float)> onValueChange) {
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, float minValue, float maxValue, std::function<void(float)> onValueChange) {
         return CreateIncrementSetting(parent, text, decimals, increment, currentValue, minValue, maxValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
     }
 
-    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
         return CreateIncrementSetting(parent, text, decimals, increment, currentValue, false, false, 0.0f, 0.0f, anchoredPosition, onValueChange);
     }
 
-    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
         return CreateIncrementSetting(parent, text, decimals, increment, currentValue, true, true, minValue, maxValue, anchoredPosition, onValueChange);
     }
 
-    IncrementSetting* CreateIncrementSetting(Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
+    IncrementSetting* CreateIncrementSetting(Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
         FormattedFloatListSettingsValueController* baseSetting = Object::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](FormattedFloatListSettingsValueController* x){ return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale"; }), parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUIIncDecSetting", il2cpp_utils::StringType::Manual);
         baseSetting->set_name(name);
@@ -628,7 +629,7 @@ namespace QuestUI::BeatSaberUI {
         
         child->GetComponent<RectTransform*>()->set_sizeDelta(UnityEngine::Vector2(40, 0));
         TextMeshProUGUI* textMesh = gameObject->GetComponentInChildren<TextMeshProUGUI*>();
-        textMesh->SetText(il2cpp_utils::createcsstr(text));
+        textMesh->SetText(il2cpp_utils::newcsstr(text));
         textMesh->set_richText(true);
         gameObject->AddComponent<ExternalComponents*>()->Add(textMesh);
 
@@ -645,22 +646,22 @@ namespace QuestUI::BeatSaberUI {
         return setting;
     }
 
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange)
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::u16string_view name, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange)
     {
         return CreateSliderSetting(parent, name, increment, value, minValue, maxValue, 1.0f, {0.0f, 0.0f}, onValueChange);
     }
 
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, float applyValueTime, std::function<void(float)> onValueChange)
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::u16string_view name, float increment, float value, float minValue, float maxValue, float applyValueTime, std::function<void(float)> onValueChange)
     {
         return CreateSliderSetting(parent, name, increment, value, minValue, maxValue, applyValueTime, {0.0f, 0.0f}, onValueChange);
     }
 
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange)
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::u16string_view name, float increment, float value, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange)
     {
         return CreateSliderSetting(parent, name, increment, value, minValue, maxValue, 1.0f, anchoredPosition, onValueChange);
     }
 
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view name, float increment, float value, float minValue, float maxValue, float applyValueTime, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange)
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::u16string_view name, float increment, float value, float minValue, float maxValue, float applyValueTime, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange)
     {
         auto valueControllerTemplate = ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](auto x) { return to_utf8(csstrtostr(x->get_name())) == "VRRenderingScale"; });
 
@@ -800,15 +801,15 @@ namespace QuestUI::BeatSaberUI {
         return content;
     }
 
-    InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, std::function<void(std::string)> onValueChange) {
+    InputFieldView* CreateStringSetting(Transform* parent, std::u16string_view settingsName, std::string_view currentValue, std::function<void(std::string_view)> onValueChange) {
         return CreateStringSetting(parent, settingsName, currentValue, UnityEngine::Vector2(0.0f, 0.0f), onValueChange);
     }
 
-    InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string)> onValueChange) {
+    InputFieldView* CreateStringSetting(Transform* parent, std::u16string_view settingsName, std::string_view currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string_view)> onValueChange) {
         return CreateStringSetting(parent, settingsName, currentValue, anchoredPosition, UnityEngine::Vector3(1337.0f, 1337.0f, 1337.0f), onValueChange);
     }
     
-    InputFieldView* CreateStringSetting(Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector3 keyboardPositionOffset, std::function<void(std::string)> onValueChange) {
+    InputFieldView* CreateStringSetting(Transform* parent, std::u16string_view settingsName, std::string_view currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector3 keyboardPositionOffset, std::function<void(std::string_view)> onValueChange) {
         InputFieldView* originalFieldView = ArrayUtil::First(Resources::FindObjectsOfTypeAll<InputFieldView*>(), [](InputFieldView* x) { 
             return to_utf8(csstrtostr(x->get_name())) == "GuestNameInputField"; });
         GameObject* gameObj = Object::Instantiate(originalFieldView->get_gameObject(), parent, false);
@@ -827,8 +828,8 @@ namespace QuestUI::BeatSaberUI {
         fieldView->Awake();
 
         Object::Destroy(fieldView->placeholderText->GetComponent<LocalizedTextMeshProUGUI*>());
-        fieldView->placeholderText->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(settingsName));
-        fieldView->SetText(il2cpp_utils::createcsstr(currentValue));
+        fieldView->placeholderText->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::newcsstr(settingsName));
+        fieldView->SetText(il2cpp_utils::newcsstr(currentValue));
         fieldView->onValueChanged = InputFieldView::InputFieldChanged::New_ctor();
         if(onValueChange) {
             fieldView->onValueChanged->AddListener(MakeDelegate(UnityAction_1<InputFieldView*>*,
@@ -839,7 +840,8 @@ namespace QuestUI::BeatSaberUI {
         return fieldView;
     }
 
-    SimpleTextDropdown* CreateDropdown(Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, std::function<void(std::string)> onValueChange) {
+    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::u16string_view currentValue, std::vector<std::u16string> values, std::function<void(std::u16string_view)> onValueChange)
+    {
         GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
         static auto name = il2cpp_utils::createcsstr("QuestUIDropdownList", il2cpp_utils::StringType::Manual);
         gameObj->set_name(name);
@@ -855,7 +857,7 @@ namespace QuestUI::BeatSaberUI {
         static auto labelName = il2cpp_utils::createcsstr("Label", il2cpp_utils::StringType::Manual);
         GameObject* labelObject = gameObj->get_transform()->Find(labelName)->get_gameObject();
         GameObject::Destroy(labelObject->GetComponent<LocalizedTextMeshProUGUI*>());
-        labelObject->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::createcsstr(dropdownName));
+        labelObject->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::newcsstr(dropdownName));
 
         LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
         layoutElement->set_preferredWidth(90.0f);
@@ -863,11 +865,57 @@ namespace QuestUI::BeatSaberUI {
 
         List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
         int selectedIndex = 0;
-        for(int i = 0; i < values.size(); i++){
-            std::string value = values[i];
-            if(currentValue == value)
+        for (int i = 0; i < values.size(); i++){
+            auto value = values[i];
+            if (currentValue == value)
                 selectedIndex = i;
-            list->Add(il2cpp_utils::createcsstr(value));
+            list->Add(il2cpp_utils::newcsstr(value));
+        }
+        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
+        dropdown->SelectCellWithIdx(selectedIndex);
+
+        if(onValueChange) {
+            using DelegateType = System::Action_2<DropdownWithTableView*, int>*;
+            dropdown->add_didSelectCellWithIdxEvent(MakeDelegate(DelegateType,
+                (std::function<void(SimpleTextDropdown*, int)>)[onValueChange](SimpleTextDropdown* dropdownWithTableView, int index){
+                    onValueChange(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index)));
+                }));
+        }
+
+        dropdown->get_gameObject()->SetActive(true);
+        gameObj->SetActive(true);
+        return dropdown;
+    }
+
+    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::string_view currentValue, std::vector<std::string> values, std::function<void(std::string_view)> onValueChange) {
+        GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
+        static auto name = il2cpp_utils::createcsstr("QuestUIDropdownList", il2cpp_utils::StringType::Manual);
+        gameObj->set_name(name);
+        SimpleTextDropdown* dropdown = gameObj->GetComponentInChildren<SimpleTextDropdown*>();
+        dropdown->get_gameObject()->SetActive(false);
+
+        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
+        if(physicsRaycaster)
+            reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren(csTypeOf(VRGraphicRaycaster*), true))->physicsRaycaster = physicsRaycaster;
+        
+        reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren(csTypeOf(ModalView*), true))->container = GetDiContainer();
+
+        static auto labelName = il2cpp_utils::createcsstr("Label", il2cpp_utils::StringType::Manual);
+        GameObject* labelObject = gameObj->get_transform()->Find(labelName)->get_gameObject();
+        GameObject::Destroy(labelObject->GetComponent<LocalizedTextMeshProUGUI*>());
+        labelObject->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::newcsstr(dropdownName));
+
+        LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
+        layoutElement->set_preferredWidth(90.0f);
+        layoutElement->set_preferredHeight(8.0f);
+
+        List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
+        int selectedIndex = 0;
+        for (int i = 0; i < values.size(); i++){
+            auto value = values[i];
+            if (currentValue == value)
+                selectedIndex = i;
+            list->Add(il2cpp_utils::newcsstr(value));
         }
         dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
         dropdown->SelectCellWithIdx(selectedIndex);
@@ -917,7 +965,7 @@ namespace QuestUI::BeatSaberUI {
         return gameObject;
     }
 
-    GameObject* CreateColorPicker(Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, ColorChangeUIEventType)> onValueChange) {
+    GameObject* CreateColorPicker(Transform* parent, std::u16string_view text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, ColorChangeUIEventType)> onValueChange) {
         // use QuestUI toggle as starting point to make positioning and sizing easier
         auto fakeToggle = CreateToggle(parent, text);
         auto gameObject = fakeToggle->get_transform()->get_parent()->get_gameObject();
@@ -981,7 +1029,7 @@ namespace QuestUI::BeatSaberUI {
         return buttonGO;
     }
 
-    QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, std::string name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone, std::function<void()> onCancel, std::function<void(UnityEngine::Color)> onChange)
+    QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, std::u16string_view name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone, std::function<void()> onCancel, std::function<void(UnityEngine::Color)> onChange)
     {
         // base.CreateObject
         auto modal = CreateModal(parent, Vector2(135, 75), Vector2(0, 0), nullptr, false);
