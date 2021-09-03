@@ -31,3 +31,13 @@ DECLARE_CLASS_CODEGEN(QuestUI, GameplaySetup, UnityEngine::MonoBehaviour,
         void MoveModMenus(int offset);
         static constexpr int tabCount = 2;
 )
+
+
+// Custom type to mark game object as yeeted, WeakPtr magic
+DECLARE_CLASS_CODEGEN(QuestUI, GameplaySetupTabMB, UnityEngine::MonoBehaviour,
+private:
+    DECLARE_INSTANCE_METHOD(void, OnDestroy);
+    GameplaySetupMenuTabs::GameplaySetupMenu* assignedMenu;
+public:
+        void Init(GameplaySetupMenuTabs::GameplaySetupMenu* assignedMenu);
+)

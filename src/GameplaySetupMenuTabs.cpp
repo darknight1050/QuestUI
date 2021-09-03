@@ -1,4 +1,5 @@
 #include "GameplaySetupMenuTabs.hpp"
+#include "CustomTypes/Components/GameplaySetup.hpp"
 
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/Transform.hpp"
@@ -29,6 +30,7 @@ namespace QuestUI::GameplaySetupMenuTabs {
     
     void add(GameplaySetupMenu* menu)
     {
+        CRASH_UNLESS(menu);
         all.push_back(menu);
         if (menu->type & Register::MenuType::Solo) solo.push_back(menu);
         if (menu->type & Register::MenuType::Online) online.push_back(menu);
@@ -46,6 +48,7 @@ namespace QuestUI::GameplaySetupMenuTabs {
         {
             gameObject->AddComponent(il2cpp_type);
         }
+        gameObject->AddComponent<GameplaySetupTabMB*>()->Init(this);
     }
 
     UnityEngine::Component* GameplaySetupMenu::GetComponent()
