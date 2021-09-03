@@ -1,5 +1,6 @@
 #pragma once
 #include "beatsaber-hook/shared/utils/utils.h"
+#include "beatsaber-hook/shared/utils/utils-functions.h"
 #include "ArrayUtil.hpp"
 
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
@@ -71,17 +72,29 @@ namespace QuestUI::BeatSaberUI {
         return (T)CreateFlowCoordinator(reinterpret_cast<System::Type*>(csTypeOf(T)));
     }
 
-    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition);
+    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition);
+    inline TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string_view text, UnityEngine::Vector2 anchoredPosition)
+    { return CreateText(parent, to_utf16(text), anchoredPosition); }
 
-    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
-    
-    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, bool italic = true);
+    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
+    inline TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string_view text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta)
+    { return CreateText(parent, to_utf16(text), anchoredPosition, sizeDelta); }
 
-    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, bool italic, UnityEngine::Vector2 anchoredPosition);
+    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::u16string_view text, bool italic = true);
+    inline TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string_view text, bool italic = true)
+    { return CreateText(parent, to_utf16(text), italic); }
 
-    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
+    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition);
+    inline TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string_view text, bool italic, UnityEngine::Vector2 anchoredPosition)
+    { return CreateText(parent, to_utf16(text), italic, anchoredPosition); }
 
-    void SetButtonText(UnityEngine::UI::Button* button, std::string text);
+    TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
+    inline TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta)
+    { return CreateText(parent, to_utf16(text), italic, anchoredPosition, sizeDelta); }
+
+    void SetButtonText(UnityEngine::UI::Button* button, std::u16string_view text);
+    inline void SetButtonText(UnityEngine::UI::Button* button, std::string_view text)
+    { SetButtonText(button, to_utf16(text)); }
 
     void SetButtonTextSize(UnityEngine::UI::Button* button, float fontSize);
 
@@ -97,27 +110,40 @@ namespace QuestUI::BeatSaberUI {
     /// @param active for when hovering over the button
     void SetButtonSprites(UnityEngine::UI::Button* button, UnityEngine::Sprite* inactive, UnityEngine::Sprite* active);
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::u16string_view buttonText, std::string_view buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
+    inline UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string_view buttonText, std::string_view buttonTemplate, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr)
+    { return CreateUIButton(parent, to_utf16(buttonText), buttonTemplate, anchoredPosition, onClick); }
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::u16string_view buttonText, std::string_view buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
+    inline UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string_view buttonText, std::string_view buttonTemplate, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr)
+    { return CreateUIButton(parent, to_utf16(buttonText), buttonTemplate, anchoredPosition, sizeDelta, onClick); }
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::function<void()> onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::u16string_view buttonText, std::function<void()> onClick = nullptr);
+    inline UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string_view buttonText, std::function<void()> onClick = nullptr)
+    { return CreateUIButton(parent, to_utf16(buttonText), onClick); }
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::u16string_view buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
+    inline UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string_view buttonText, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr)
+    { return CreateUIButton(parent, to_utf16(buttonText), anchoredPosition, onClick); }
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::u16string_view buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
+    inline UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string_view buttonText, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr)
+    { return CreateUIButton(parent, to_utf16(buttonText), anchoredPosition, sizeDelta, onClick); }
 
-    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string buttonText, std::string buttonTemplate, std::function<void()> onClick = nullptr);
+    UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::u16string_view buttonText, std::string_view buttonTemplate, std::function<void()> onClick = nullptr);
+    inline UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string_view buttonText, std::string_view buttonTemplate, std::function<void()> onClick = nullptr)
+    { return CreateUIButton(parent, to_utf16(buttonText), buttonTemplate, onClick); }
 
     HMUI::ImageView* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
-    UnityEngine::Sprite* Base64ToSprite(std::string& base64, int width, int height);   
+    UnityEngine::Sprite* Base64ToSprite(std::string_view base64);   
+    inline UnityEngine::Sprite* Base64ToSprite(std::string_view base64, int width, int height)
+    { return Base64ToSprite(base64); }
 
-    UnityEngine::Sprite* Base64ToSprite(std::string& base64);   
 
-    UnityEngine::Sprite* FileToSprite(std::string& filePath, int width, int height);
-
-    UnityEngine::Sprite* FileToSprite(std::string& filePath);
+    UnityEngine::Sprite* FileToSprite(std::string_view filePath);
+    inline UnityEngine::Sprite* FileToSprite(std::string_view filePath, int width, int height)
+    { return FileToSprite(filePath); }
 
     UnityEngine::Sprite* ArrayToSprite(Array<uint8_t>* bytes);
 
@@ -127,27 +153,47 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
     
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, std::function<void(bool)> onToggle = nullptr);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::u16string_view text, std::function<void(bool)> onToggle = nullptr);
+    inline UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string_view text, std::function<void(bool)> onToggle = nullptr)
+    { return CreateToggle(parent, to_utf16(text), onToggle); }
 
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, std::function<void(bool)> onToggle = nullptr);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::u16string_view text, bool currentValue, std::function<void(bool)> onToggle = nullptr);
+    inline UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string_view text, bool currentValue, std::function<void(bool)> onToggle = nullptr)
+    { return CreateToggle(parent, to_utf16(text), currentValue, onToggle); }
     
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle = nullptr);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle = nullptr);
+    inline UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string_view text, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle = nullptr)
+    { return CreateToggle(parent, to_utf16(text), anchoredPosition, onToggle); }
     
-    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle = nullptr);
+    UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::u16string_view text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle = nullptr);
+    inline UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string_view text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onToggle = nullptr)
+    { return CreateToggle(parent, to_utf16(text), currentValue, anchoredPosition, onToggle); }
 
     //UnityEngine::GameObject* CreateLoadingIndicator(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition);
 
-    HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string text);
+    HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::u16string_view text);
+    inline HMUI::HoverHint* AddHoverHint(UnityEngine::GameObject* gameObject, std::string_view text)
+    { return AddHoverHint(gameObject, to_utf16(text)); }
 
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange = nullptr);
-    
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string_view text, int decimals, float increment, float currentValue, std::function<void(float)> onValueChange = nullptr)
+    { return CreateIncrementSetting(parent, to_utf16(text), decimals, increment, currentValue, onValueChange); }
 
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, std::function<void(float)> onValueChange = nullptr);
-    
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
-    
-    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string_view text, int decimals, float increment, float currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr)
+    { return CreateIncrementSetting(parent, to_utf16(text), decimals, increment, currentValue, anchoredPosition, onValueChange); }
+
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, float minValue, float maxValue, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string_view text, int decimals, float increment, float currentValue, float minValue, float maxValue, std::function<void(float)> onValueChange = nullptr)
+    { return CreateIncrementSetting(parent, to_utf16(text), decimals, increment, currentValue, minValue, maxValue, onValueChange); }
+
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string_view text, int decimals, float increment, float currentValue, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr)
+    { return CreateIncrementSetting(parent, to_utf16(text), decimals, increment, currentValue, minValue, maxValue, anchoredPosition, onValueChange); }
+
+    QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::IncrementSetting* CreateIncrementSetting(UnityEngine::Transform* parent, std::string_view text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr)
+    { return CreateIncrementSetting(parent, to_utf16(text), decimals, increment, currentValue, hasMin, hasMax, minValue, maxValue, anchoredPosition, onValueChange); }
 
     /// @brief Creates a slider setting
     /// @param parent what to parent it to
@@ -157,8 +203,10 @@ namespace QuestUI::BeatSaberUI {
     /// @param minValue the minimum value for the slider
     /// @param maxValue the maximum value for the slider
     /// @param onValueChange callback called after the user has not interacted with the slider for 1 second
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange = nullptr);
-
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::u16string_view text, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, std::function<void(float)> onValueChange = nullptr)
+    { return CreateSliderSetting(parent, to_utf16(text), increment, value, minValue, maxValue, onValueChange); }
+    
     /// @brief Creates a slider setting
     /// @param parent what to parent it to
     /// @param text the text displayed in front to let the user know what they are editing
@@ -168,7 +216,9 @@ namespace QuestUI::BeatSaberUI {
     /// @param maxValue the maximum value for the slider
     /// @param applyValueTime the amount of seconds to wait after the user stopped interacting to call the callback
     /// @param onValueChange callback called after the user has not interacted with the slider for 1 second
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, float applyValueTime, std::function<void(float)> onValueChange = nullptr);
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::u16string_view text, float increment, float value, float minValue, float maxValue, float applyValueTime, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, float applyValueTime, std::function<void(float)> onValueChange = nullptr)
+    { return CreateSliderSetting(parent, to_utf16(text), increment, value, minValue, maxValue, applyValueTime, onValueChange); }
 
     /// @brief Creates a slider setting
     /// @param parent what to parent it to
@@ -179,8 +229,10 @@ namespace QuestUI::BeatSaberUI {
     /// @param maxValue the maximum value for the slider
     /// @param anchoredPosition the position
     /// @param onValueChange callback called after the user has not interacted with the slider for 1 second
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
-
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::u16string_view text, float increment, float value, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr)
+    { return CreateSliderSetting(parent, to_utf16(text), increment, value, minValue, maxValue, anchoredPosition, onValueChange); }
+    
     /// @brief Creates a slider setting
     /// @param parent what to parent it to
     /// @param text the text displayed in front to let the user know what they are editing
@@ -191,26 +243,40 @@ namespace QuestUI::BeatSaberUI {
     /// @param applyValueTime the amount of seconds to wait after the user stopped interacting to call the callback
     /// @param anchoredPosition the position
     /// @param onValueChange callback called after the user has not interacted with the slider for 1 second
-    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, float applyValueTime, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
-
+    QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::u16string_view text, float increment, float value, float minValue, float maxValue, float applyValueTime, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr);
+    inline QuestUI::SliderSetting* CreateSliderSetting(UnityEngine::Transform* parent, std::string_view text, float increment, float value, float minValue, float maxValue, float applyValueTime, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange = nullptr)
+    { return CreateSliderSetting(parent, to_utf16(text), increment, value, minValue, maxValue, applyValueTime, anchoredPosition, onValueChange); }
+    
     UnityEngine::GameObject* CreateScrollView(UnityEngine::Transform* parent);
 
     UnityEngine::GameObject* CreateScrollableSettingsContainer(UnityEngine::Transform* parent);
 
-    //HMUI::ModalView* CreateModalView(UnityEngine::Transform* parent);
+    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::u16string_view settingsName, std::string_view currentValue, std::function<void(std::string_view)> onValueChange = nullptr);
+    inline HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string_view settingsName, std::string_view currentValue, std::function<void(std::string_view)> onValueChange = nullptr)
+    { return CreateStringSetting(parent, to_utf16(settingsName), currentValue, onValueChange); }
 
-    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, std::function<void(std::string)> onValueChange = nullptr);
+    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::u16string_view settingsName, std::string_view currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string_view)> onValueChange = nullptr);
+    inline HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string_view settingsName, std::string_view currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string_view)> onValueChange = nullptr)
+    { return CreateStringSetting(parent, to_utf16(settingsName), currentValue, anchoredPosition, onValueChange); }
 
-    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(std::string)> onValueChange = nullptr);
-    
-    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string settingsName, std::string currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector3 keyboardPositionOffset, std::function<void(std::string)> onValueChange = nullptr);
- 
-    HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::string dropdownName, std::string currentValue, std::vector<std::string> values, std::function<void(std::string)> onValueChange = nullptr);
+    HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::u16string_view settingsName, std::string_view currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector3 keyboardPositionOffset, std::function<void(std::string_view)> onValueChange = nullptr);
+    inline HMUI::InputFieldView* CreateStringSetting(UnityEngine::Transform* parent, std::string_view settingsName, std::string_view currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector3 keyboardPositionOffset, std::function<void(std::string_view)> onValueChange = nullptr)
+    { return CreateStringSetting(parent, to_utf16(settingsName), currentValue, anchoredPosition, keyboardPositionOffset, onValueChange); }
+
+    HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::u16string_view dropdownName, std::u16string_view currentValue, std::vector<std::u16string> values, std::function<void(std::u16string_view)> onValueChange = nullptr);
+    inline HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::string_view dropdownName, std::u16string_view currentValue, std::vector<std::u16string> values, std::function<void(std::u16string_view)> onValueChange = nullptr)
+    { return CreateDropdown(parent, to_utf16(dropdownName), currentValue, values, onValueChange); }
+
+    HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::u16string_view dropdownName, std::string_view currentValue, std::vector<std::string> values, std::function<void(std::string_view)> onValueChange = nullptr);
+    inline HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, std::string_view dropdownName, std::string_view currentValue, std::vector<std::string> values, std::function<void(std::string_view)> onValueChange = nullptr)
+    { return CreateDropdown(parent, to_utf16(dropdownName), currentValue, values, onValueChange); }
 
     //For handleSide, a different int corresponds to each side. 0-left, 1-right, 2-bottom, 3-top, 4-full
     UnityEngine::GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius = 0, bool hasBackground = true, bool createHandle = true, int handleSide = 4);
     
-    UnityEngine::GameObject* CreateColorPicker(UnityEngine::Transform* parent, std::string text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr);
+    UnityEngine::GameObject* CreateColorPicker(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr);
+    inline UnityEngine::GameObject* CreateColorPicker(UnityEngine::Transform* parent, std::string_view text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr)
+    { return CreateColorPicker(parent, to_utf16(text), defaultColor, onValueChange); }
     
     /// @brief Creates a color picker modal
     /// @param parent what to parent it to
@@ -219,7 +285,9 @@ namespace QuestUI::BeatSaberUI {
     /// @param onDone the callback to call when color picking is done
     /// @param onCancel the callback to call when the user cancels
     /// @param onChange the callback to call when the color changes at all
-    QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, std::string name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone = nullptr, std::function<void()> onCancel = nullptr, std::function<void(UnityEngine::Color)> onChange = nullptr);
+    QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, std::u16string_view name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone = nullptr, std::function<void()> onCancel = nullptr, std::function<void(UnityEngine::Color)> onChange = nullptr);
+    inline QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, std::string_view name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone = nullptr, std::function<void()> onCancel = nullptr, std::function<void(UnityEngine::Color)> onChange = nullptr)
+    { return CreateColorPickerModal(parent, to_utf16(name), defaultColor, onDone, onCancel, onChange); }
     
     /// @brief creates a modal that can be used to display information
     /// @param parent what to parent it to
