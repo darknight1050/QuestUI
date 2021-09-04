@@ -451,7 +451,7 @@ namespace QuestUI::BeatSaberUI {
         return ArrayToSprite(bytes);
     }
 
-    Sprite* VectorToSprite(std::vector<uint8_t>* bytes) {
+    Sprite* VectorToSprite(std::vector<uint8_t> bytes) {
         return ArrayToSprite(il2cpp_utils::vectorToArray(bytes));
     }
 
