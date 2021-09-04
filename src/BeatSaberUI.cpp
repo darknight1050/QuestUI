@@ -23,6 +23,7 @@
 #include "UnityEngine/RenderMode.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/Rect.hpp"
+#include "UnityEngine/RectOffset.hpp"
 #include "UnityEngine/SpriteMeshType.hpp"
 #include "UnityEngine/Texture2D.hpp"
 #include "UnityEngine/TextureFormat.hpp"
@@ -519,6 +520,26 @@ namespace QuestUI::BeatSaberUI {
         gameObject->AddComponent<LayoutElement*>();
         return layout;
     }
+
+    //https://github.com/monkeymanboy/BeatSaberMarkupLanguage/blob/03fc83884a829deac26e4f0075470d9b4675897b/BeatSaberMarkupLanguage/Tags/ModifierContainerTag.cs#L17-L28
+    UnityEngine::UI::VerticalLayoutGroup *CreateModifierContainer(UnityEngine::Transform *parent) {
+        UnityEngine::UI::VerticalLayoutGroup* layout = CreateVerticalLayoutGroup(parent);
+
+        layout->set_padding(RectOffset::New_ctor(3, 3, 2, 2));
+        layout->set_childControlHeight(false);
+        layout->set_childForceExpandHeight(false);
+
+        layout->get_gameObject()->GetComponent<ContentSizeFitter*>()->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
+
+        RectTransform* rectTransform = layout->get_gameObject()->GetComponent<RectTransform*>();
+        rectTransform->set_anchoredPosition({0, 3});
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_sizeDelta(UnityEngine::Vector2(54.0f, 0.0f));
+
+        return layout;
+    }
+
     Toggle* CreateToggle(Transform* parent, std::u16string_view text, std::function<void(bool)> onValueChange)
     {
         return CreateToggle(parent, text, false, onValueChange);

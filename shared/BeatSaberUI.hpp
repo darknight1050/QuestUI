@@ -154,6 +154,9 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent);
 
     UnityEngine::UI::VerticalLayoutGroup* CreateVerticalLayoutGroup(UnityEngine::Transform* parent);
+
+    // https://github.com/monkeymanboy/BeatSaberMarkupLanguage/blob/master/BeatSaberMarkupLanguage/Tags/ModifierContainerTag.cs
+    UnityEngine::UI::VerticalLayoutGroup* CreateModifierContainer(UnityEngine::Transform* parent);
     
     UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::u16string_view text, std::function<void(bool)> onToggle = nullptr);
     inline UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string_view text, std::function<void(bool)> onToggle = nullptr)
