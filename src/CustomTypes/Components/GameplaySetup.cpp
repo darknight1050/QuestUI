@@ -16,6 +16,7 @@
 #include "Sprites/carats.hpp"
 
 DEFINE_TYPE(QuestUI, GameplaySetup);
+DEFINE_TYPE(QuestUI, GameplaySetupTabMB);
 
 static Il2CppString* BaseGameplaySetupWrapper_cs = nullptr;
 static Il2CppString* QuestuiGameplaySetupWrapper_cs = nullptr;
@@ -80,9 +81,9 @@ namespace QuestUI
         segmentedController = BeatSaberUI::CreateTextSegmentedControl(horizontal->get_transform(), {0, 0}, {80, 5.5}, {}, std::bind(&GameplaySetup::ChooseModSegment, this, std::placeholders::_1));
         segmentedController->get_gameObject()->GetComponent<UnityEngine::UI::HorizontalLayoutGroup*>()->set_childForceExpandWidth(true);
         float buttonSize = 8.0f;
-        auto left = BeatSaberUI::CreateUIButton(horizontal->get_transform(), "", "SettingsButton", UnityEngine::Vector2(0, 0), UnityEngine::Vector2(buttonSize, buttonSize), std::bind(&GameplaySetup::MoveModMenus, this, -2));
+        auto left = BeatSaberUI::CreateUIButton(horizontal->get_transform(), "", "SettingsButton", UnityEngine::Vector2(0, 0), UnityEngine::Vector2(buttonSize, buttonSize), [this] { MoveModMenus(-2); });
         left->get_transform()->SetAsFirstSibling();
-        auto right = BeatSaberUI::CreateUIButton(horizontal->get_transform(), "", "SettingsButton", UnityEngine::Vector2(0, 0), UnityEngine::Vector2(buttonSize, buttonSize), std::bind(&GameplaySetup::MoveModMenus, this, 2));
+        auto right = BeatSaberUI::CreateUIButton(horizontal->get_transform(), "", "SettingsButton", UnityEngine::Vector2(0, 0), UnityEngine::Vector2(buttonSize, buttonSize), [this] { MoveModMenus(2); });
         right->get_transform()->SetAsLastSibling();
 
         reinterpret_cast<UnityEngine::RectTransform*>(left->get_transform()->GetChild(0))->set_sizeDelta({buttonSize, buttonSize});
@@ -103,8 +104,8 @@ namespace QuestUI
         int size = currentTabs.size();
         if (size == 0) return;
         currentFirst += offset;
-        if (currentFirst < 0) currentFirst += size;
-        if (currentFirst >= currentTabs.size()) currentFirst -= size;
+
+        currentFirst = std::clamp<int>(currentFirst, 0, currentTabs.size() - 1);
 
         SetModTexts();
         ChooseModSegment(0);
@@ -119,10 +120,17 @@ namespace QuestUI
 
         SetModTexts();
 
-        if (currentTabs.size() > 0) 
+        if (!currentTabs.empty())
         {
             moddedController->get_gameObject()->SetActive(true);
-            currentMenu = currentTabs[currentFirst + segmentedController->segmentedControl->get_selectedCellNumber()];
+
+            // this is a bad fix
+            int selectedIndex = std::clamp<int>(segmentedController->segmentedControl->get_selectedCellNumber(), 0, currentTabs.size() - 1);
+
+            currentMenu = currentTabs[currentFirst + selectedIndex];
+            getLogger().debug("Current first %i segment %i", currentFirst, segmentedController->segmentedControl->get_selectedCellNumber());
+            CRASH_UNLESS(currentMenu);
+            // NULL HERE?
             if (!currentMenu->gameObject) currentMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
             currentMenu->Activate();
         }
@@ -192,5 +200,13 @@ namespace QuestUI
         if (!nextMenu->gameObject) nextMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
         nextMenu->Activate();
         currentMenu = nextMenu;
+    }
+
+    void GameplaySetupTabMB::Init(GameplaySetupMenuTabs::GameplaySetupMenu *assignedMenu) {
+        this->assignedMenu = assignedMenu;
+    }
+
+    void GameplaySetupTabMB::OnDestroy() {
+        assignedMenu->gameObject = nullptr;
     }
 }

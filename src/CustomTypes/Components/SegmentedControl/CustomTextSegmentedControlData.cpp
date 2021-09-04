@@ -1,5 +1,7 @@
 #include "CustomTypes/Components/SegmentedControl/CustomTextSegmentedControlData.hpp"
 
+#include <utility>
+
 #include "UnityEngine/Object.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Vector2.hpp"
@@ -66,7 +68,7 @@ namespace QuestUI
 
     void CustomTextSegmentedControlData::set_texts(std::vector<std::u16string> list)
     {
-        texts = list;
+        texts = std::move(list);
         if (segmentedControl) segmentedControl->ReloadData();
     }
 
