@@ -451,6 +451,10 @@ namespace QuestUI::BeatSaberUI {
         return ArrayToSprite(bytes);
     }
 
+    Sprite* VectorToSprite(std::vector<uint8_t> bytes) {
+        return ArrayToSprite(il2cpp_utils::vectorToArray(bytes));
+    }
+
     Sprite* ArrayToSprite(Array<uint8_t>* bytes)
     {
         Texture2D* texture = Texture2D::New_ctor(0, 0, TextureFormat::RGBA32, false, false);
