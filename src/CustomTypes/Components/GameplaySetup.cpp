@@ -130,6 +130,14 @@ namespace QuestUI
             getLogger().debug("Current first %i segment %i", currentFirst, segmentedController->segmentedControl->get_selectedCellNumber());
             CRASH_UNLESS(currentMenu);
             // NULL HERE?
+            for (auto& tab : currentTabs)
+            {
+                if (tab != currentMenu && tab->gameObject && tab->gameObject->get_active())
+                {
+                    tab->Deactivate();
+                }
+            }
+
             if (!currentMenu->gameObject) currentMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
             currentMenu->Activate();
         } else {
