@@ -120,8 +120,7 @@ namespace QuestUI
 
         SetModTexts();
 
-        if (!currentTabs.empty())
-        {
+        if (!currentTabs.empty()) {
             moddedController->get_gameObject()->SetActive(true);
 
             // this is a bad fix
@@ -133,6 +132,8 @@ namespace QuestUI
             // NULL HERE?
             if (!currentMenu->gameObject) currentMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
             currentMenu->Activate();
+        } else {
+            moddedController->get_gameObject()->SetActive(false);
         }
     }
 
