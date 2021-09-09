@@ -197,7 +197,15 @@ namespace QuestUI
         if (index >= currentTabs.size()) index = 0;
         auto nextMenu = currentTabs[index];
         if (currentMenu == nextMenu) return;
-        currentMenu->Deactivate();
+        
+        for (auto& tab : currentTabs)
+        {
+            if (tab->gameObject && tab->gameObject->get_active())
+            {
+                tab->Deactivate();
+            }
+        }
+
         if (!nextMenu->gameObject) nextMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
         nextMenu->Activate();
         currentMenu = nextMenu;
