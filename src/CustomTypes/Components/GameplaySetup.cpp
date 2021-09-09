@@ -130,6 +130,14 @@ namespace QuestUI
             getLogger().debug("Current first %i segment %i", currentFirst, segmentedController->segmentedControl->get_selectedCellNumber());
             CRASH_UNLESS(currentMenu);
             // NULL HERE?
+            for (auto& tab : currentTabs)
+            {
+                if (tab != currentMenu && tab->gameObject && tab->gameObject->get_active())
+                {
+                    tab->Deactivate();
+                }
+            }
+
             if (!currentMenu->gameObject) currentMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
             currentMenu->Activate();
         } else {
@@ -197,7 +205,15 @@ namespace QuestUI
         if (index >= currentTabs.size()) index = 0;
         auto nextMenu = currentTabs[index];
         if (currentMenu == nextMenu) return;
-        currentMenu->Deactivate();
+        
+        for (auto& tab : currentTabs)
+        {
+            if (tab->gameObject && tab->gameObject->get_active())
+            {
+                tab->Deactivate();
+            }
+        }
+
         if (!nextMenu->gameObject) nextMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
         nextMenu->Activate();
         currentMenu = nextMenu;
