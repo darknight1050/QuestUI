@@ -16,7 +16,7 @@ DEFINE_TYPE(QuestUI, IncrementSetting);
 Il2CppString* QuestUI::IncrementSetting::GetRoundedString() {
     std::stringstream stream;
     stream << std::fixed << std::setprecision(Decimals) << CurrentValue;
-    return il2cpp_utils::createcsstr(stream.str());
+    return il2cpp_utils::newcsstr(stream.str());
 }
 
 void QuestUI::IncrementSetting::DecButtonPressed() {

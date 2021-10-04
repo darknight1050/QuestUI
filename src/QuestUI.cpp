@@ -93,9 +93,9 @@ MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsView
         if(GetModsCount() > 0) {
             UnityEngine::UI::Button* avatarButton = self->settingsButton;
             UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
-            static auto modSettingsStr = il2cpp_utils::createcsstr("Mod Settings", il2cpp_utils::StringType::Manual);
+            static auto modSettingsStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Mod Settings");
             button->set_name(modSettingsStr);
-            static auto wrapperStr = il2cpp_utils::createcsstr("Wrapper", il2cpp_utils::StringType::Manual);
+            static auto wrapperStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Wrapper");
             UnityEngine::Transform* AvatarParent = self->get_transform()->Find(wrapperStr);
             button->get_transform()->SetParent(AvatarParent, false);
             button->get_transform()->SetAsFirstSibling();

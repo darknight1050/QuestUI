@@ -34,7 +34,8 @@ TMPro::TextMeshProUGUI* AddHeader(UnityEngine::Transform* parent, std::string_vi
 
 
 	auto background = horizontal->get_gameObject()->AddComponent<QuestUI::Backgroundable*>();
-	background->ApplyBackgroundWithAlpha(il2cpp_utils::createcsstr("title-gradient"), 1.0f);
+    static auto backgroundName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("title-gradient");
+	background->ApplyBackgroundWithAlpha(backgroundName, 1.0f);
 
 	auto imageView = background->get_gameObject()->GetComponentInChildren<HMUI::ImageView*>();
 	imageView->gradient = true;
