@@ -56,10 +56,10 @@ namespace QuestUI::ArrayUtil {
     template <class Out, class T, class Predicate>
     inline ArrayW<Out> Select(ArrayW<T> array, Predicate pred)
     {
-        ArrayW<Out> newArray = Array<Out>::NewLength(array.Length());
-        for (T item : array) {
-            newArray[i] = pred(item);
-        }
+        ArrayW<Out> newArray(array.Length()); 
+        for (int i = 0; i < array.Length(); i++) { 
+            newArray[i] = pred(array[i]); 
+        } 
         return newArray;
     }
 

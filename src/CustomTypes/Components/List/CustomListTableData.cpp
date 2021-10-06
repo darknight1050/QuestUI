@@ -73,18 +73,36 @@ namespace QuestUI
         return tableCell;   
     }
 
-    GlobalNamespace::LevelPackTableCell* CustomListTableData::GetLevelPackTableCell()
+    QuestUIBoxTableCell* CustomListTableData::GetBoxTableCell()
     {
-        auto tableCell = reinterpret_cast<GlobalNamespace::LevelPackTableCell*>(tableView->DequeueReusableCellForIdentifier(reuseIdentifier));
+        auto tableCell = reinterpret_cast<QuestUIBoxTableCell*>(tableView->DequeueReusableCellForIdentifier(reuseIdentifier));
         if (!tableCell)
         {
             if (!levelPackTableCellInstance)
-                levelPackTableCellInstance = ArrayUtil::First(Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelPackTableCell*>(), [](auto x){ return to_utf8(csstrtostr(x->get_name())) == "AnnotatedBeatmapLevelCollectionTableCell"; });
-            tableCell = Instantiate(levelPackTableCellInstance);
+                levelPackTableCellInstance = ArrayUtil::First(Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelPackCell*>(), [](auto x){ return to_utf8(csstrtostr(x->get_name())) == "AnnotatedBeatmapLevelCollectionCell"; });
+            tableCell = InstantiateBoxTableCell(levelPackTableCellInstance);
         }
-
         tableCell->set_reuseIdentifier(reuseIdentifier);
         return tableCell;
+    }
+
+    QuestUIBoxTableCell* CustomListTableData::InstantiateBoxTableCell(GlobalNamespace::LevelPackCell* levelPackTableCell)
+    {
+        levelPackTableCell = Instantiate(levelPackTableCell);
+        ImageView* coverImage = levelPackTableCell->dyn__coverImage();
+        ImageView* selectionImage = levelPackTableCell->dyn__selectionImage();
+
+        auto transform = coverImage->get_transform();
+        for (int i = 0; i < transform->GetChildCount(); i++)
+        {
+            Object::Destroy(transform->GetChild(i)->get_gameObject());
+        }
+
+        GameObject* cellObject = levelPackTableCell->get_gameObject();
+        Object::Destroy(levelPackTableCell);
+        QuestUIBoxTableCell* boxTableCell = cellObject->AddComponent<QuestUIBoxTableCell*>();
+        boxTableCell->SetComponents(coverImage, selectionImage);
+        return boxTableCell;
     }
 
     GlobalNamespace::SimpleTextTableCell* CustomListTableData::GetSimpleTextTableCell()
@@ -130,13 +148,9 @@ namespace QuestUI
                 return tableCell;
             }
             case ListStyle::Box: {
-                auto cell = GetLevelPackTableCell();
-                cell->set_showNewRibbon(false);
                 auto& cellInfo = data[idx];
-                cell->infoText->set_text(cellInfo.get_combinedText());
-                auto packCoverImage = cell->coverImage;
-
-                packCoverImage->set_sprite(cellInfo.get_icon());
+                QuestUIBoxTableCell* cell = GetBoxTableCell();
+                cell->SetData(cellInfo.get_icon());
 
                 return cell;
             }
