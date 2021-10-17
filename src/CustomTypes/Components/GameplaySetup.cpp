@@ -113,7 +113,7 @@ namespace QuestUI
 
     void GameplaySetup::Activate(bool firstActivation)
     {
-        getLogger().info("activate");
+        getLogger().debug("GameplaySetup::Activate");
         if (firstActivation) Setup();
 
         currentTabs = GameplaySetupMenuTabs::get(GetMenuType());

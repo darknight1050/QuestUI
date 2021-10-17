@@ -120,7 +120,6 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_DidActivate, &GlobalNamespace::MainFlowCoord
     
     if (firstActivation && MainMenuModSettingInfos::get().size() > 0)
     {
-        getLogger().info("first activation!");
         auto vc = BeatSaberUI::CreateViewController<MainMenuModSettingsViewController*>();
         self->providedLeftScreenViewController = vc;
     	MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
@@ -176,8 +175,8 @@ MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneMan
     SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
     BeatSaberUI::ClearCache();
     if(prevScene.IsValid() && nextScene.IsValid()) {
-        std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
-        std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+        std::string prevSceneName(to_utf8(csstrtostr(prevScene.get_name())));
+        std::string nextSceneName(to_utf8(csstrtostr(nextScene.get_name())));
         getLogger().info("Scene change from %s to %s", prevSceneName.c_str(), nextSceneName.c_str());
         static bool hasInited = false;
         if(prevSceneName == "QuestInit"){
@@ -189,11 +188,11 @@ MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneMan
         }
     } else {
         if(prevScene.IsValid()) {
-            std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
+            std::string prevSceneName(to_utf8(csstrtostr(prevScene.get_name())));
             getLogger().info("Scene change from %s to null", prevSceneName.c_str());
         } 
         if(nextScene.IsValid()) {
-            std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+            std::string nextSceneName(to_utf8(csstrtostr(nextScene.get_name())));
             getLogger().info("Scene change from null to %s", nextSceneName.c_str());
         }
     }

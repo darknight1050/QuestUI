@@ -866,19 +866,18 @@ namespace QuestUI::BeatSaberUI {
         return fieldView;
     }
 
-    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::u16string_view currentValue, std::vector<std::u16string> values, std::function<void(std::u16string_view)> onValueChange)
+    SimpleTextDropdown* CreateDropdownInternal(Transform* parent, std::u16string_view dropdownName, int selectedIndex, List<Il2CppString*>* values, std::function<void(SimpleTextDropdown*, int)> onValueChange)
     {
         GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
         static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIDropdownList");
         gameObj->set_name(name);
         SimpleTextDropdown* dropdown = gameObj->GetComponentInChildren<SimpleTextDropdown*>();
         dropdown->get_gameObject()->SetActive(false);
-
         auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
         if(physicsRaycaster)
-            reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren(csTypeOf(VRGraphicRaycaster*), true))->physicsRaycaster = physicsRaycaster;
+            reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren<VRGraphicRaycaster*>(true))->physicsRaycaster = physicsRaycaster;
         
-        reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren(csTypeOf(ModalView*), true))->container = GetDiContainer();
+        reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren<ModalView*>(true))->container = GetDiContainer();
 
         static auto labelName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Label");
         GameObject* labelObject = gameObj->get_transform()->Find(labelName)->get_gameObject();
@@ -888,24 +887,12 @@ namespace QuestUI::BeatSaberUI {
         LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
         layoutElement->set_preferredWidth(90.0f);
         layoutElement->set_preferredHeight(8.0f);
-
-        List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
-        int selectedIndex = 0;
-        for (int i = 0; i < values.size(); i++){
-            auto value = values[i];
-            if (currentValue == value)
-                selectedIndex = i;
-            list->Add(il2cpp_utils::newcsstr(value));
-        }
-        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
+        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(values));
         dropdown->SelectCellWithIdx(selectedIndex);
 
         if(onValueChange) {
             using DelegateType = System::Action_2<DropdownWithTableView*, int>*;
-            dropdown->add_didSelectCellWithIdxEvent(MakeDelegate(DelegateType,
-                (std::function<void(SimpleTextDropdown*, int)>)[onValueChange](SimpleTextDropdown* dropdownWithTableView, int index){
-                    onValueChange(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index)));
-                }));
+            dropdown->add_didSelectCellWithIdxEvent(MakeDelegate(DelegateType, onValueChange));
         }
 
         dropdown->get_gameObject()->SetActive(true);
@@ -913,28 +900,8 @@ namespace QuestUI::BeatSaberUI {
         return dropdown;
     }
 
-    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::string_view currentValue, std::vector<std::string> values, std::function<void(std::string_view)> onValueChange) {
-        GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
-        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIDropdownList");
-        gameObj->set_name(name);
-        SimpleTextDropdown* dropdown = gameObj->GetComponentInChildren<SimpleTextDropdown*>();
-        dropdown->get_gameObject()->SetActive(false);
-
-        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
-        if(physicsRaycaster)
-            reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren(csTypeOf(VRGraphicRaycaster*), true))->physicsRaycaster = physicsRaycaster;
-        
-        reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren(csTypeOf(ModalView*), true))->container = GetDiContainer();
-
-        static auto labelName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Label");
-        GameObject* labelObject = gameObj->get_transform()->Find(labelName)->get_gameObject();
-        GameObject::Destroy(labelObject->GetComponent<LocalizedTextMeshProUGUI*>());
-        labelObject->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::newcsstr(dropdownName));
-
-        LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
-        layoutElement->set_preferredWidth(90.0f);
-        layoutElement->set_preferredHeight(8.0f);
-
+    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::u16string_view currentValue, std::vector<std::u16string> values, std::function<void(std::u16string_view)> onValueChange)
+    {
         List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
         int selectedIndex = 0;
         for (int i = 0; i < values.size(); i++){
@@ -943,20 +910,25 @@ namespace QuestUI::BeatSaberUI {
                 selectedIndex = i;
             list->Add(il2cpp_utils::newcsstr(value));
         }
-        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
-        dropdown->SelectCellWithIdx(selectedIndex);
+        std::function<void(SimpleTextDropdown*, int)> func = [onValueChange] (SimpleTextDropdown* dropdownWithTableView, int index) {
+                onValueChange(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index)));
+            };
+        return CreateDropdownInternal(parent, dropdownName, selectedIndex, list, func);
+    }
 
-        if(onValueChange) {
-            using DelegateType = System::Action_2<DropdownWithTableView*, int>*;
-            dropdown->add_didSelectCellWithIdxEvent(MakeDelegate(DelegateType,
-                (std::function<void(SimpleTextDropdown*, int)>)[onValueChange](SimpleTextDropdown* dropdownWithTableView, int index){
-                    onValueChange(to_utf8(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index))));
-                }));
+    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::string_view currentValue, std::vector<std::string> values, std::function<void(std::string_view)> onValueChange) {
+        List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
+        int selectedIndex = 0;
+        for (int i = 0; i < values.size(); i++){
+            auto value = values[i];
+            if (currentValue == value)
+                selectedIndex = i;
+            list->Add(il2cpp_utils::newcsstr(value));
         }
-
-        dropdown->get_gameObject()->SetActive(true);
-        gameObj->SetActive(true);
-        return dropdown;
+        std::function<void(SimpleTextDropdown*, int)> func = [onValueChange] (SimpleTextDropdown* dropdownWithTableView, int index) {
+                onValueChange(to_utf8(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index))));
+            };
+        return CreateDropdownInternal(parent, dropdownName, selectedIndex, list, func);
     }
     
     GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius, bool hasBackground, bool createHandle, int handleSide) {
@@ -1762,7 +1734,6 @@ namespace QuestUI::BeatSaberUI {
         int childCount = result->get_transform()->get_childCount();
         for (int i = 0; i < childCount; i++) 
         {
-            getLogger().info("child %d/%d", i, childCount);
             Object::DestroyImmediate(result->get_transform()->GetChild(0)->get_gameObject());
         }
         
