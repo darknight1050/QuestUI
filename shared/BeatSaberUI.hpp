@@ -13,6 +13,7 @@
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
 #include "GlobalNamespace/ColorChangeUIEventType.hpp"
+#include "GlobalNamespace/IVRPlatformHelper.hpp"
 
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/RectTransform.hpp"
@@ -53,6 +54,8 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::Sprite* GetEditIcon();
 
     VRUIControls::PhysicsRaycasterWithCache* GetPhysicsRaycasterWithCache();
+
+    GlobalNamespace::IVRPlatformHelper* GetIVRPlatformHelper();
 
     void ClearCache();
 
