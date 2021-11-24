@@ -359,15 +359,10 @@ namespace QuestUI::BeatSaberUI {
     }
 
     Button* CreateUIButton(Transform* parent, std::u16string_view buttonText, std::string_view buttonTemplate, std::function<void()> onClick) {
-        static WeakPtrGO<Button> buttonCopy;
-        if (!buttonCopy || !buttonCopy->GetComponent<HMUI::ButtonSpriteSwap *>()) {
+        static std::unordered_map<std::string_view, WeakPtrGO<Button>> buttonCopyMap;
+        auto& buttonCopy = buttonCopyMap[buttonTemplate];
+        if (!buttonCopy) {
             buttonCopy = ArrayUtil::Last(Resources::FindObjectsOfTypeAll<Button*>(), [&buttonTemplate](Button* x) { return !strcmp(to_utf8(csstrtostr(x->get_name())).c_str(), buttonTemplate.data()); });
-
-            // Needed for mods such as PinkCore and Qosmetics
-            if (!buttonCopy->GetComponent<HMUI::ButtonSpriteSwap *>()) {
-                buttonCopy->get_gameObject()->AddComponent<HMUI::ButtonSpriteSwap *>();
-                getLogger().debug("Manually inserted button sprite swap, weird");
-            }
         }
 
         Button* button = Object::Instantiate(buttonCopy.getInner(), parent, false);
