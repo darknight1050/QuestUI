@@ -777,6 +777,7 @@ namespace QuestUI::BeatSaberUI {
         scrollView->pageDownButton = pageDownButton;
         scrollView->verticalScrollIndicator = verticalScrollIndicator;
         scrollView->viewport = viewport;
+        scrollView->dyn__platformHelper() = GetIVRPlatformHelper();
 
         viewport->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         viewport->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
