@@ -11,8 +11,6 @@
 
 #include "beatsaber-hook/shared/utils/typedefs-wrappers.hpp"
 
-#include "customlogger.hpp"
-
 // Yoinked from QuestUI components
 // Why have I made such a cursed creation
 // what have I created
