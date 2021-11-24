@@ -170,6 +170,16 @@ namespace QuestUI::BeatSaberUI {
         return physicsRaycaster;
     }
 
+    IVRPlatformHelper* platformHelper = nullptr;
+    IVRPlatformHelper* GetIVRPlatformHelper()
+    {
+        if (!platformHelper)
+            platformHelper = ArrayUtil::First(Resources::FindObjectsOfTypeAll<VRController*>())->dyn__vrPlatformHelper();
+        if (!platformHelper)
+            CacheNotFoundWarningLog(IVRPlatformHelper);
+        return platformHelper;
+    }
+
     DiContainer* diContainer = nullptr;
     DiContainer* GetDiContainer()
     {
@@ -186,6 +196,7 @@ namespace QuestUI::BeatSaberUI {
         mainUIFontMaterial = nullptr;
         editIcon = nullptr;
         physicsRaycaster = nullptr;
+        platformHelper = nullptr;
         diContainer = nullptr;
     }
 
