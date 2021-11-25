@@ -66,6 +66,9 @@ namespace QuestUI
 
     Il2CppString* SliderSetting::TextForValue(float value)
     {
+        if (this->FormatString)
+            return il2cpp_utils::newcsstr(this->FormatString(value));
+
         if (isInt)
             return il2cpp_utils::newcsstr(string_format("%d", (int)round(value)));
         else
