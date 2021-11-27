@@ -8,11 +8,6 @@ namespace QuestUI::inner {
     using namespace QuestUI;
 
     void WeakPtrGOComponent::Init(void *innerPtr) {
-        if (!innerPtrSet) {
-            innerPtrSet = PtrSet::New_ctor();
-        }
-
-        this->innerPtrSet->Add(il2cpp_utils::cast<Il2CppObject>(innerPtr));
         WeakPtrHolder::goComponentMap[this].emplace((void*) innerPtr);
     }
 

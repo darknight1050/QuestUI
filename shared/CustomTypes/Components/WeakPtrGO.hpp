@@ -4,10 +4,12 @@
 
 #include "custom-types/shared/macros.hpp"
 
+#ifndef HAS_CODEGEN
+#warning "No codegen found, WeakPtrGO relies on it."
+#endif
+
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/MonoBehaviour.hpp"
-
-#include "System/Collections/Generic/HashSet_1.hpp"
 
 #include "beatsaber-hook/shared/utils/typedefs-wrappers.hpp"
 
@@ -36,12 +38,7 @@ DECLARE_CLASS_CODEGEN(QuestUI::inner, WeakPtrGOComponent, UnityEngine::MonoBehav
   public:
   ~WeakPtrGOComponent();
 
-  using PtrSet = System::Collections::Generic::HashSet_1<Il2CppObject*>;
-
   void doDestroy();
-
-  private:
-  DECLARE_INSTANCE_FIELD_DEFAULT(PtrSet*, innerPtrSet, nullptr);
 )
 
 namespace QuestUI {
@@ -89,7 +86,20 @@ namespace QuestUI {
         friend class QuestUI::inner::WeakPtrGOComponent;
     };
 
-    // When the static game object is destroyed, assume all pointers associated will be set to null
+    /// When the static game object is destroyed, assume all pointers associated will be set to null
+    /// @remark This is designed for Unity components in mind, meaning that it will not work on just any type unless it's a Unity Component or GameObject
+    ///
+    /// @brief  Attaches a MonoBehaviour to an existing game object, then watches it's lifetime.
+    ///         Once the attached game object is destroyed, it will remove it from tracking hashmap.
+    ///         WeakPtrGO looks at the hashmap, checks if the ptr is gone and if so sets the inner ptr to null.
+    ///         Essentially, WeakPtr. Note that this could have a slight performance impact
+    ///
+    ///         Note: operator -> does NOT check if the pointer was destroyed, it assumes you already validated
+    ///         it for performance reasons. ALWAYS VALIDATE BEFORE USE
+    ///
+    /// @tparam T
+    ///
+    ///  @related What happens if the object is copied by Unity using Object.Instantiate? It probably is fine but we don't know that for sure.
     template<typename T>
     requires(pointer_type_match<T*, UnityEngine::Component*> || pointer_type_match<T*, UnityEngine::GameObject*>)
     class WeakPtrGO {
@@ -110,17 +120,8 @@ namespace QuestUI {
             if (WeakPtrHolder::isPointerAlive(keepAliveGO, ptr))
                 return;
 
-//            static auto OBJ_NAME = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("WeakPtrGO_KeepAlive");
-//
-//            auto go = UnityEngine::GameObject::Find(OBJ_NAME);
-//            QuestUI::inner::WeakPtrGOComponent* comp = nullptr;
-//
-//            if (!go) {
-//                go = UnityEngine::GameObject::New_ctor(OBJ_NAME);
-//                comp = go->AddComponent<QuestUI::inner::WeakPtrGOComponent *>();
-//            }
             UnityEngine::GameObject* go = GetGameObject<T>::get(ptr);
-            QuestUI::inner::WeakPtrGOComponent* comp = go->GetComponent<QuestUI::inner::WeakPtrGOComponent *>();
+            auto* comp = go->GetComponent<QuestUI::inner::WeakPtrGOComponent *>();
 
             if (!comp) {
                 comp = go->AddComponent<QuestUI::inner::WeakPtrGOComponent *>();
@@ -156,6 +157,12 @@ namespace QuestUI {
 
         operator bool() {
             validateInner();
+            return (bool) ptr;
+        }
+
+        bool isValid() {
+            validateInner();
+
             return (bool) ptr;
         }
 
