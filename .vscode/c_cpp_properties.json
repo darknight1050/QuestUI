@@ -14,6 +14,7 @@
         "${workspaceFolder}/extern/",
         "${workspaceFolder}/extern/includes/codegen/include/",
         "${workspaceFolder}/extern/libil2cpp/il2cpp/libil2cpp",
+        "${default}",
         "C:/Development/Tools/android-ndk-r22b/",
         "C:/Development/Tools/android-ndk-r22b/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/",
         "C:/Development/Tools/android-ndk-r22b/sources/cxx-stl/llvm-libc++/include/",

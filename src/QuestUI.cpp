@@ -6,6 +6,7 @@
 #include "ModSettingsInfos.hpp"
 #include "MainMenuModSettingInfos.hpp"
 #include "GameplaySetupMenuTabs.hpp"
+
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Data/CustomDataType.hpp"
 #include "CustomTypes/Components/GameplaySetup.hpp"
@@ -26,6 +27,7 @@
 #include "GlobalNamespace/GameplaySetupViewController.hpp"
 #include "GlobalNamespace/MainMenuViewController.hpp"
 #include "GlobalNamespace/UIKeyboardManager.hpp"
+#include "GlobalNamespace/HelpFlowCoordinator.hpp"
 
 #include "GlobalNamespace/PlayerSettingsPanelController.hpp"
 #include "GlobalNamespace/GameplayModifiersPanelController.hpp"
@@ -144,7 +146,8 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespac
 		self->SetRightScreenViewController(nullptr, animationType);
 		self->SetBottomScreenViewController(nullptr, animationType);
 	}
-
+    
+    /*
 	if (newViewController->Equals(self->howToPlayViewController))
 	{
         static auto LABEL_HOW_TO_PLAY = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("LABEL_HOW_TO_PLAY");
@@ -153,6 +156,8 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespac
         self->set_showBackButton(true);
 		return;
 	}
+    */
+
 	if (newViewController->Equals(self->playerOptionsViewController))
 	{
         static auto BUTTON_PLAYER_OPTIONS = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BUTTON_PLAYER_OPTIONS");
