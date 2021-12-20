@@ -121,6 +121,20 @@ namespace QuestUI::BeatSaberUI {
         }
     }
 
+    void AddModInfoText(ModSettingsInfos::ModSettingsInfo& info) {
+        VerticalLayoutGroup* layout = CreateVerticalLayoutGroup(info.viewController->get_rectTransform());
+        layout->get_rectTransform()->set_position(UnityEngine::Vector3(0.0f, -39.0f, -24.0f));
+        layout->get_rectTransform()->set_eulerAngles(UnityEngine::Vector3(60.0f, 0.0f, 0.0f));
+        GameObject* layoutGameObject = layout->get_gameObject();
+        layoutGameObject->GetComponent<ContentSizeFitter*>()->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
+        static auto backgroundName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("round-rect-panel");
+        layoutGameObject->AddComponent<Backgroundable*>()->ApplyBackground(backgroundName);
+        layout->set_padding(UnityEngine::RectOffset::New_ctor(3, 4, 2, 2));
+        TextMeshProUGUI* modInfoText = CreateText(layout->get_transform(), info.modInfo.id + " : v" + info.modInfo.version);
+        modInfoText->set_alignment(TextAlignmentOptions::Center);
+        modInfoText->set_fontSize(4.8f);
+    }
+
     #define CacheNotFoundWarningLog(type) getLogger().warning("Can't find '" #type "'! (This shouldn't happen and can cause unexpected behaviour)")
 
     MainFlowCoordinator* mainFlowCoordinator = nullptr;
