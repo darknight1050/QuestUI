@@ -1,8 +1,8 @@
 {
   "_QPVersion": "0.1.2",
-  "name": "questui",
+  "name": "QuestUI",
   "id": "${mod_id}",
-  "author": "darknight1050",
+  "author": "darknight1050, RedBrumbler",
   "version": "${version}",
   "packageId": "com.beatgames.beatsaber",
   "packageVersion": "1.19.0",
