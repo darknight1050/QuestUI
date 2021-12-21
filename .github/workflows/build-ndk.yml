@@ -1,9 +1,12 @@
 name: NDK build
 
+env:
+    module_id: questui
+    qmodName: QuestUI
+
 on:
   workflow_dispatch:
   push:
-    branches: [master]
     paths-ignore:
       - '**.yml'
       - '!.github/workflows/build-ndk.yml'
@@ -16,11 +19,6 @@ on:
       - '**.md'
       - '.gitignore'
   pull_request:
-    branches: master
-
-env:
-    module_id: questui
-    qmodName: QuestUI
 
 jobs:
   build:
