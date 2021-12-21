@@ -50,3 +50,8 @@ qpm.shared.json
 
 Android.mk.backup
 /.vs
+build/
+extern.cmake
+qpm_defines.cmake
+mod.json
+*.log
