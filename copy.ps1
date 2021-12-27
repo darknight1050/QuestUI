@@ -1,13 +1,13 @@
 param (
     [Parameter(Mandatory=$false)]
-    [Switch]$debug
+    [Switch]$useDebug
     [Parameter(Mandatory=$false)]
     [Switch]$log
 )
 
 & ./build.ps1
-if ($debug.IsPresent) {
-    & adb push build/debug_libquestui.so /sdcard/Android/data/com.beatgames.beatsaber/files/libs/libquestui.so
+if ($useDebug.IsPresent) {
+    & adb push build/debug/libquestui.so /sdcard/Android/data/com.beatgames.beatsaber/files/libs/libquestui.so
 } else {
     & adb push build/libquestui.so /sdcard/Android/data/com.beatgames.beatsaber/files/libs/libquestui.so
 }

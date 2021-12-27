@@ -32,7 +32,7 @@
     },
     {
       "id": "modloader",
-      "versionRange": "^1.2.0",
+      "versionRange": "^1.2.3",
       "additionalData": {}
     }
   ],
