@@ -29,6 +29,8 @@ DECLARE_CLASS_CODEGEN(QuestUI, GameplaySetup, UnityEngine::MonoBehaviour,
         void ChooseModSegment(int idx);
         void SetModTexts();
         void MoveModMenus(int offset);
+        // gets the indexes of the slice of current tabs to display
+        std::vector<int> get_slice();
         static constexpr int tabCount = 2;
 )
 
