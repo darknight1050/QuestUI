@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory=$false)]
-    [Switch]$useDebug
+    [Switch]$useDebug,
     [Parameter(Mandatory=$false)]
     [Switch]$log
 )
