@@ -9,6 +9,7 @@
 #include "CustomTypes/Components/List/CustomListTableData.hpp"
 #include "CustomTypes/Components/SegmentedControl/CustomTextSegmentedControlData.hpp"
 #include "CustomTypes/Components/ModalColorPicker.hpp"
+#include "CustomTypes/Components/ClickableText.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
@@ -94,6 +95,95 @@ namespace QuestUI::BeatSaberUI {
     TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
     inline TMPro::TextMeshProUGUI* CreateText(UnityEngine::Transform* parent, std::string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta)
     { return CreateText(parent, to_utf16(text), italic, anchoredPosition, sizeDelta); }
+
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param anchoredPosition position of the text
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param anchoredPosition position of the text
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    inline ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::string_view text, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr)
+    { return CreateClickableText(parent, to_utf16(text), anchoredPosition, onClick); }
+
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param anchoredPosition position of the text
+    /// @param sizeDelta size of the object
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param anchoredPosition position of the text
+    /// @param sizeDelta size of the object
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    inline ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::string_view text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr)
+    { return CreateClickableText(parent, to_utf16(text), anchoredPosition, sizeDelta, onClick); }
+
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param italic is the text italic?
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic = true, std::function<void()> onClick = nullptr);
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param italic is the text italic?
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    inline ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::string_view text, bool italic = true, std::function<void()> onClick = nullptr)
+    { return CreateClickableText(parent, to_utf16(text), italic, onClick); }
+
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param italic is the text italic?
+    /// @param anchoredPosition position of the text
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr);
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param italic is the text italic?
+    /// @param anchoredPosition position of the text
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    inline ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick = nullptr)
+    { return CreateClickableText(parent, to_utf16(text), italic, anchoredPosition, onClick); }
+
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param italic is the text italic?
+    /// @param anchoredPosition position of the text
+    /// @param sizeDelta size of the object
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param text the text to display
+    /// @param italic is the text italic?
+    /// @param anchoredPosition position of the text
+    /// @param sizeDelta size of the object
+    /// @param onClick what to run when clicked
+    /// @return created clickable text
+    inline ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr)
+    { return CreateClickableText(parent, to_utf16(text), italic, anchoredPosition, sizeDelta, onClick); }
+
 
     void SetButtonText(UnityEngine::UI::Button* button, std::u16string_view text);
     inline void SetButtonText(UnityEngine::UI::Button* button, std::string_view text)

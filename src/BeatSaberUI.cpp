@@ -319,6 +319,58 @@ namespace QuestUI::BeatSaberUI {
         return textMesh;
     }
 
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick)
+    {
+        return CreateClickableText(parent, text, true, anchoredPosition, onClick);
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick)
+    {
+        return CreateClickableText(parent, text, true, anchoredPosition, sizeDelta, onClick);
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, std::function<void()> onClick)
+    {
+        return CreateClickableText(parent, text, italic, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(60.0f, 10.0f), onClick);
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick)
+    {
+        return CreateClickableText(parent, text, italic, anchoredPosition, UnityEngine::Vector2(60.0f, 10.0f), onClick);
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick)
+    {
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIText");
+        GameObject* gameObj = GameObject::New_ctor(name);
+        gameObj->SetActive(false);
+
+        ClickableText* textMesh = gameObj->AddComponent<ClickableText*>();
+        RectTransform* rectTransform = textMesh->get_rectTransform();
+        rectTransform->SetParent(parent, false);
+        textMesh->set_font(GetMainTextFont());
+        textMesh->set_fontSharedMaterial(GetMainUIFontMaterial());
+        Il2CppString* text_cs = nullptr;
+        if (italic) text_cs = il2cpp_utils::newcsstr(u"<i>" + std::u16string(text) + u"</i>");
+        else text_cs = il2cpp_utils::newcsstr(text);
+        textMesh->set_text(text_cs);
+        textMesh->set_fontSize(4.0f);
+        textMesh->set_color(UnityEngine::Color::get_white());
+        textMesh->set_richText(true);
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchoredPosition(anchoredPosition);
+        rectTransform->set_sizeDelta(sizeDelta);
+        
+        gameObj->AddComponent<LayoutElement*>();
+
+        if (onClick)
+            textMesh->get_onPointerClickEvent() += [onClick](auto _){ onClick(); };
+
+        gameObj->SetActive(true);
+        return textMesh;
+    }
+
     void SetButtonText(Button* button, std::u16string_view text) {
         LocalizedTextMeshProUGUI* localizer = button->GetComponentInChildren<LocalizedTextMeshProUGUI*>();
         if (localizer)
