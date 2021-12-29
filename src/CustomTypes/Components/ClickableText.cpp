@@ -9,14 +9,18 @@ namespace QuestUI
     void ClickableText::ctor()
     {
         INVOKE_CTOR();
+        onClickEvent = OnPointerClickEvent();
+        pointerEnterEvent = OnPointerEnterEvent();
+        pointerExitEvent = OnPointerExitEvent();
+        isHighlighted = false;
+        highlightColor = UnityEngine::Color(0.60f, 0.80f, 1.0f, 1.0f);
+        defaultColor = UnityEngine::Color(1.0f, 1.0f, 1.0f, 1.0f);
+
         static auto base_ctor = il2cpp_utils::FindMethod(classof(HMUI::CurvedTextMeshPro*), ".ctor");
         if (base_ctor)
         {
             il2cpp_utils::RunMethod(this, base_ctor);
         }
-        onClickEvent = OnPointerClickEvent();
-        pointerEnterEvent = OnPointerEnterEvent();
-        pointerExitEvent = OnPointerExitEvent();
     }
 
     void ClickableText::OnPointerClick(EventSystems::PointerEventData* eventData)
@@ -89,5 +93,4 @@ namespace QuestUI
     {
         return pointerExitEvent;
     }
-
 }

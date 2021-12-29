@@ -21,31 +21,34 @@
     }
 
 ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, ClickableText, Il2CppTypeEnum::IL2CPP_TYPE_CLASS, HMUI::CurvedTextMeshPro, "QuestUI", TextInterfaces, 0, nullptr,
-                                    DECLARE_INSTANCE_METHOD(void, set_highlightColor, UnityEngine::Color color);
-                                    DECLARE_INSTANCE_METHOD(UnityEngine::Color, get_highlightColor);
-                                    DECLARE_INSTANCE_METHOD(void, set_defaultColor, UnityEngine::Color color);
-                                    DECLARE_INSTANCE_METHOD(UnityEngine::Color, get_defaultColor);
+        DECLARE_INSTANCE_METHOD(void, set_highlightColor, UnityEngine::Color color);
+        DECLARE_INSTANCE_METHOD(UnityEngine::Color, get_highlightColor);
+        DECLARE_INSTANCE_METHOD(void, set_defaultColor, UnityEngine::Color color);
+        DECLARE_INSTANCE_METHOD(UnityEngine::Color, get_defaultColor);
 
-                                    DECLARE_INSTANCE_FIELD_DEFAULT(UnityEngine::Color, highlightColor, UnityEngine::Color(0.60f, 0.80f, 1, 1));
-                                    DECLARE_INSTANCE_FIELD_DEFAULT(UnityEngine::Color, defaultColor, UnityEngine::Color(1, 1, 1, 1));
-                                    DECLARE_OVERRIDE_METHOD(void, OnPointerClick, il2cpp_utils::il2cpp_type_check::MetadataGetter<&UnityEngine::EventSystems::IPointerClickHandler::OnPointerClick>::get(), UnityEngine::EventSystems::PointerEventData* eventData);
-                                    DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::get(), UnityEngine::EventSystems::PointerEventData* eventData);
-                                    DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::get(), UnityEngine::EventSystems::PointerEventData* eventData);
+        DECLARE_OVERRIDE_METHOD(void, OnPointerClick, il2cpp_utils::il2cpp_type_check::MetadataGetter<&UnityEngine::EventSystems::IPointerClickHandler::OnPointerClick>::get(), UnityEngine::EventSystems::PointerEventData* eventData);
+        DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::get(), UnityEngine::EventSystems::PointerEventData* eventData);
+        DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::get(), UnityEngine::EventSystems::PointerEventData* eventData);
 
-                                    DECLARE_CTOR(ctor);
-                                    public
-                                    : using OnPointerClickEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
-                                    using OnPointerEnterEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
-                                    using OnPointerExitEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
+        DECLARE_CTOR(ctor);
+    public: 
+        using OnPointerClickEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
+        using OnPointerEnterEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
+        using OnPointerExitEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
 
-                                    OnPointerClickEvent & get_onPointerClickEvent();
-                                    OnPointerEnterEvent & get_onPointerEnterEvent();
-                                    OnPointerExitEvent & get_onPointerExitEvent();
-                                    private
-                                    : bool isHighlighted = false;
-                                    OnPointerClickEvent onClickEvent;
-                                    OnPointerEnterEvent pointerEnterEvent;
-                                    OnPointerExitEvent pointerExitEvent;
-                                    void UpdateHighlight();
-                                    bool get_isHighlighted();
-                                    void set_isHighlighted(bool value);)
+        OnPointerClickEvent & get_onPointerClickEvent();
+        OnPointerEnterEvent & get_onPointerEnterEvent();
+        OnPointerExitEvent & get_onPointerExitEvent();
+    private:
+        // purely here because CurvedTextMeshPro is larger than it says it is
+        uint8_t padding[16];
+        UnityEngine::Color highlightColor;
+        UnityEngine::Color defaultColor;
+        bool isHighlighted;
+        OnPointerClickEvent onClickEvent;
+        OnPointerEnterEvent pointerEnterEvent;
+        OnPointerExitEvent pointerExitEvent;
+        void UpdateHighlight();
+        bool get_isHighlighted();
+        void set_isHighlighted(bool value);
+)
