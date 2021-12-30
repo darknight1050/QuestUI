@@ -489,6 +489,34 @@ namespace QuestUI::BeatSaberUI {
         return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, anchoredPosition, sizeDelta, onClick);
     }
 
+    QuestUI::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick)
+    {
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("ScoreSaberClickableImage");
+        auto go = GameObject::New_ctor(name);
+
+        auto image = go->AddComponent<QuestUI::ClickableImage*>();
+        auto mat_UINoGlow = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Material*>(), [](Material* x)
+                                             { return to_utf8(csstrtostr(x->get_name())) == "UINoGlow"; });
+        image->set_material(mat_UINoGlow);
+
+        go->get_transform()->SetParent(parent, false);
+        image->get_rectTransform()->set_sizeDelta(sizeDelta);
+        image->get_rectTransform()->set_anchoredPosition(anchoredPosition);
+        image->set_sprite(sprite);
+
+        go->AddComponent<LayoutElement*>();
+
+        if (onClick)
+            image->get_onPointerClickEvent() += [onClick](auto _){ onClick(); };
+        return image;
+    }
+
+    QuestUI::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, std::function<void()> onClick)
+    {
+        return CreateClickableImage(parent, sprite, {0, 0}, {0, 0}, onClick);
+    }
+
+
     ImageView* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
         static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIImage");
         GameObject* gameObj = GameObject::New_ctor(name);

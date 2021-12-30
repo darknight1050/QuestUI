@@ -1,10 +1,8 @@
-#include "CustomTypes/ClickableImage.hpp"
-#include "logging.hpp"
+#include "CustomTypes/Components/ClickableImage.hpp"
 DEFINE_TYPE(QuestUI, ClickableImage);
 
 using namespace UnityEngine;
 
-#define LOG_COLOR(color) INFO("%s: %.2f, %.2f, %.2f, %.2f", #color, color.r, color.g, color.b, color.a)
 namespace QuestUI
 {
     void ClickableImage::ctor()

@@ -10,6 +10,7 @@
 #include "CustomTypes/Components/SegmentedControl/CustomTextSegmentedControlData.hpp"
 #include "CustomTypes/Components/ModalColorPicker.hpp"
 #include "CustomTypes/Components/ClickableText.hpp"
+#include "CustomTypes/Components/ClickableImage.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
@@ -226,7 +227,23 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::u16string_view buttonText, std::string_view buttonTemplate, std::function<void()> onClick = nullptr);
     inline UnityEngine::UI::Button* CreateUIButton(UnityEngine::Transform* parent, std::string_view buttonText, std::string_view buttonTemplate, std::function<void()> onClick = nullptr)
     { return CreateUIButton(parent, to_utf16(buttonText), buttonTemplate, onClick); }
-
+    
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param sprite the image to use
+    /// @param anchoredPosition position of the image
+    /// @param sizeDelta size of the object
+    /// @param onClick what to run when clicked
+    /// @return created clickable image
+    QuestUI::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick = nullptr);
+    
+    /// @brief Creates clickable text, almost like a URL
+    /// @param parent what to parent it to
+    /// @param sprite the image to use
+    /// @param onClick what to run when clicked
+    /// @return created clickable image
+    QuestUI::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, std::function<void()> onClick = nullptr);
+    
     HMUI::ImageView* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
     UnityEngine::Sprite* Base64ToSprite(std::string_view base64);   
