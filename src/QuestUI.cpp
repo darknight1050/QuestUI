@@ -51,6 +51,7 @@
 #include "HMUI/ButtonSpriteSwap.hpp"
 #include "HMUI/TextSegmentedControl.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
+#include "HMUI/ImageView.hpp"
 
 #include "Polyglot/Localization.hpp"
 
@@ -231,6 +232,8 @@ void QuestUI::Init() {
         didInit = true;
         getLogger().info("Init started...");
         il2cpp_functions::Init();
+        // needed atm for ClickableImage
+        il2cpp_functions::Class_Init(classof(HMUI::ImageView*));
         // needed atm for ClickableText
         il2cpp_functions::Class_Init(classof(HMUI::CurvedTextMeshPro*));
 
