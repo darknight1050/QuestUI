@@ -150,10 +150,17 @@ namespace QuestUI
 
     void GameplaySetup::OnDisable()
     {
+        getLogger().info("OnDisable");
         moddedController->segmentedControl->SelectCellWithNumber(0);
+        getLogger().info("Selected Cell");
         SwitchGameplayTab(0);
+        getLogger().info("Switched Tab");
         moddedController->get_gameObject()->SetActive(false);
-        currentMenu->gameObject->SetActive(false);
+        getLogger().info("SetActive false");
+        if (currentMenu && currentMenu->gameObject) {
+            currentMenu->gameObject->SetActive(false);
+            getLogger().info("SetActive false 2");
+        }
     }
 
     Register::MenuType GameplaySetup::GetMenuType()
