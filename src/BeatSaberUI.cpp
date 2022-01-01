@@ -491,7 +491,7 @@ namespace QuestUI::BeatSaberUI {
 
     QuestUI::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick)
     {
-        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("ScoreSaberClickableImage");
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIClickableImage");
         auto go = GameObject::New_ctor(name);
 
         auto image = go->AddComponent<QuestUI::ClickableImage*>();
