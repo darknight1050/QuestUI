@@ -20,7 +20,7 @@
 
 #define DECLARE_SIMPLE_MONO_DTOR() \
 void __Finalize() {                \
-    auto l = this;                               \
+    Il2CppObject* l = this;                               \
     il2cpp_utils::RunMethodThrow(l, il2cpp_utils::il2cpp_type_check::MetadataGetter<&UnityEngine::Object::Finalize>::get());                               \
     this->~___TargetType();        \
 } \
