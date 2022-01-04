@@ -83,10 +83,9 @@ namespace QuestUI
     }
 
     #define UpdateGOList(list, condition) \
-        int list## length = list->get_Count(); \
-        for (int i = 0; i < list## length; i++) { \
-            list->items->values[i]->SetActive(condition); \
-        } \
+        for (auto item : list->items) { \
+            item->SetActive(condition); \
+        }
 
     void CustomCellTableCell::RefreshVisuals()
     {

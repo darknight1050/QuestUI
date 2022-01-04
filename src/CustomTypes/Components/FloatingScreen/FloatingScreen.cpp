@@ -51,14 +51,15 @@ void QuestUI::FloatingScreen::updateHandle() {
 }
 
 void QuestUI::FloatingScreen::createHandle() {
-    auto vrpointer = UnityEngine::Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()->values[0];
+    auto vrpointer = UnityEngine::Resources::FindObjectsOfTypeAll<VRUIControls::VRPointer*>()[0];
     if(!handle) {
         handle = UnityEngine::GameObject::CreatePrimitive(UnityEngine::PrimitiveType::_get_Cube());
         handle->get_transform()->set_parent(get_transform());
         handle->get_transform()->set_localRotation(UnityEngine::Quaternion::get_identity());
 
         auto rend = handle->GetComponent<UnityEngine::MeshRenderer*>();
-        auto mat = UnityEngine::Material::New_ctor(UnityEngine::Shader::Find(il2cpp_utils::createcsstr("Custom/SimpleLit")));
+        auto static searchName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Custom/SimpleLit");
+        auto mat = UnityEngine::Material::New_ctor(UnityEngine::Shader::Find(searchName));
         mat->set_color(UnityEngine::Color::get_white());
         rend->set_material(mat);
         GetComponent<QuestUI::FloatingScreenManager*>()->createMover(this, vrpointer);

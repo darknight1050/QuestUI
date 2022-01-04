@@ -57,8 +57,6 @@ namespace QuestUI
         result->set_text(il2cpp_utils::newcsstr(texts[idx]));
         result->set_hideBackgroundImage(hideCellBackground);
 
-        getLogger().info("cell %d: %s", idx, to_utf8(texts[idx]).c_str());
-
         if (overrideCellSize)
         {
             reinterpret_cast<RectTransform*>(result->get_transform())->set_sizeDelta({result->get_preferredWidth() + 2.0f * padding, 1.0f});

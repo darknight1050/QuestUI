@@ -103,9 +103,12 @@ namespace QuestUI
     {
         int size = currentTabs.size();
         if (size == 0) return;
-        currentFirst += offset;
-
-        currentFirst = std::clamp<int>(currentFirst, 0, currentTabs.size() - 1);
+        // only clamp if size larger
+        if (size > tabCount)
+        {
+            currentFirst += offset;
+            currentFirst = std::clamp<int>(currentFirst, 0, size - tabCount);
+        }
 
         SetModTexts();
         ChooseModSegment(0);
@@ -113,7 +116,7 @@ namespace QuestUI
 
     void GameplaySetup::Activate(bool firstActivation)
     {
-        getLogger().info("activate");
+        getLogger().debug("GameplaySetup::Activate");
         if (firstActivation) Setup();
 
         currentTabs = GameplaySetupMenuTabs::get(GetMenuType());
@@ -147,9 +150,17 @@ namespace QuestUI
 
     void GameplaySetup::OnDisable()
     {
+        getLogger().info("OnDisable");
         moddedController->segmentedControl->SelectCellWithNumber(0);
+        getLogger().info("Selected Cell");
         SwitchGameplayTab(0);
+        getLogger().info("Switched Tab");
         moddedController->get_gameObject()->SetActive(false);
+        getLogger().info("SetActive false");
+        if (currentMenu && currentMenu->gameObject) {
+            currentMenu->gameObject->SetActive(false);
+            getLogger().info("SetActive false 2");
+        }
     }
 
     Register::MenuType GameplaySetup::GetMenuType()
@@ -172,31 +183,43 @@ namespace QuestUI
         get_transform()->Find(QuestuiGameplaySetupWrapper_cs)->get_gameObject()->SetActive(idx == 1);
     }
 
-    void GameplaySetup::SetModTexts()
+    std::vector<int> GameplaySetup::get_slice()
     {
-        if (currentTabs.size() > tabCount)
+        std::vector<int> slice = {};
+        int size = currentTabs.size();
+        if (size > tabCount)
         {
-            int first = currentFirst;
-            int size = currentTabs.size();
-            std::vector<std::u16string> texts;
+            // more tabs than fit
             for (int i = 0; i < tabCount; i++) {
-                int current = first + i;
-                while (current >= size) current -= size;
-                texts.push_back(to_utf16(currentTabs[current]->title));
+                auto current = currentFirst + i;
+                // only allow elements that are in bounds
+                if (current < size)
+                    slice.push_back(currentFirst + i);
             }
-
-            segmentedController->set_texts(texts);
-        }
+        } 
         else
         {
-            std::vector<std::u16string> texts;
-            for (auto t : currentTabs)
-            {
-                texts.push_back(to_utf16(t->title));
+            // equal or less tabs than fit
+            for (int i = 0; i < size; i++) {
+                slice.push_back(i);
             }
-            segmentedController->set_texts(texts);
         }
-        segmentedController->segmentedControl->SelectCellWithNumber(0);
+
+        return slice;
+    }
+
+    void GameplaySetup::SetModTexts()
+    {
+        auto slice = get_slice();
+
+        std::vector<std::u16string> texts;
+
+        for (auto i : slice)
+        {
+            texts.push_back(to_utf16(currentTabs[i]->title));
+        }
+
+        segmentedController->set_texts(texts);
     }
 
     void GameplaySetup::ChooseModSegment(int idx)

@@ -91,7 +91,7 @@ namespace QuestUI::BeatSaberUI {
     void SetupPersistentObjects() {
         getLogger().info("SetupPersistentObjects");
         if(!beatSaberUIObject) {
-            static auto name = il2cpp_utils::createcsstr("BeatSaberUIObject", il2cpp_utils::StringType::Manual);
+            static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BeatSaberUIObject");
             beatSaberUIObject = GameObject::New_ctor(name);
             GameObject::DontDestroyOnLoad(beatSaberUIObject);
             beatSaberUIObject->AddComponent<MainThreadScheduler*>();
@@ -102,7 +102,7 @@ namespace QuestUI::BeatSaberUI {
                 }
             )->get_transform()->get_parent()->get_gameObject();
             dropdownListPrefab = Object::Instantiate(search, beatSaberUIObject->get_transform(), false);
-            static auto name = il2cpp_utils::createcsstr("QuestUIDropdownListPrefab", il2cpp_utils::StringType::Manual);
+            static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIDropdownListPrefab");
             dropdownListPrefab->set_name(name);
             dropdownListPrefab->SetActive(false);
         }
@@ -116,10 +116,24 @@ namespace QuestUI::BeatSaberUI {
             modalPrefab->GetComponent<ModalView*>()->presentPanelAnimations = search->GetComponent<ModalView*>()->presentPanelAnimations;
             modalPrefab->GetComponent<ModalView*>()->dismissPanelAnimation = search->GetComponent<ModalView*>()->dismissPanelAnimation;
 
-            static auto name = il2cpp_utils::createcsstr("QuestUIModalPrefab", il2cpp_utils::StringType::Manual);
+            static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIModalPrefab");
             modalPrefab->set_name(name);
             modalPrefab->SetActive(false);
         }
+    }
+
+    void AddModInfoText(ModSettingsInfos::ModSettingsInfo& info) {
+        VerticalLayoutGroup* layout = CreateVerticalLayoutGroup(info.viewController->get_rectTransform());
+        layout->get_rectTransform()->set_position(UnityEngine::Vector3(0.0f, -39.0f, -24.0f));
+        layout->get_rectTransform()->set_eulerAngles(UnityEngine::Vector3(60.0f, 0.0f, 0.0f));
+        GameObject* layoutGameObject = layout->get_gameObject();
+        layoutGameObject->GetComponent<ContentSizeFitter*>()->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
+        static auto backgroundName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("round-rect-panel");
+        layoutGameObject->AddComponent<Backgroundable*>()->ApplyBackground(backgroundName);
+        layout->set_padding(UnityEngine::RectOffset::New_ctor(3, 4, 2, 2));
+        TextMeshProUGUI* modInfoText = CreateText(layout->get_transform(), info.modInfo.id + " : v" + info.modInfo.version);
+        modInfoText->set_alignment(TextAlignmentOptions::Center);
+        modInfoText->set_fontSize(4.8f);
     }
 
     #define CacheNotFoundWarningLog(type) getLogger().warning("Can't find '" #type "'! (This shouldn't happen and can cause unexpected behaviour)")
@@ -171,6 +185,16 @@ namespace QuestUI::BeatSaberUI {
         return physicsRaycaster;
     }
 
+    IVRPlatformHelper* platformHelper = nullptr;
+    IVRPlatformHelper* GetIVRPlatformHelper()
+    {
+        if (!platformHelper)
+            platformHelper = ArrayUtil::First(Resources::FindObjectsOfTypeAll<VRController*>())->dyn__vrPlatformHelper();
+        if (!platformHelper)
+            CacheNotFoundWarningLog(IVRPlatformHelper);
+        return platformHelper;
+    }
+
     DiContainer* diContainer = nullptr;
     DiContainer* GetDiContainer()
     {
@@ -187,11 +211,12 @@ namespace QuestUI::BeatSaberUI {
         mainUIFontMaterial = nullptr;
         editIcon = nullptr;
         physicsRaycaster = nullptr;
+        platformHelper = nullptr;
         diContainer = nullptr;
     }
 
     GameObject* CreateCanvas() {
-        static auto name = il2cpp_utils::createcsstr("QuestUICanvas", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUICanvas");
         GameObject* go = GameObject::New_ctor(name);
         go->set_layer(5);
         Canvas* cv = go->AddComponent<Canvas*>();
@@ -225,7 +250,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     ViewController* CreateViewController(System::Type* type) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIViewController", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIViewController");
         GameObject* go = GameObject::New_ctor(name);
 
         Canvas* cv = go->AddComponent<Canvas*>();
@@ -259,7 +284,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     FlowCoordinator* CreateFlowCoordinator(System::Type* type) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIFlowCoordinator", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIFlowCoordinator");
         FlowCoordinator* flowCoordinator = reinterpret_cast<FlowCoordinator*>(GameObject::New_ctor(name)->AddComponent(type));
         flowCoordinator->baseInputModule = GetMainFlowCoordinator()->baseInputModule;
         return flowCoordinator;
@@ -282,7 +307,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     TextMeshProUGUI* CreateText(Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIText", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIText");
         GameObject* gameObj = GameObject::New_ctor(name);
         gameObj->SetActive(false);
 
@@ -304,6 +329,58 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_sizeDelta(sizeDelta);
         
         gameObj->AddComponent<LayoutElement*>();
+
+        gameObj->SetActive(true);
+        return textMesh;
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick)
+    {
+        return CreateClickableText(parent, text, true, anchoredPosition, onClick);
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick)
+    {
+        return CreateClickableText(parent, text, true, anchoredPosition, sizeDelta, onClick);
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, std::function<void()> onClick)
+    {
+        return CreateClickableText(parent, text, italic, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(60.0f, 10.0f), onClick);
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, std::function<void()> onClick)
+    {
+        return CreateClickableText(parent, text, italic, anchoredPosition, UnityEngine::Vector2(60.0f, 10.0f), onClick);
+    }
+
+    ClickableText* CreateClickableText(UnityEngine::Transform* parent, std::u16string_view text, bool italic, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick)
+    {
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIText");
+        GameObject* gameObj = GameObject::New_ctor(name);
+        gameObj->SetActive(false);
+
+        ClickableText* textMesh = gameObj->AddComponent<ClickableText*>();
+        RectTransform* rectTransform = textMesh->get_rectTransform();
+        rectTransform->SetParent(parent, false);
+        textMesh->set_font(GetMainTextFont());
+        textMesh->set_fontSharedMaterial(GetMainUIFontMaterial());
+        Il2CppString* text_cs = nullptr;
+        if (italic) text_cs = il2cpp_utils::newcsstr(u"<i>" + std::u16string(text) + u"</i>");
+        else text_cs = il2cpp_utils::newcsstr(text);
+        textMesh->set_text(text_cs);
+        textMesh->set_fontSize(4.0f);
+        textMesh->set_color(UnityEngine::Color::get_white());
+        textMesh->set_richText(true);
+        rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
+        rectTransform->set_anchoredPosition(anchoredPosition);
+        rectTransform->set_sizeDelta(sizeDelta);
+        
+        gameObj->AddComponent<LayoutElement*>();
+
+        if (onClick)
+            textMesh->get_onPointerClickEvent() += [onClick](auto _){ onClick(); };
 
         gameObj->SetActive(true);
         return textMesh;
@@ -332,15 +409,15 @@ namespace QuestUI::BeatSaberUI {
 
     void SetButtonIcon(Button* button, Sprite* icon) {
         if(!icon) return;
-        auto* array = button->GetComponentsInChildren<Image*>();
-        if(array->Length() > 1)
+        auto array = button->GetComponentsInChildren<Image*>();
+        if(array.Length() > 1)
             ArrayUtil::First(array, [](Image* x) { return to_utf8(csstrtostr(x->get_name())) == "Icon";})->set_sprite(icon);
     }
 
     void SetButtonBackground(Button* button, Sprite* background) {
-        auto* array = button->GetComponentsInChildren<Image*>();
-        if(array->Length() > 0)
-            array->values[0]->set_sprite(background);
+        auto array = button->GetComponentsInChildren<Image*>();
+        if(array.Length() > 0)
+            array[0]->set_sprite(background);
     }
 
     void SetButtonSprites(UnityEngine::UI::Button* button, UnityEngine::Sprite* inactive, UnityEngine::Sprite* active) {
@@ -367,7 +444,7 @@ namespace QuestUI::BeatSaberUI {
 
         Button* button = Object::Instantiate(buttonCopy.getInner(), parent, false);
         button->set_onClick(Button::ButtonClickedEvent::New_ctor());
-        static auto name = il2cpp_utils::createcsstr("QuestUIButton", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIButton");
         button->set_name(name);
         if(onClick)
             button->get_onClick()->AddListener(MakeDelegate(UnityAction*, onClick));
@@ -433,8 +510,36 @@ namespace QuestUI::BeatSaberUI {
         return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, anchoredPosition, sizeDelta, onClick);
     }
 
+    QuestUI::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick)
+    {
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIClickableImage");
+        auto go = GameObject::New_ctor(name);
+
+        auto image = go->AddComponent<QuestUI::ClickableImage*>();
+        auto mat_UINoGlow = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Material*>(), [](Material* x)
+                                             { return to_utf8(csstrtostr(x->get_name())) == "UINoGlow"; });
+        image->set_material(mat_UINoGlow);
+
+        go->get_transform()->SetParent(parent, false);
+        image->get_rectTransform()->set_sizeDelta(sizeDelta);
+        image->get_rectTransform()->set_anchoredPosition(anchoredPosition);
+        image->set_sprite(sprite);
+
+        go->AddComponent<LayoutElement*>();
+
+        if (onClick)
+            image->get_onPointerClickEvent() += [onClick](auto _){ onClick(); };
+        return image;
+    }
+
+    QuestUI::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, std::function<void()> onClick)
+    {
+        return CreateClickableImage(parent, sprite, {0, 0}, {0, 0}, onClick);
+    }
+
+
     ImageView* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIImage", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIImage");
         GameObject* gameObj = GameObject::New_ctor(name);
         auto mat_UINoGlow = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Material*>(), [](Material* x) { return to_utf8(csstrtostr(x->get_name())) == "UINoGlow"; });
         ImageView* image = gameObj->AddComponent<ImageView*>();
@@ -453,7 +558,7 @@ namespace QuestUI::BeatSaberUI {
 
     Sprite* Base64ToSprite(std::string_view base64)
     {
-        Array<uint8_t>* bytes = System::Convert::FromBase64String(il2cpp_utils::createcsstr(base64));
+        ArrayW<uint8_t> bytes = System::Convert::FromBase64String(il2cpp_utils::newcsstr(base64));
         return ArrayToSprite(bytes);
     }
 
@@ -477,7 +582,7 @@ namespace QuestUI::BeatSaberUI {
         return ArrayToSprite(il2cpp_utils::vectorToArray(bytes));
     }
 
-    Sprite* ArrayToSprite(Array<uint8_t>* bytes)
+    Sprite* ArrayToSprite(ArrayW<uint8_t> bytes)
     {
         Texture2D* texture = Texture2D::New_ctor(0, 0, TextureFormat::RGBA32, false, false);
         if (ImageConversion::LoadImage(texture, bytes, false)) {
@@ -488,7 +593,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     GridLayoutGroup* CreateGridLayoutGroup(Transform* parent) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIGridLayoutGroup", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIGridLayoutGroup");
         GameObject* gameObject = GameObject::New_ctor(name);
         GridLayoutGroup* layout = gameObject->AddComponent<GridLayoutGroup*>();
         gameObject->AddComponent<ContentSizeFitter*>();
@@ -505,7 +610,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     HorizontalLayoutGroup* CreateHorizontalLayoutGroup(Transform* parent) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIHorizontalLayoutGroup", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIHorizontalLayoutGroup");
         GameObject* gameObject = GameObject::New_ctor(name);
         HorizontalLayoutGroup* layout = gameObject->AddComponent<HorizontalLayoutGroup*>();
         gameObject->AddComponent<Backgroundable*>();
@@ -524,7 +629,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     VerticalLayoutGroup* CreateVerticalLayoutGroup(Transform* parent) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIVerticalLayoutGroup", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIVerticalLayoutGroup");
         GameObject* gameObject = GameObject::New_ctor(name);
         VerticalLayoutGroup* layout = gameObject->AddComponent<VerticalLayoutGroup*>();
         gameObject->AddComponent<Backgroundable*>();
@@ -585,9 +690,10 @@ namespace QuestUI::BeatSaberUI {
 
         GameObject* gameObject = Object::Instantiate(toggleCopy.getInner(), parent, false);
         GameObject* nameText = gameObject->get_transform()->Find(il2cpp_utils::createcsstr("NameText"))->get_gameObject();
+      
         Object::Destroy(gameObject->GetComponent<BoolSettingsController*>());
 
-        static auto name = il2cpp_utils::createcsstr("QuestUICheckboxSetting", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUICheckboxSetting");
         gameObject->set_name(name);
 
         gameObject->SetActive(false);
@@ -615,7 +721,7 @@ namespace QuestUI::BeatSaberUI {
     /*GameObject* CreateLoadingIndicator(Transform* parent, UnityEngine::Vector2 anchoredPosition)
     {
         GameObject* loadingIndicator = GameObject::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameObject*>(), [](GameObject* x){ return to_utf8(csstrtostr(x->get_name())) == "LoadingIndicator"; }), parent, false);
-        static auto name = il2cpp_utils::createcsstr("QuestUILoadingIndicator", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUILoadingIndicator");
         loadingIndicator->set_name(name);
 
         loadingIndicator->AddComponent<LayoutElement*>();
@@ -793,6 +899,7 @@ namespace QuestUI::BeatSaberUI {
         }
         auto textScrollView = Object::Instantiate(textScrollViewClone.getInner(), parent);
         static auto textScrollViewName = il2cpp_utils::createcsstr("QuestUIScrollView", il2cpp_utils::StringType::Manual);
+      
         textScrollView->set_name(textScrollViewName);
         Button* pageUpButton = textScrollView->pageUpButton;
         Button* pageDownButton = textScrollView->pageDownButton;
@@ -813,11 +920,12 @@ namespace QuestUI::BeatSaberUI {
         scrollView->pageDownButton = pageDownButton;
         scrollView->verticalScrollIndicator = verticalScrollIndicator;
         scrollView->viewport = viewport;
+        scrollView->dyn__platformHelper() = GetIVRPlatformHelper();
 
         viewport->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         viewport->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
 
-        static auto parentObjName = il2cpp_utils::createcsstr("QuestUIScrollViewContent", il2cpp_utils::StringType::Manual);
+        static auto parentObjName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIScrollViewContent");
         GameObject* parentObj = GameObject::New_ctor(parentObjName);
         parentObj->get_transform()->SetParent(viewport, false);
 
@@ -840,7 +948,7 @@ namespace QuestUI::BeatSaberUI {
         
         parentObj->AddComponent<ScrollViewContent*>()->scrollView = scrollView;
 
-        static auto childName = il2cpp_utils::createcsstr("QuestUIScrollViewContentContainer", il2cpp_utils::StringType::Manual);
+        static auto childName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIScrollViewContentContainer");
         GameObject* child = GameObject::New_ctor(childName);
         child->get_transform()->SetParent(rectTransform, false);
 
@@ -869,7 +977,7 @@ namespace QuestUI::BeatSaberUI {
         RectTransform* scrollTransform = externalComponents->Get<RectTransform*>();
         scrollTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
         scrollTransform->set_sizeDelta(UnityEngine::Vector2(-54.0f, 0.0f));
-        static auto name = il2cpp_utils::createcsstr("QuestUIScrollableSettingsContainer", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIScrollableSettingsContainer");
         scrollTransform->get_gameObject()->set_name(name);
         return content;
     }
@@ -892,7 +1000,7 @@ namespace QuestUI::BeatSaberUI {
             );
         }
         GameObject* gameObj = Object::Instantiate(originalFieldView->get_gameObject(), parent, false);
-        static auto name = il2cpp_utils::createcsstr("QuestUIStringSetting", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIStringSetting");
         gameObj->set_name(name);
         LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
         layoutElement->set_preferredWidth(90.0f);
@@ -919,21 +1027,20 @@ namespace QuestUI::BeatSaberUI {
         return fieldView;
     }
 
-    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::u16string_view currentValue, std::vector<std::u16string> values, std::function<void(std::u16string_view)> onValueChange)
+    SimpleTextDropdown* CreateDropdownInternal(Transform* parent, std::u16string_view dropdownName, int selectedIndex, List<Il2CppString*>* values, std::function<void(SimpleTextDropdown*, int)> onValueChange)
     {
         GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
-        static auto name = il2cpp_utils::createcsstr("QuestUIDropdownList", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIDropdownList");
         gameObj->set_name(name);
         SimpleTextDropdown* dropdown = gameObj->GetComponentInChildren<SimpleTextDropdown*>();
         dropdown->get_gameObject()->SetActive(false);
-
         auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
         if(physicsRaycaster)
-            reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren(csTypeOf(VRGraphicRaycaster*), true))->physicsRaycaster = physicsRaycaster;
+            reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren<VRGraphicRaycaster*>(true))->physicsRaycaster = physicsRaycaster;
         
-        reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren(csTypeOf(ModalView*), true))->container = GetDiContainer();
+        reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren<ModalView*>(true))->container = GetDiContainer();
 
-        static auto labelName = il2cpp_utils::createcsstr("Label", il2cpp_utils::StringType::Manual);
+        static auto labelName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Label");
         GameObject* labelObject = gameObj->get_transform()->Find(labelName)->get_gameObject();
         GameObject::Destroy(labelObject->GetComponent<LocalizedTextMeshProUGUI*>());
         labelObject->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::newcsstr(dropdownName));
@@ -941,24 +1048,12 @@ namespace QuestUI::BeatSaberUI {
         LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
         layoutElement->set_preferredWidth(90.0f);
         layoutElement->set_preferredHeight(8.0f);
-
-        List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
-        int selectedIndex = 0;
-        for (int i = 0; i < values.size(); i++){
-            auto value = values[i];
-            if (currentValue == value)
-                selectedIndex = i;
-            list->Add(il2cpp_utils::newcsstr(value));
-        }
-        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
+        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(values));
         dropdown->SelectCellWithIdx(selectedIndex);
 
         if(onValueChange) {
             using DelegateType = System::Action_2<DropdownWithTableView*, int>*;
-            dropdown->add_didSelectCellWithIdxEvent(MakeDelegate(DelegateType,
-                (std::function<void(SimpleTextDropdown*, int)>)[onValueChange](SimpleTextDropdown* dropdownWithTableView, int index){
-                    onValueChange(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index)));
-                }));
+            dropdown->add_didSelectCellWithIdxEvent(MakeDelegate(DelegateType, onValueChange));
         }
 
         dropdown->get_gameObject()->SetActive(true);
@@ -966,28 +1061,8 @@ namespace QuestUI::BeatSaberUI {
         return dropdown;
     }
 
-    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::string_view currentValue, std::vector<std::string> values, std::function<void(std::string_view)> onValueChange) {
-        GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
-        static auto name = il2cpp_utils::createcsstr("QuestUIDropdownList", il2cpp_utils::StringType::Manual);
-        gameObj->set_name(name);
-        SimpleTextDropdown* dropdown = gameObj->GetComponentInChildren<SimpleTextDropdown*>();
-        dropdown->get_gameObject()->SetActive(false);
-
-        auto* physicsRaycaster = GetPhysicsRaycasterWithCache();
-        if(physicsRaycaster)
-            reinterpret_cast<VRGraphicRaycaster*>(dropdown->GetComponentInChildren(csTypeOf(VRGraphicRaycaster*), true))->physicsRaycaster = physicsRaycaster;
-        
-        reinterpret_cast<ModalView*>(dropdown->GetComponentInChildren(csTypeOf(ModalView*), true))->container = GetDiContainer();
-
-        static auto labelName = il2cpp_utils::createcsstr("Label", il2cpp_utils::StringType::Manual);
-        GameObject* labelObject = gameObj->get_transform()->Find(labelName)->get_gameObject();
-        GameObject::Destroy(labelObject->GetComponent<LocalizedTextMeshProUGUI*>());
-        labelObject->GetComponent<TextMeshProUGUI*>()->SetText(il2cpp_utils::newcsstr(dropdownName));
-
-        LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
-        layoutElement->set_preferredWidth(90.0f);
-        layoutElement->set_preferredHeight(8.0f);
-
+    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::u16string_view currentValue, std::vector<std::u16string> values, std::function<void(std::u16string_view)> onValueChange)
+    {
         List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
         int selectedIndex = 0;
         for (int i = 0; i < values.size(); i++){
@@ -996,20 +1071,25 @@ namespace QuestUI::BeatSaberUI {
                 selectedIndex = i;
             list->Add(il2cpp_utils::newcsstr(value));
         }
-        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(list));
-        dropdown->SelectCellWithIdx(selectedIndex);
+        std::function<void(SimpleTextDropdown*, int)> func = [onValueChange] (SimpleTextDropdown* dropdownWithTableView, int index) {
+                onValueChange(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index)));
+            };
+        return CreateDropdownInternal(parent, dropdownName, selectedIndex, list, func);
+    }
 
-        if(onValueChange) {
-            using DelegateType = System::Action_2<DropdownWithTableView*, int>*;
-            dropdown->add_didSelectCellWithIdxEvent(MakeDelegate(DelegateType,
-                (std::function<void(SimpleTextDropdown*, int)>)[onValueChange](SimpleTextDropdown* dropdownWithTableView, int index){
-                    onValueChange(to_utf8(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index))));
-                }));
+    SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::string_view currentValue, std::vector<std::string> values, std::function<void(std::string_view)> onValueChange) {
+        List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
+        int selectedIndex = 0;
+        for (int i = 0; i < values.size(); i++){
+            auto value = values[i];
+            if (currentValue == value)
+                selectedIndex = i;
+            list->Add(il2cpp_utils::newcsstr(value));
         }
-
-        dropdown->get_gameObject()->SetActive(true);
-        gameObj->SetActive(true);
-        return dropdown;
+        std::function<void(SimpleTextDropdown*, int)> func = [onValueChange] (SimpleTextDropdown* dropdownWithTableView, int index) {
+                onValueChange(to_utf8(csstrtostr(reinterpret_cast<List<Il2CppString*>*>(dropdownWithTableView->texts)->get_Item(index))));
+            };
+        return CreateDropdownInternal(parent, dropdownName, selectedIndex, list, func);
     }
     
     GameObject* CreateFloatingScreen(UnityEngine::Vector2 screenSize, UnityEngine::Vector3 position, UnityEngine::Vector3 rotation, float curvatureRadius, bool hasBackground, bool createHandle, int handleSide) {
@@ -1026,11 +1106,11 @@ namespace QuestUI::BeatSaberUI {
 
         //background
         if(hasBackground) {
-            static auto backgroundGoName = il2cpp_utils::createcsstr("bg", il2cpp_utils::StringType::Manual);
+            static auto backgroundGoName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("bg");
             auto backgroundGo = UnityEngine::GameObject::New_ctor(backgroundGoName);
             backgroundGo->get_transform()->SetParent(gameObject->get_transform(), false);
             auto background = backgroundGo->AddComponent<Backgroundable*>();
-            static auto backgroundName = il2cpp_utils::createcsstr("round-rect-panel", il2cpp_utils::StringType::Manual);
+            static auto backgroundName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("round-rect-panel");
             background->ApplyBackgroundWithAlpha(backgroundName, 0.5f);
             screen->set_bgGo(backgroundGo);
         }
@@ -1051,7 +1131,7 @@ namespace QuestUI::BeatSaberUI {
         Object::Destroy(fakeToggle->get_gameObject());
         
         // create element that gets toggled to contain the actual picker
-        static auto name = il2cpp_utils::createcsstr("QuestUIColorPickerModal", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIColorPickerModal");
         auto pickerModalGO = GameObject::New_ctor(name);
         auto pickerModalGORect = pickerModalGO->AddComponent<RectTransform*>();
         pickerModalGORect->set_anchorMin(UnityEngine::Vector2(1.0f, 1.0f));
@@ -1069,7 +1149,7 @@ namespace QuestUI::BeatSaberUI {
                                           });
         }
         auto buttonGO = Object::Instantiate(buttonBase->get_gameObject(), gameObject->get_transform(), false);
-        static auto buttonGOName = il2cpp_utils::createcsstr("QuestUIColorPickerButton", il2cpp_utils::StringType::Manual);
+        static auto buttonGOName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIColorPickerButton");
         buttonGO->set_name(buttonGOName);
         auto buttonRect = buttonGO->GetComponent<RectTransform*>();
         buttonRect->set_anchorMin(UnityEngine::Vector2(1.0f, 0.5f));
@@ -1089,10 +1169,10 @@ namespace QuestUI::BeatSaberUI {
                                                });
         }
         auto pickerGO = Object::Instantiate(pickerBase->get_gameObject(), pickerModalGORect, false);
-        static auto pickerGOName = il2cpp_utils::createcsstr("QuestUIColorPickerController", il2cpp_utils::StringType::Manual);
+        static auto pickerGOName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIColorPickerController");
         pickerGO->set_name(pickerGOName);
         auto hsvPanelController = pickerGO->GetComponent<HSVPanelController*>();
-        static auto searchName = il2cpp_utils::createcsstr("ColorPickerButtonPrimary", il2cpp_utils::StringType::Manual);
+        static auto searchName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("ColorPickerButtonPrimary");
         Object::Destroy(pickerGO->get_transform()->Find(searchName)->get_gameObject());
         hsvPanelController->set_color(defaultColor);
         auto pickerRect = pickerGO->GetComponent<UnityEngine::RectTransform*>();
@@ -1198,7 +1278,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     ModalView* CreateModal(Transform* parent, UnityEngine::Vector2 sizeDelta, UnityEngine::Vector2 anchoredPosition, std::function<void(ModalView*)> onBlockerClicked, bool dismissOnBlockerClicked) {
-        static auto name = il2cpp_utils::createcsstr("QuestUIModalPrefab", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIModalPrefab");
 
         // declare var
         ModalView* orig = modalPrefab->GetComponent<ModalView*>();
@@ -1294,7 +1374,7 @@ namespace QuestUI::BeatSaberUI {
         auto layoutelem = content->AddComponent<LayoutElement*>();
         layoutelem->set_preferredWidth(width - 10.0f);
 
-        static auto name = il2cpp_utils::createcsstr("QuestUICreateScrollableModalContainer", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUICreateScrollableModalContainer");
 
         scrollTransform->get_gameObject()->set_name(name);
         return content;
@@ -1834,7 +1914,6 @@ namespace QuestUI::BeatSaberUI {
         int childCount = result->get_transform()->get_childCount();
         for (int i = 0; i < childCount; i++) 
         {
-            getLogger().info("child %d/%d", i, childCount);
             Object::DestroyImmediate(result->get_transform()->GetChild(0)->get_gameObject());
         }
         

@@ -2,6 +2,7 @@
 
 #include "ModSettingsInfos.hpp"
 #include "BeatSaberUI.hpp"
+#include "InternalBeatSaberUI.hpp"
 
 #include "UnityEngine/WaitForEndOfFrame.hpp"
 #include "UnityEngine/WaitForSeconds.hpp"
@@ -42,7 +43,7 @@ namespace QuestUI
         parentFlowCoordinator->DismissFlowCoordinator(this, HMUI::ViewController::AnimationDirection::Horizontal, nullptr, false);
     }
 
-    custom_types::Helpers::Coroutine  MainMenuModSettingsFlowCoordinator::EndOfFramePresentVC()
+    custom_types::Helpers::Coroutine MainMenuModSettingsFlowCoordinator::EndOfFramePresentVC()
     {
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(UnityEngine::WaitForEndOfFrame::New_ctor());
         
@@ -53,6 +54,8 @@ namespace QuestUI
             {
                 getLogger().info("making view controller");
                 currentInfo->viewController = BeatSaberUI::CreateViewController(currentInfo->il2cpp_type);
+                if(currentInfo->showModInfo)
+                    BeatSaberUI::AddModInfoText(*currentInfo);
                 if(currentInfo->didActivateEvent)
                     currentInfo->viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(classof(HMUI::ViewController::DidActivateDelegate*), currentInfo->viewController, currentInfo->didActivateEvent));
             }

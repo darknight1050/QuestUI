@@ -31,5 +31,6 @@ DECLARE_CLASS_CODEGEN(QuestUI, SliderSetting, UnityEngine::MonoBehaviour,
     public:
         void Setup(float min, float max, float current, float increments, float applyTime, std::function<void(float)> callback);
         std::function<void(float)> OnValueChange = nullptr;
+        std::function<std::string(float)> FormatString = nullptr;
         custom_types::Helpers::Coroutine SetTextOnEnable();
 )

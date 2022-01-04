@@ -6,6 +6,7 @@
 #include "ModSettingsInfos.hpp"
 #include "MainMenuModSettingInfos.hpp"
 #include "GameplaySetupMenuTabs.hpp"
+
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Data/CustomDataType.hpp"
 #include "CustomTypes/Components/GameplaySetup.hpp"
@@ -26,6 +27,7 @@
 #include "GlobalNamespace/GameplaySetupViewController.hpp"
 #include "GlobalNamespace/MainMenuViewController.hpp"
 #include "GlobalNamespace/UIKeyboardManager.hpp"
+#include "GlobalNamespace/HelpFlowCoordinator.hpp"
 
 #include "GlobalNamespace/PlayerSettingsPanelController.hpp"
 #include "GlobalNamespace/GameplayModifiersPanelController.hpp"
@@ -48,6 +50,8 @@
 #include "HMUI/ViewController_AnimationType.hpp"
 #include "HMUI/ButtonSpriteSwap.hpp"
 #include "HMUI/TextSegmentedControl.hpp"
+#include "HMUI/CurvedTextMeshPro.hpp"
+#include "HMUI/ImageView.hpp"
 
 #include "Polyglot/Localization.hpp"
 
@@ -93,9 +97,9 @@ MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsView
         if(GetModsCount() > 0) {
             UnityEngine::UI::Button* avatarButton = self->settingsButton;
             UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
-            static auto modSettingsStr = il2cpp_utils::createcsstr("Mod Settings", il2cpp_utils::StringType::Manual);
+            static auto modSettingsStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Mod Settings");
             button->set_name(modSettingsStr);
-            static auto wrapperStr = il2cpp_utils::createcsstr("Wrapper", il2cpp_utils::StringType::Manual);
+            static auto wrapperStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Wrapper");
             UnityEngine::Transform* AvatarParent = self->get_transform()->Find(wrapperStr);
             button->get_transform()->SetParent(AvatarParent, false);
             button->get_transform()->SetAsFirstSibling();
@@ -120,7 +124,6 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_DidActivate, &GlobalNamespace::MainFlowCoord
     
     if (firstActivation && MainMenuModSettingInfos::get().size() > 0)
     {
-        getLogger().info("first activation!");
         auto vc = BeatSaberUI::CreateViewController<MainMenuModSettingsViewController*>();
         self->providedLeftScreenViewController = vc;
     	MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
@@ -145,7 +148,8 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespac
 		self->SetRightScreenViewController(nullptr, animationType);
 		self->SetBottomScreenViewController(nullptr, animationType);
 	}
-
+    
+    /*
 	if (newViewController->Equals(self->howToPlayViewController))
 	{
         static auto LABEL_HOW_TO_PLAY = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("LABEL_HOW_TO_PLAY");
@@ -154,6 +158,8 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespac
         self->set_showBackButton(true);
 		return;
 	}
+    */
+
 	if (newViewController->Equals(self->playerOptionsViewController))
 	{
         static auto BUTTON_PLAYER_OPTIONS = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BUTTON_PLAYER_OPTIONS");
@@ -176,8 +182,8 @@ MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneMan
     SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
     BeatSaberUI::ClearCache();
     if(prevScene.IsValid() && nextScene.IsValid()) {
-        std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
-        std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+        std::string prevSceneName(to_utf8(csstrtostr(prevScene.get_name())));
+        std::string nextSceneName(to_utf8(csstrtostr(nextScene.get_name())));
         getLogger().info("Scene change from %s to %s", prevSceneName.c_str(), nextSceneName.c_str());
         static bool hasInited = false;
         if(prevSceneName == "QuestInit"){
@@ -189,11 +195,11 @@ MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneMan
         }
     } else {
         if(prevScene.IsValid()) {
-            std::string prevSceneName = to_utf8(csstrtostr(prevScene.get_name()));
+            std::string prevSceneName(to_utf8(csstrtostr(prevScene.get_name())));
             getLogger().info("Scene change from %s to null", prevSceneName.c_str());
         } 
         if(nextScene.IsValid()) {
-            std::string nextSceneName = to_utf8(csstrtostr(nextScene.get_name()));
+            std::string nextSceneName(to_utf8(csstrtostr(nextScene.get_name())));
             getLogger().info("Scene change from null to %s", nextSceneName.c_str());
         }
     }
@@ -226,6 +232,11 @@ void QuestUI::Init() {
         didInit = true;
         getLogger().info("Init started...");
         il2cpp_functions::Init();
+        // needed atm for ClickableImage
+        il2cpp_functions::Class_Init(classof(HMUI::ImageView*));
+        // needed atm for ClickableText
+        il2cpp_functions::Class_Init(classof(HMUI::CurvedTextMeshPro*));
+
         custom_types::Register::AutoRegister();
         INSTALL_HOOK(getLogger(), OptionsViewController_DidActivate);
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);

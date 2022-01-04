@@ -4,18 +4,17 @@
 namespace QuestUI::ArrayUtil {
 
     template <class T>
-    inline T* First(Array<T*>* array)
+    inline T First(ArrayW<T> array)
     {
-        if(array->Length() > 0)
-            return array->values[0];
+        if(array.Length() > 0)
+            return array[0];
         return nullptr;
     }
 
     template <class T, class Predicate>
-    inline T* First(Array<T*>* array, Predicate pred)
+    inline T First(ArrayW<T> array, Predicate pred)
     {
-        for (int i = 0; i < array->Length(); i++) {
-            T* item = array->values[i];
+        for (T item : array) {
             if (pred(item)){
                 return item;
             }
@@ -24,18 +23,18 @@ namespace QuestUI::ArrayUtil {
     }
 
     template <class T>
-    inline T* Last(Array<T*>* array)
+    inline T Last(ArrayW<T> array)
     {
-        if(array->Length() > 0)
-            return array->values[array->Length() - 1];
+        if(array.Length() > 0)
+            return array[array.Length() - 1];
         return nullptr;
     }
 
     template <class T, class Predicate>
-    inline T* Last(Array<T*>* array, Predicate pred)
+    inline T Last(ArrayW<T> array, Predicate pred)
     {
-        for (int i = array->Length()-1; i >= 0; i--) {
-            T* item = array->values[i];
+        for (int i = array.Length()-1; i >= 0; i--) {
+            T item = array[i];
             if (pred(item)){
                 return item;
             }
@@ -44,11 +43,10 @@ namespace QuestUI::ArrayUtil {
     }
 
     template <class T, class Predicate>
-    inline Array<T*>* Where(Array<T*>* array, Predicate pred)
+    inline ArrayW<T> Where(ArrayW<T> array, Predicate pred)
     {
-        List<T*>* newArray = List<T*>::New_ctor();
-        for (int i = 0; i < array->Length(); i++) {
-            T* item = array->values[i];
+        List<T>* newArray = List<T>::New_ctor();
+        for (T item : array) {
             if(pred(item))
                 newArray->Add(item);
         }
@@ -56,32 +54,32 @@ namespace QuestUI::ArrayUtil {
     }
     
     template <class Out, class T, class Predicate>
-    inline Array<Out>* Select(Array<T*>* array, Predicate pred)
+    inline ArrayW<Out> Select(ArrayW<T> array, Predicate pred)
     {
-        Array<Out>* newArray = Array<Out>::NewLength(array->Length());
-        for (int i = 0; i < array->Length(); i++) {
-            newArray->values[i] = pred(array->values[i]);
-        }
+        ArrayW<Out> newArray(array.Length()); 
+        for (int i = 0; i < array.Length(); i++) { 
+            newArray[i] = pred(array[i]); 
+        } 
         return newArray;
     }
 
     template <class T, class Predicate>
-    inline bool Any(Array<T*>* array, Predicate pred)
+    inline bool Any(ArrayW<T> array, Predicate pred)
     {
-        for (int i = 0; i < array->Length(); i++) {
-            if(pred(array->values[i]))
+        for (T item : array) {
+            if(pred(item))
                 return true;
         }
         return false;
     }
 
     template <class Out, class T, class Predicate>
-    inline Out Min(Array<T*>* array, Predicate pred)
+    inline Out Min(ArrayW<T> array, Predicate pred)
     {
         bool first = true;
         Out min;
-        for (int i = 0; i < array->Length(); i++) {
-            auto value = pred(array->values[i]);
+        for (T item : array) {
+            auto value = pred(item);
             if(first || value < min){
                 first = false;
                 min = value;
@@ -91,12 +89,12 @@ namespace QuestUI::ArrayUtil {
     }
 
     template <class Out, class T, class Predicate>
-    inline Out Max(Array<T*>* array, Predicate pred)
+    inline Out Max(ArrayW<T> array, Predicate pred)
     {
         bool first = true;
         Out max;
-        for (int i = 0; i < array->Length(); i++) {
-            auto value = pred(array->values[i]);
+        for (T item : array) {
+            auto value = pred(item);
             if(first || value > max){
                 first = false;
                 max = value;

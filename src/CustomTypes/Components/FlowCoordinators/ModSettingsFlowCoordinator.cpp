@@ -3,17 +3,13 @@
 
 #include "ModSettingsInfos.hpp"
 
-#include "UnityEngine/Object.hpp"
-#include "UnityEngine/RectTransform.hpp"
-#include "UnityEngine/RectOffset.hpp"
-#include "UnityEngine/UI/LayoutElement.hpp"
-#include "UnityEngine/UI/ContentSizeFitter.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
 #include "HMUI/ViewController_AnimationType.hpp"
 #include "HMUI/ViewController_DidActivateDelegate.hpp"
 #include "System/Action_1.hpp"
 
 #include "BeatSaberUI.hpp"
+#include "InternalBeatSaberUI.hpp"
 
 #include "customlogger.hpp"
 
@@ -30,22 +26,12 @@ void QuestUI::ModSettingsFlowCoordinator::OnOpenModSettings(ModSettingsInfos::Mo
         case Register::Type::VIEW_CONTROLLER: {
             if(!info.viewController) {
                 info.viewController = BeatSaberUI::CreateViewController(info.il2cpp_type);
-                if(info.showModInfo) {
-                    VerticalLayoutGroup* layout = BeatSaberUI::CreateVerticalLayoutGroup(info.viewController->get_rectTransform());
-                    layout->get_rectTransform()->set_position(UnityEngine::Vector3(0.0f, -39.0f, -24.0f));
-                    layout->get_rectTransform()->set_eulerAngles(UnityEngine::Vector3(60.0f, 0.0f, 0.0f));
-                    GameObject* layoutGameObject = layout->get_gameObject();
-                    layoutGameObject->GetComponent<ContentSizeFitter*>()->set_verticalFit(ContentSizeFitter::FitMode::PreferredSize);
-                    layoutGameObject->AddComponent<Backgroundable*>()->ApplyBackground(il2cpp_utils::createcsstr("round-rect-panel"));
-                    layout->set_padding(UnityEngine::RectOffset::New_ctor(3, 4, 2, 2));
-                    TextMeshProUGUI* modInfoText = BeatSaberUI::CreateText(layout->get_transform(), info.modInfo.id + " : v" + info.modInfo.version);
-                    modInfoText->set_alignment(TextAlignmentOptions::Center);
-                    modInfoText->set_fontSize(4.8f);
-                }
+                if(info.showModInfo)
+                    BeatSaberUI::AddModInfoText(info);
                 if(info.didActivateEvent)
                     info.viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<ViewController::DidActivateDelegate*>(classof(ViewController::DidActivateDelegate*), info.viewController, info.didActivateEvent));
             }
-            SetTitle(il2cpp_utils::createcsstr(info.title), ViewController::AnimationType::In);
+            SetTitle(il2cpp_utils::newcsstr(info.title), ViewController::AnimationType::In);
             ReplaceTopViewController(info.viewController, this, this, nullptr, ViewController::AnimationType::In, ViewController::AnimationDirection::Horizontal);
             ActiveViewController = info.viewController;
             break;
@@ -67,7 +53,8 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
             info.viewController = nullptr;
             info.flowCoordinator = nullptr;
         }
-        SetTitle(il2cpp_utils::createcsstr("Mod Settings"), ViewController::AnimationType::Out);
+        static auto modSettingsName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Mod Settings");
+        SetTitle(modSettingsName, ViewController::AnimationType::Out);
         showBackButton = true;
         if(!ModSettingsButtonsViewController)
             ModSettingsButtonsViewController = BeatSaberUI::CreateViewController<QuestUI::ModSettingsButtonsViewController*>();
@@ -79,7 +66,8 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
 
 void QuestUI::ModSettingsFlowCoordinator::BackButtonWasPressed(ViewController* topViewController) {
     if (ActiveViewController != ModSettingsButtonsViewController) {
-        SetTitle(il2cpp_utils::createcsstr("Mod Settings"), ViewController::AnimationType::Out);
+        static auto modSettingsName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Mod Settings");
+        SetTitle(modSettingsName, ViewController::AnimationType::Out);
         ReplaceTopViewController(ModSettingsButtonsViewController, this, this, nullptr, ViewController::AnimationType::Out, ViewController::AnimationDirection::Horizontal);
         ActiveViewController = ModSettingsButtonsViewController;
     } else {
