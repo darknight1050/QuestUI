@@ -689,7 +689,7 @@ namespace QuestUI::BeatSaberUI {
         }
 
         GameObject* gameObject = Object::Instantiate(toggleCopy.getInner(), parent, false);
-        GameObject* nameText = gameObject->get_transform()->Find(il2cpp_utils::createcsstr("NameText"))->get_gameObject();
+        GameObject* nameText = gameObject->get_transform()->Find(il2cpp_utils::newcsstr("NameText"))->get_gameObject();
       
         Object::Destroy(gameObject->GetComponent<BoolSettingsController*>());
 
@@ -773,7 +773,7 @@ namespace QuestUI::BeatSaberUI {
 
     IncrementSetting* CreateIncrementSetting(Transform* parent, std::u16string_view text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
         FormattedFloatListSettingsValueController* baseSetting = Object::Instantiate(getValueTemplate(), parent, false);
-        static auto name = il2cpp_utils::createcsstr("QuestUIIncDecSetting", il2cpp_utils::StringType::Manual);
+        static auto name = il2cpp_utils::newcsstr("QuestUIIncDecSetting", il2cpp_utils::StringType::Manual);
         baseSetting->set_name(name);
         
         GameObject* gameObject = baseSetting->get_gameObject();
@@ -898,7 +898,7 @@ namespace QuestUI::BeatSaberUI {
              textScrollViewClone = ArrayUtil::First(Resources::FindObjectsOfTypeAll<ReleaseInfoViewController *>())->textPageScrollView;
         }
         auto textScrollView = Object::Instantiate(textScrollViewClone.getInner(), parent);
-        static auto textScrollViewName = il2cpp_utils::createcsstr("QuestUIScrollView", il2cpp_utils::StringType::Manual);
+        static auto textScrollViewName = il2cpp_utils::newcsstr("QuestUIScrollView", il2cpp_utils::StringType::Manual);
       
         textScrollView->set_name(textScrollViewName);
         Button* pageUpButton = textScrollView->pageUpButton;
