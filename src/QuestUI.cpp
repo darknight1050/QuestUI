@@ -60,7 +60,7 @@
 using namespace QuestUI;
 
 Logger& getLogger() {
-    static auto logger = new Logger(ModInfo{"questui", VERSION}, LoggerOptions(false, false));
+    static auto logger = new Logger(ModInfo{"questui", VERSION}, LoggerOptions(false, true));
     return *logger;
 }
 
