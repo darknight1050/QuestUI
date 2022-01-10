@@ -268,6 +268,20 @@ namespace QuestUI::BeatSaberUI {
     // https://github.com/monkeymanboy/BeatSaberMarkupLanguage/blob/master/BeatSaberMarkupLanguage/Tags/ModifierContainerTag.cs
     UnityEngine::UI::VerticalLayoutGroup* CreateModifierContainer(UnityEngine::Transform* parent);
     
+    UnityEngine::UI::Toggle* CreateModifierButton(UnityEngine::Transform* parent, std::u16string_view buttonText, bool currentValue, UnityEngine::Sprite* iconSprite, std::function<void(bool)> const& onClick = nullptr, UnityEngine::Vector2 anchoredPosition = {0,0});
+
+    inline UnityEngine::UI::Toggle* CreateModifierButton(UnityEngine::Transform* parent, std::u16string_view buttonText, bool currentValue, std::function<void(bool)> const& onClick = nullptr, UnityEngine::Vector2 anchoredPosition = {0,0}) {
+        return CreateModifierButton(parent, buttonText, currentValue, nullptr, onClick, anchoredPosition);
+    }
+
+    inline UnityEngine::UI::Toggle* CreateModifierButton(UnityEngine::Transform* parent, std::string_view buttonText, bool currentValue, std::function<void(bool)> const& onClick = nullptr, UnityEngine::Vector2 anchoredPosition = {0,0}) {
+        return CreateModifierButton(parent, to_utf16(buttonText), currentValue, nullptr, onClick, anchoredPosition);
+    }
+
+    inline UnityEngine::UI::Toggle* CreateModifierButton(UnityEngine::Transform* parent, std::string_view buttonText, bool currentValue, UnityEngine::Sprite* iconSprite, std::function<void(bool)> const& onClick = nullptr, UnityEngine::Vector2 anchoredPosition = {0,0}) {
+        return CreateModifierButton(parent, to_utf16(buttonText), currentValue, iconSprite, onClick, anchoredPosition);
+    }
+
     UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::u16string_view text, std::function<void(bool)> onToggle = nullptr);
     inline UnityEngine::UI::Toggle* CreateToggle(UnityEngine::Transform* parent, std::string_view text, std::function<void(bool)> onToggle = nullptr)
     { return CreateToggle(parent, to_utf16(text), onToggle); }

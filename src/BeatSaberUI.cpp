@@ -510,6 +510,67 @@ namespace QuestUI::BeatSaberUI {
         return CreateUIButton(parent, buttonText, DEFAULT_BUTTONTEMPLATE, anchoredPosition, sizeDelta, onClick);
     }
 
+
+    Toggle *QuestUI::CreateModifierButton(UnityEngine::Transform *parent, std::u16string_view buttonText, bool currentValue,
+                                        UnityEngine::Sprite *iconSprite, std::function<void(bool)> const &onClick,
+                                        UnityEngine::Vector2 anchoredPosition) {
+    static WeakPtrGO <GameplayModifierToggle> toggleTemplate;
+    if (!toggleTemplate)
+        toggleTemplate = QuestUI::ArrayUtil::First(Resources::FindObjectsOfTypeAll<GameplayModifierToggle *>(),
+                                                    [](GameplayModifierToggle * x) { return csstrtostr(x->get_name()) == u"InstaFail"; });
+
+        GameplayModifierToggle *baseModifier = Object::Instantiate((GameplayModifierToggle *) toggleTemplate, parent,
+                                                                false);
+        static auto baseModifierName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BSMLModifier");
+        baseModifier->set_name(baseModifierName);
+
+        getLogger().debug("active false");
+        GameObject *gameObject = baseModifier->get_gameObject();
+        gameObject->SetActive(false);
+
+        Object::Destroy(baseModifier);
+        Object::Destroy(gameObject->GetComponent<HMUI::HoverTextSetter *>());
+        Object::Destroy(gameObject->get_transform()->Find(il2cpp_utils::newcsstr("Multiplier"))->get_gameObject());
+
+        getLogger().debug("name text ");
+        GameObject *nameText = gameObject->get_transform()->Find(il2cpp_utils::newcsstr("Name"))->get_gameObject();
+        TMPro::TextMeshProUGUI *text = nameText->GetComponent<TMPro::TextMeshProUGUI *>();
+        text->set_text(il2cpp_utils::newcsstr(buttonText));
+
+        auto *localizer = gameObject->GetComponentInChildren<Polyglot::LocalizedTextMeshProUGUI *>();
+        if (localizer != nullptr)
+            GameObject::Destroy(localizer);
+
+        getLogger().debug("image find");
+        Image *image = gameObject->get_transform()->Find(il2cpp_utils::newcsstr("Icon"))->GetComponent<Image *>();
+
+        auto externalComponents = gameObject->AddComponent<ExternalComponents *>();
+        externalComponents->Add(text);
+
+        if (iconSprite) {
+            image->set_sprite(iconSprite);
+            externalComponents->Add(image);
+        } else {
+            Object::Destroy(image);
+        }
+
+        getLogger().debug("toggle magic");
+        auto toggle = gameObject->GetComponent<Toggle *>();
+        toggle->onValueChanged = Toggle::ToggleEvent::New_ctor();
+        toggle->set_interactable(true);
+        toggle->set_isOn(currentValue);
+        if (onClick)
+            toggle->onValueChanged->AddListener(MakeDelegate(UnityAction_1<bool>*, onClick));
+
+        getLogger().debug("anchor position");
+        auto *rectTransform = gameObject->GetComponent<RectTransform *>();
+        rectTransform->set_anchoredPosition(anchoredPosition);
+
+        gameObject->SetActive(true);
+
+        return toggle;
+    }
+
     QuestUI::ClickableImage* CreateClickableImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, std::function<void()> onClick)
     {
         static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIClickableImage");
