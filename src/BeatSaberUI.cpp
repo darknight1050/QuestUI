@@ -512,7 +512,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
 
-    Toggle *QuestUI::CreateModifierButton(UnityEngine::Transform *parent, std::u16string_view buttonText, bool currentValue,
+    Toggle * CreateModifierButton(UnityEngine::Transform *parent, std::u16string_view buttonText, bool currentValue,
                                         UnityEngine::Sprite *iconSprite, std::function<void(bool)> const &onClick,
                                         UnityEngine::Vector2 anchoredPosition) {
     static WeakPtrGO <GameplayModifierToggle> toggleTemplate;
