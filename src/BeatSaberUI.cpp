@@ -55,6 +55,7 @@
 #include "HMUI/TimeSlider.hpp"
 #include "HMUI/ColorGradientSlider.hpp"
 #include "HMUI/TextSegmentedControl.hpp"
+#include "HMUI/HoverTextSetter.hpp"
 
 #include "VRUIControls/VRGraphicRaycaster.hpp"
 #include "Polyglot/LocalizedTextMeshProUGUI.hpp"
@@ -524,7 +525,6 @@ namespace QuestUI::BeatSaberUI {
         static auto baseModifierName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BSMLModifier");
         baseModifier->set_name(baseModifierName);
 
-        getLogger().debug("active false");
         GameObject *gameObject = baseModifier->get_gameObject();
         gameObject->SetActive(false);
 
@@ -532,7 +532,7 @@ namespace QuestUI::BeatSaberUI {
         Object::Destroy(gameObject->GetComponent<HMUI::HoverTextSetter *>());
         Object::Destroy(gameObject->get_transform()->Find(il2cpp_utils::newcsstr("Multiplier"))->get_gameObject());
 
-        getLogger().debug("name text ");
+
         GameObject *nameText = gameObject->get_transform()->Find(il2cpp_utils::newcsstr("Name"))->get_gameObject();
         TMPro::TextMeshProUGUI *text = nameText->GetComponent<TMPro::TextMeshProUGUI *>();
         text->set_text(il2cpp_utils::newcsstr(buttonText));
@@ -541,7 +541,6 @@ namespace QuestUI::BeatSaberUI {
         if (localizer != nullptr)
             GameObject::Destroy(localizer);
 
-        getLogger().debug("image find");
         Image *image = gameObject->get_transform()->Find(il2cpp_utils::newcsstr("Icon"))->GetComponent<Image *>();
 
         auto externalComponents = gameObject->AddComponent<ExternalComponents *>();
@@ -554,7 +553,6 @@ namespace QuestUI::BeatSaberUI {
             Object::Destroy(image);
         }
 
-        getLogger().debug("toggle magic");
         auto toggle = gameObject->GetComponent<Toggle *>();
         toggle->onValueChanged = Toggle::ToggleEvent::New_ctor();
         toggle->set_interactable(true);
@@ -562,7 +560,6 @@ namespace QuestUI::BeatSaberUI {
         if (onClick)
             toggle->onValueChanged->AddListener(MakeDelegate(UnityAction_1<bool>*, onClick));
 
-        getLogger().debug("anchor position");
         auto *rectTransform = gameObject->GetComponent<RectTransform *>();
         rectTransform->set_anchoredPosition(anchoredPosition);
 
