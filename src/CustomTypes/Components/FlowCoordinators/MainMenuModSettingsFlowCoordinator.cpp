@@ -31,7 +31,7 @@ namespace QuestUI
             ProvideInitialViewControllers(placeholder, nullptr, nullptr, nullptr, nullptr);
         }
 
-        StartCoroutine(reinterpret_cast<System::Collections::IEnumerator*>(custom_types::Helpers::CoroutineHelper::New(EndOfFramePresentVC())));
+        StartCoroutine(custom_types::Helpers::CoroutineHelper::New(EndOfFramePresentVC()));
     }
 
     void MainMenuModSettingsFlowCoordinator::BackButtonWasPressed(HMUI::ViewController* topViewController) {

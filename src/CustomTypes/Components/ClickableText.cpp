@@ -1,4 +1,5 @@
 #include "CustomTypes/Components/ClickableText.hpp"
+#include "VRUIControls/VRPointer.hpp"
 
 DEFINE_TYPE(QuestUI, ClickableText);
 
@@ -15,6 +16,9 @@ namespace QuestUI
         isHighlighted = false;
         highlightColor = UnityEngine::Color(0.60f, 0.80f, 1.0f, 1.0f);
         defaultColor = UnityEngine::Color(1.0f, 1.0f, 1.0f, 1.0f);
+        buttonClickedSignal = nullptr;
+        hapticFeedbackController = nullptr;
+        hapticFeedbackPresetSO = nullptr;
 
         static auto base_ctor = il2cpp_utils::FindMethod(classof(HMUI::CurvedTextMeshPro*), ".ctor");
         if (base_ctor)
@@ -26,6 +30,7 @@ namespace QuestUI
     void ClickableText::OnPointerClick(EventSystems::PointerEventData* eventData)
     {
         set_isHighlighted(false);
+        if (buttonClickedSignal) buttonClickedSignal->Raise();
         onClickEvent.invoke(eventData);
     }
 
@@ -33,12 +38,19 @@ namespace QuestUI
     {
         set_isHighlighted(true);
         pointerEnterEvent.invoke(eventData);
+        Vibrate(!VRUIControls::VRPointer::_get__lastControllerUsedWasRight());
     }
 
     void ClickableText::OnPointerExit(EventSystems::PointerEventData* eventData)
     {
         set_isHighlighted(false);
         pointerExitEvent.invoke(eventData);
+    }
+
+    void ClickableText::Vibrate(bool left)
+    {
+        UnityEngine::XR::XRNode node = left ? UnityEngine::XR::XRNode::LeftHand : UnityEngine::XR::XRNode::RightHand;
+        if (hapticFeedbackController && hapticFeedbackPresetSO) hapticFeedbackController->PlayHapticFeedback(node, hapticFeedbackPresetSO);
     }
 
     void ClickableText::UpdateHighlight()

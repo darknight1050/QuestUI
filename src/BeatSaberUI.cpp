@@ -17,6 +17,8 @@
 #include "GlobalNamespace/ReleaseInfoViewController.hpp"
 #include "GlobalNamespace/ColorPickerButtonController.hpp"
 #include "GlobalNamespace/HSVPanelController.hpp"
+#include "GlobalNamespace/HapticFeedbackController.hpp"
+#include "GlobalNamespace/MenuShockwave.hpp"
 
 #include "UnityEngine/Canvas.hpp"
 #include "UnityEngine/CanvasGroup.hpp"
@@ -65,6 +67,8 @@
 #include "System/Action.hpp"
 #include "System/Collections/Generic/HashSet_1.hpp"
 
+#include "Libraries/HM/HMLib/VR/HapticPresetSO.hpp"
+
 #include "Zenject/DiContainer.hpp"
 
 #include "customlogger.hpp"
@@ -82,6 +86,9 @@ using namespace VRUIControls;
 using namespace Zenject;
 
 #define MakeDelegate(DelegateType, varName) (il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), varName))
+
+using HapticPresetSO = Libraries::HM::HMLib::VR::HapticPresetSO;
+static SafePtr<HapticPresetSO> hapticFeedbackPresetSO;
 
 namespace QuestUI::BeatSaberUI {
 
@@ -383,6 +390,22 @@ namespace QuestUI::BeatSaberUI {
         if (onClick)
             textMesh->get_onPointerClickEvent() += [onClick](auto _){ onClick(); };
 
+        auto menuShockWave = ArrayUtil::First(Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>());
+        auto buttonClickedSignal = ArrayUtil::Last(menuShockWave->dyn__buttonClickEvents());
+        textMesh->buttonClickedSignal = buttonClickedSignal;
+
+        if (!hapticFeedbackPresetSO)
+        {
+            hapticFeedbackPresetSO.emplace(UnityEngine::ScriptableObject::CreateInstance<HapticPresetSO*>());
+            hapticFeedbackPresetSO->duration = 0.02f;
+            hapticFeedbackPresetSO->strength = 1.0f;
+            hapticFeedbackPresetSO->frequency = 0.2f;
+        }
+
+        auto hapticFeedbackController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackController*>();
+        textMesh->hapticFeedbackController = hapticFeedbackController;
+        textMesh->hapticFeedbackPresetSO = (HapticPresetSO*)hapticFeedbackPresetSO;
+
         gameObj->SetActive(true);
         return textMesh;
     }
@@ -587,6 +610,23 @@ namespace QuestUI::BeatSaberUI {
 
         if (onClick)
             image->get_onPointerClickEvent() += [onClick](auto _){ onClick(); };
+        
+        auto menuShockWave = ArrayUtil::First(Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>());
+        auto buttonClickedSignal = ArrayUtil::Last(menuShockWave->dyn__buttonClickEvents());
+        image->buttonClickedSignal = buttonClickedSignal;
+
+        if (!hapticFeedbackPresetSO)
+        {
+            hapticFeedbackPresetSO.emplace(UnityEngine::ScriptableObject::CreateInstance<HapticPresetSO*>());
+            hapticFeedbackPresetSO->duration = 0.01f;
+            hapticFeedbackPresetSO->strength = 0.75f;
+            hapticFeedbackPresetSO->frequency = 0.5f;
+        }
+
+        auto hapticFeedbackController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackController*>();
+        image->hapticFeedbackController = hapticFeedbackController;
+        image->hapticFeedbackPresetSO = (HapticPresetSO*)hapticFeedbackPresetSO;
+
         return image;
     }
 
@@ -1085,7 +1125,7 @@ namespace QuestUI::BeatSaberUI {
         return fieldView;
     }
 
-    SimpleTextDropdown* CreateDropdownInternal(Transform* parent, std::u16string_view dropdownName, int selectedIndex, List<Il2CppString*>* values, std::function<void(SimpleTextDropdown*, int)> onValueChange)
+    SimpleTextDropdown* CreateDropdownInternal(Transform* parent, std::u16string_view dropdownName, int selectedIndex, List<StringW>* values, std::function<void(SimpleTextDropdown*, int)> onValueChange)
     {
         GameObject* gameObj = Object::Instantiate(dropdownListPrefab, parent, false);
         static auto name = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIDropdownList");
@@ -1106,7 +1146,7 @@ namespace QuestUI::BeatSaberUI {
         LayoutElement* layoutElement = gameObj->AddComponent<LayoutElement*>();
         layoutElement->set_preferredWidth(90.0f);
         layoutElement->set_preferredHeight(8.0f);
-        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<Il2CppString*>*>(values));
+        dropdown->SetTexts(reinterpret_cast<System::Collections::Generic::IReadOnlyList_1<StringW>*>(values));
         dropdown->SelectCellWithIdx(selectedIndex);
 
         if(onValueChange) {
@@ -1121,7 +1161,7 @@ namespace QuestUI::BeatSaberUI {
 
     SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::u16string_view currentValue, std::vector<std::u16string> values, std::function<void(std::u16string_view)> onValueChange)
     {
-        List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
+        List<StringW>* list = List<StringW>::New_ctor();
         int selectedIndex = 0;
         for (int i = 0; i < values.size(); i++){
             auto value = values[i];
@@ -1136,7 +1176,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     SimpleTextDropdown* CreateDropdown(Transform* parent, std::u16string_view dropdownName, std::string_view currentValue, std::vector<std::string> values, std::function<void(std::string_view)> onValueChange) {
-        List<Il2CppString*>* list = List<Il2CppString*>::New_ctor();
+        List<StringW>* list = List<StringW>::New_ctor();
         int selectedIndex = 0;
         for (int i = 0; i < values.size(); i++){
             auto value = values[i];
