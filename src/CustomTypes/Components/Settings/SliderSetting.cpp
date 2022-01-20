@@ -52,7 +52,7 @@ namespace QuestUI
 
     void SliderSetting::OnEnable()
     {
-        StartCoroutine(reinterpret_cast<System::Collections::IEnumerator*>(custom_types::Helpers::CoroutineHelper::New(SetTextOnEnable())));
+        StartCoroutine(custom_types::Helpers::CoroutineHelper::New(SetTextOnEnable()));
     }
 
     custom_types::Helpers::Coroutine SliderSetting::SetTextOnEnable()
