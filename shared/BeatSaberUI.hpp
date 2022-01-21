@@ -256,7 +256,7 @@ namespace QuestUI::BeatSaberUI {
 
     UnityEngine::Sprite* ArrayToSprite(ArrayW<uint8_t> bytes);
 
-    UnityEngine::Sprite* Base64ToSprite(std::string_view base64Str) {
+    static UnityEngine::Sprite* Base64ToSprite(std::string_view base64Str) {
 
         using base64     = cppcodec::base64_rfc4648;
 
