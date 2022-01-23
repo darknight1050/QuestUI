@@ -84,7 +84,7 @@ namespace QuestUI {
         static ComponentMap goComponentMap;
 
         friend class QuestUI::inner::WeakPtrGOComponent;
-        friend QuestUI::BeatSaber::ClearCache();
+        friend QuestUI::BeatSaberUI::ClearCache();
     };
 
     /// When the static game object is destroyed, assume all pointers associated will be set to null
