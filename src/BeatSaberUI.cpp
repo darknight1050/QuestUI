@@ -221,6 +221,7 @@ namespace QuestUI::BeatSaberUI {
         physicsRaycaster = nullptr;
         platformHelper = nullptr;
         diContainer = nullptr;
+        QuestUI::WeakPtrHolder::ComponentMap.clear();
     }
 
     GameObject* CreateCanvas() {
