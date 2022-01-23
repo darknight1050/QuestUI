@@ -41,6 +41,10 @@ DECLARE_CLASS_CODEGEN(QuestUI::inner, WeakPtrGOComponent, UnityEngine::MonoBehav
   void doDestroy();
 )
 
+namespace QuestUI::BeatSaberUI {
+    void ClearCache();
+}
+
 namespace QuestUI {
     template<class T, class U>
     concept pointer_type_match = std::is_pointer_v<T> && std::is_convertible_v<T, U>;
