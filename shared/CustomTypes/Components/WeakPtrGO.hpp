@@ -41,6 +41,10 @@ DECLARE_CLASS_CODEGEN(QuestUI::inner, WeakPtrGOComponent, UnityEngine::MonoBehav
   void doDestroy();
 )
 
+namespace QuestUI::BeatSaberUI {
+    void ClearCache();
+}
+
 namespace QuestUI {
     template<class T, class U>
     concept pointer_type_match = std::is_pointer_v<T> && std::is_convertible_v<T, U>;
@@ -84,6 +88,7 @@ namespace QuestUI {
         static ComponentMap goComponentMap;
 
         friend class QuestUI::inner::WeakPtrGOComponent;
+        friend void QuestUI::BeatSaberUI::ClearCache();
     };
 
     /// When the static game object is destroyed, assume all pointers associated will be set to null
