@@ -654,11 +654,6 @@ namespace QuestUI::BeatSaberUI {
         return image;
     }
 
-    Sprite* Base64ToSprite(std::string_view base64)
-    {
-        ArrayW<uint8_t> bytes = System::Convert::FromBase64String(il2cpp_utils::newcsstr(base64));
-        return ArrayToSprite(bytes);
-    }
 
     Sprite* FileToSprite(std::string_view filePath)
     {

@@ -45,6 +45,8 @@
 
 #include "VRUIControls/PhysicsRaycasterWithCache.hpp"
 
+#include <cppcodec/base64_rfc4648.hpp>
+
 namespace QuestUI::BeatSaberUI {
 
     GlobalNamespace::MainFlowCoordinator* GetMainFlowCoordinator();
@@ -246,11 +248,6 @@ namespace QuestUI::BeatSaberUI {
     
     HMUI::ImageView* CreateImage(UnityEngine::Transform* parent, UnityEngine::Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta);
 
-    UnityEngine::Sprite* Base64ToSprite(std::string_view base64);   
-    inline UnityEngine::Sprite* Base64ToSprite(std::string_view base64, int width, int height)
-    { return Base64ToSprite(base64); }
-
-
     UnityEngine::Sprite* FileToSprite(std::string_view filePath);
     inline UnityEngine::Sprite* FileToSprite(std::string_view filePath, int width, int height)
     { return FileToSprite(filePath); }
@@ -258,6 +255,20 @@ namespace QuestUI::BeatSaberUI {
     UnityEngine::Sprite* VectorToSprite(std::vector<uint8_t> bytes);
 
     UnityEngine::Sprite* ArrayToSprite(ArrayW<uint8_t> bytes);
+
+    static UnityEngine::Sprite* Base64ToSprite(std::string_view base64Str) {
+
+        using base64     = cppcodec::base64_rfc4648;
+
+        ArrayW<uint8_t> bytes(base64::decoded_max_size(base64Str.size()));
+
+        base64::decode(bytes.begin(), bytes.size(), base64Str.data(), base64Str.size());
+
+        return ArrayToSprite(bytes);
+    }
+
+    inline UnityEngine::Sprite* Base64ToSprite(std::string_view base64, int width, int height)
+    { return Base64ToSprite(base64); }
 
     UnityEngine::UI::GridLayoutGroup* CreateGridLayoutGroup(UnityEngine::Transform* parent);
 
