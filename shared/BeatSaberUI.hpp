@@ -45,7 +45,7 @@
 
 #include "VRUIControls/PhysicsRaycasterWithCache.hpp"
 
-#include <cppcodec/base64_rfc4648.hpp>
+#include <base64_rfc4648.hpp>
 
 namespace QuestUI::BeatSaberUI {
 
