@@ -38,7 +38,7 @@ target_include_directories(${COMPILE_ID} PRIVATE ${INCLUDE_DIR})
 # add shared dir as include dir
 target_include_directories(${COMPILE_ID} PUBLIC ${SHARED_DIR})
 # add cppcodec folder as include folder so that it is properly cross compatible with mods that use this package
-target_include_directories(${COMPILE_ID} SYSTEM ${SHARED_DIR}/cppcodec)
+target_include_directories(${COMPILE_ID} PUBLIC SYSTEM ${SHARED_DIR}/cppcodec)
 # codegen includes 
 target_include_directories(${COMPILE_ID} PRIVATE ${EXTERN_DIR}/includes/${CODEGEN_ID}/include)
 
