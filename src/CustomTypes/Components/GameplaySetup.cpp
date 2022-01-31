@@ -78,7 +78,7 @@ namespace QuestUI
         vertical->get_gameObject()->SetActive(false);
         auto horizontal = BeatSaberUI::CreateHorizontalLayoutGroup(vertical->get_transform());
         horizontal->set_childForceExpandWidth(true);
-        segmentedController = BeatSaberUI::CreateTextSegmentedControl(horizontal->get_transform(), {0, 0}, {80, 5.5}, {}, std::bind(&GameplaySetup::ChooseModSegment, this, std::placeholders::_1));
+        segmentedController = BeatSaberUI::CreateTextSegmentedControl(horizontal->get_transform(), {0, 0}, {80, 5.5}, ArrayW<StringW>(static_cast<il2cpp_array_size_t>(0)), std::bind(&GameplaySetup::ChooseModSegment, this, std::placeholders::_1));
         segmentedController->get_gameObject()->GetComponent<UnityEngine::UI::HorizontalLayoutGroup*>()->set_childForceExpandWidth(true);
         float buttonSize = 8.0f;
         auto left = BeatSaberUI::CreateUIButton(horizontal->get_transform(), "", "SettingsButton", UnityEngine::Vector2(0, 0), UnityEngine::Vector2(buttonSize, buttonSize), [this] { MoveModMenus(-2); });
@@ -150,16 +150,11 @@ namespace QuestUI
 
     void GameplaySetup::OnDisable()
     {
-        getLogger().info("OnDisable");
         moddedController->segmentedControl->SelectCellWithNumber(0);
-        getLogger().info("Selected Cell");
         SwitchGameplayTab(0);
-        getLogger().info("Switched Tab");
         moddedController->get_gameObject()->SetActive(false);
-        getLogger().info("SetActive false");
         if (currentMenu && currentMenu->gameObject) {
             currentMenu->gameObject->SetActive(false);
-            getLogger().info("SetActive false 2");
         }
     }
 
