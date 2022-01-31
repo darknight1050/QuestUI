@@ -97,9 +97,9 @@ MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsView
         if(GetModsCount() > 0) {
             UnityEngine::UI::Button* avatarButton = self->settingsButton;
             UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
-            static auto modSettingsStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Mod Settings");
+            static ConstString modSettingsStr("Mod Settings");
             button->set_name(modSettingsStr);
-            static auto wrapperStr = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Wrapper");
+            static ConstString wrapperStr("Wrapper");
             UnityEngine::Transform* AvatarParent = self->get_transform()->Find(wrapperStr);
             button->get_transform()->SetParent(AvatarParent, false);
             button->get_transform()->SetAsFirstSibling();
@@ -109,9 +109,9 @@ MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsView
 
             button->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(modSettingsStr);
             HMUI::ButtonSpriteSwap* spriteSwap = button->get_gameObject()->GetComponent<HMUI::ButtonSpriteSwap*>();
-            spriteSwap->normalStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Normal, 256, 256);
+            spriteSwap->normalStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Normal);
             spriteSwap->disabledStateSprite = spriteSwap->normalStateSprite;
-            spriteSwap->highlightStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Highlight, 256, 256);
+            spriteSwap->highlightStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Highlight);
             spriteSwap->pressedStateSprite = spriteSwap->highlightStateSprite;
         }
     }
@@ -152,7 +152,7 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespac
     /*
 	if (newViewController->Equals(self->howToPlayViewController))
 	{
-        static auto LABEL_HOW_TO_PLAY = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("LABEL_HOW_TO_PLAY");
+        static ConstString LABEL_HOW_TO_PLAY("LABEL_HOW_TO_PLAY");
         self->SetTitle(Polyglot::Localization::Get(LABEL_HOW_TO_PLAY), animationType);
 		self->SetBottomScreenViewController(self->playerStatisticsViewController, animationType);
         self->set_showBackButton(true);
@@ -162,19 +162,19 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespac
 
 	if (newViewController->Equals(self->playerOptionsViewController))
 	{
-        static auto BUTTON_PLAYER_OPTIONS = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BUTTON_PLAYER_OPTIONS");
+        static ConstString BUTTON_PLAYER_OPTIONS("BUTTON_PLAYER_OPTIONS");
         self->SetTitle(Polyglot::Localization::Get(BUTTON_PLAYER_OPTIONS), animationType);
         self->set_showBackButton(true);
 		return;
 	}
 	if (newViewController->Equals(self->optionsViewController))
 	{
-        static auto LABEL_OPTIONS = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("LABEL_OPTIONS");
+        static ConstString LABEL_OPTIONS("LABEL_OPTIONS");
         self->SetTitle(Polyglot::Localization::Get(LABEL_OPTIONS), animationType);
         self->set_showBackButton(true);
 		return;
 	}
-	self->SetTitle(il2cpp_utils::newcsstr(""), animationType);
+	self->SetTitle("", animationType);
     self->set_showBackButton(false);
 }
 
@@ -182,8 +182,8 @@ MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneMan
     SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
     BeatSaberUI::ClearCache();
     if(prevScene.IsValid() && nextScene.IsValid()) {
-        std::string prevSceneName(to_utf8(csstrtostr(prevScene.get_name())));
-        std::string nextSceneName(to_utf8(csstrtostr(nextScene.get_name())));
+        std::string prevSceneName(prevScene.get_name());
+        std::string nextSceneName(nextScene.get_name());
         getLogger().info("Scene change from %s to %s", prevSceneName.c_str(), nextSceneName.c_str());
         static bool hasInited = false;
         if(prevSceneName == "QuestInit"){
@@ -195,11 +195,11 @@ MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneMan
         }
     } else {
         if(prevScene.IsValid()) {
-            std::string prevSceneName(to_utf8(csstrtostr(prevScene.get_name())));
+            std::string prevSceneName(prevScene.get_name());
             getLogger().info("Scene change from %s to null", prevSceneName.c_str());
         } 
         if(nextScene.IsValid()) {
-            std::string nextSceneName(to_utf8(csstrtostr(nextScene.get_name())));
+            std::string nextSceneName(nextScene.get_name());
             getLogger().info("Scene change from null to %s", nextSceneName.c_str());
         }
     }

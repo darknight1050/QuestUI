@@ -41,7 +41,7 @@ namespace QuestUI::GameplaySetupMenuTabs {
     void GameplaySetupMenu::CreateObject(UnityEngine::Transform* parent)
     {
         // if already made, return the made component
-        static auto menuName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIGameplaySetupMenu");
+        static ConstString menuName("QuestUIGameplaySetupMenu");
         gameObject = UnityEngine::GameObject::New_ctor(menuName);
         gameObject->get_transform()->SetParent(parent, false);
         if (il2cpp_type) // component type

@@ -64,15 +64,15 @@ namespace QuestUI
         co_return;
     }
 
-    Il2CppString* SliderSetting::TextForValue(float value)
+    StringW SliderSetting::TextForValue(float value)
     {
         if (this->FormatString)
-            return il2cpp_utils::newcsstr(this->FormatString(value));
+            return this->FormatString(value);
 
         if (isInt)
-            return il2cpp_utils::newcsstr(string_format("%d", (int)round(value)));
+            return string_format("%d", (int)round(value));
         else
-            return il2cpp_utils::newcsstr(string_format("%.2f", value));
+            return string_format("%.2f", value);
     }
 
     void SliderSetting::OnChange(HMUI::RangeValuesTextSlider* _, float val)

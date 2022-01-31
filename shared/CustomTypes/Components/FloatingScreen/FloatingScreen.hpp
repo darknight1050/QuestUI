@@ -34,5 +34,4 @@ DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreen, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_METHOD(UnityEngine::GameObject*, get_handle);
     DECLARE_INSTANCE_METHOD(int, get_side);
     DECLARE_INSTANCE_METHOD(void, set_side, int side);
-
 )

@@ -86,16 +86,16 @@ std::map<std::string, std::string> objectParentNames =  {
 	}
 };
 
-void QuestUI::Backgroundable::ApplyBackgroundWithAlpha(Il2CppString* name, float alpha) {
+void QuestUI::Backgroundable::ApplyBackgroundWithAlpha(StringW name, float alpha) {
 	
-    std::string stringName = to_utf8(csstrtostr(name));
-    HMUI::ImageView* search = ArrayUtil::Last(UnityEngine::Resources::FindObjectsOfTypeAll<HMUI::ImageView*>(), [&stringName](HMUI::ImageView* x){ 
+    std::string stringName(name);
+    HMUI::ImageView* search = UnityEngine::Resources::FindObjectsOfTypeAll<HMUI::ImageView*>().Last([&stringName](HMUI::ImageView* x){ 
         UnityEngine::Sprite* sprite = x->get_sprite();
-        if(sprite && to_utf8(csstrtostr(sprite->get_name())) != backgrounds[stringName])
+        if(sprite && sprite->get_name() != backgrounds[stringName])
             return false;
-		if(sprite && to_utf8(csstrtostr(x->get_transform()->get_parent()->get_name())) != objectParentNames[stringName])
+		if(sprite && x->get_transform()->get_parent()->get_name() != objectParentNames[stringName])
             return false;
-        return to_utf8(csstrtostr(x->get_name())) == objectNames[stringName]; 
+        return x->get_name() == objectNames[stringName];
     });
     if(!search) {
 		getLogger().error("Couldn't find background: %s", stringName.c_str());
@@ -137,6 +137,6 @@ void QuestUI::Backgroundable::ApplyBackgroundWithAlpha(Il2CppString* name, float
 	}
 }
 
-void QuestUI::Backgroundable::ApplyBackground(Il2CppString* name) {
+void QuestUI::Backgroundable::ApplyBackground(StringW name) {
     ApplyBackgroundWithAlpha(name, 0.5f);
 }
