@@ -31,7 +31,7 @@ void QuestUI::ModSettingsFlowCoordinator::OnOpenModSettings(ModSettingsInfos::Mo
                 if(info.didActivateEvent)
                     info.viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<ViewController::DidActivateDelegate*>(classof(ViewController::DidActivateDelegate*), info.viewController, info.didActivateEvent));
             }
-            SetTitle(il2cpp_utils::newcsstr(info.title), ViewController::AnimationType::In);
+            SetTitle(info.title, ViewController::AnimationType::In);
             ReplaceTopViewController(info.viewController, this, this, nullptr, ViewController::AnimationType::In, ViewController::AnimationDirection::Horizontal);
             ActiveViewController = info.viewController;
             break;
@@ -53,7 +53,7 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
             info.viewController = nullptr;
             info.flowCoordinator = nullptr;
         }
-        static auto modSettingsName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Mod Settings");
+        static ConstString modSettingsName("Mod Settings");
         SetTitle(modSettingsName, ViewController::AnimationType::Out);
         showBackButton = true;
         if(!ModSettingsButtonsViewController)
@@ -66,7 +66,7 @@ void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool
 
 void QuestUI::ModSettingsFlowCoordinator::BackButtonWasPressed(ViewController* topViewController) {
     if (ActiveViewController != ModSettingsButtonsViewController) {
-        static auto modSettingsName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Mod Settings");
+        static ConstString modSettingsName("Mod Settings");
         SetTitle(modSettingsName, ViewController::AnimationType::Out);
         ReplaceTopViewController(ModSettingsButtonsViewController, this, this, nullptr, ViewController::AnimationType::Out, ViewController::AnimationDirection::Horizontal);
         ActiveViewController = ModSettingsButtonsViewController;

@@ -38,9 +38,9 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomListTableData, Il2CppTypeEnum
         CustomCellInfo(std::string text = "", std::string subText = "", UnityEngine::Sprite* icon = nullptr) : text(text), subText(subText), icon(icon) {};
         CustomCellInfo(std::string text, UnityEngine::Sprite* icon) : text(text), subText(""), icon(icon) {};
         
-        Il2CppString* get_text();
-        Il2CppString* get_subText();
-        Il2CppString* get_combinedText();
+        StringW get_text();
+        StringW get_subText();
+        StringW get_combinedText();
         UnityEngine::Sprite* get_icon();
     };
 
@@ -48,7 +48,7 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomListTableData, Il2CppTypeEnum
     DECLARE_INSTANCE_FIELD(GlobalNamespace::LevelPackCell*, levelPackTableCellInstance);
     DECLARE_INSTANCE_FIELD(GlobalNamespace::SimpleTextTableCell*, simpleTextTableCellInstance);
 
-    DECLARE_INSTANCE_FIELD(Il2CppString*, reuseIdentifier);
+    DECLARE_INSTANCE_FIELD(StringW, reuseIdentifier);
     DECLARE_INSTANCE_FIELD(float, cellSize);
     DECLARE_INSTANCE_FIELD(HMUI::TableView*, tableView);
     DECLARE_INSTANCE_FIELD(bool, expandCell);

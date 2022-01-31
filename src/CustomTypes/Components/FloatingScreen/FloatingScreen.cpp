@@ -58,7 +58,7 @@ void QuestUI::FloatingScreen::createHandle() {
         handle->get_transform()->set_localRotation(UnityEngine::Quaternion::get_identity());
 
         auto rend = handle->GetComponent<UnityEngine::MeshRenderer*>();
-        auto static searchName = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("Custom/SimpleLit");
+        static ConstString searchName("Custom/SimpleLit");
         auto mat = UnityEngine::Material::New_ctor(UnityEngine::Shader::Find(searchName));
         mat->set_color(UnityEngine::Color::get_white());
         rend->set_material(mat);

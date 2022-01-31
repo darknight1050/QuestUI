@@ -18,8 +18,8 @@
 DEFINE_TYPE(QuestUI, GameplaySetup);
 DEFINE_TYPE(QuestUI, GameplaySetupTabMB);
 
-static Il2CppString* BaseGameplaySetupWrapper_cs = nullptr;
-static Il2CppString* QuestuiGameplaySetupWrapper_cs = nullptr;
+static ConstString BaseGameplaySetupWrapper("BaseGameplaySetupWrapper");
+static ConstString QuestuiGameplaySetupWrapper("QuestuiGameplaySetupWrapper");
 
 extern Logger& getLogger();
 
@@ -40,7 +40,9 @@ namespace QuestUI
         auto canvas = BeatSaberUI::CreateCanvas();
         canvas->get_transform()->SetParent(get_transform(), false);
         auto controlRect = reinterpret_cast<UnityEngine::RectTransform*>(canvas->get_transform());
-        moddedController = BeatSaberUI::CreateTextSegmentedControl(controlRect, {0, 0}, {80, 5.5}, {u"vanilla", u"mods"}, std::bind(&GameplaySetup::SwitchGameplayTab, this, std::placeholders::_1));
+        ArrayW<StringW> options(2);
+        options[0] = "vanilla"; options[1] = "mods";
+        moddedController = BeatSaberUI::CreateTextSegmentedControl(controlRect, {0, 0}, {80, 5.5}, options, std::bind(&GameplaySetup::SwitchGameplayTab, this, std::placeholders::_1));
         auto layout = moddedController->get_gameObject()->AddComponent<UnityEngine::UI::LayoutElement*>();
         layout->set_preferredWidth(100);
 
@@ -50,8 +52,7 @@ namespace QuestUI
         
         // all the base game stuff will be on this
         auto baseGameRect = UnityEngine::GameObject::New_ctor()->AddComponent<UnityEngine::RectTransform*>();
-        if (!BaseGameplaySetupWrapper_cs) BaseGameplaySetupWrapper_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BaseGameplaySetupWrapper");
-        baseGameRect->get_gameObject()->set_name(BaseGameplaySetupWrapper_cs);
+        baseGameRect->get_gameObject()->set_name(BaseGameplaySetupWrapper);
         baseGameRect->SetParent(get_transform(), false);
         get_transform()->GetChild(0)->SetParent(baseGameRect, true);
         auto self = GetComponent<GlobalNamespace::GameplaySetupViewController*>();
@@ -71,8 +72,7 @@ namespace QuestUI
         
         auto customRect = vertical->get_rectTransform();
         
-        if (!QuestuiGameplaySetupWrapper_cs) QuestuiGameplaySetupWrapper_cs = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("QuestUIGameplaySetupWrapper");
-        customRect->get_gameObject()->set_name(QuestuiGameplaySetupWrapper_cs);
+        customRect->get_gameObject()->set_name(QuestuiGameplaySetupWrapper);
         customRect->get_transform()->SetParent(get_transform(), false);
         controlRect->SetAsFirstSibling();
         vertical->get_gameObject()->SetActive(false);
@@ -141,7 +141,7 @@ namespace QuestUI
                 }
             }
 
-            if (!currentMenu->gameObject) currentMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
+            if (!currentMenu->gameObject) currentMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper));
             currentMenu->Activate();
         } else {
             moddedController->get_gameObject()->SetActive(false);
@@ -179,8 +179,8 @@ namespace QuestUI
 
     void GameplaySetup::SwitchGameplayTab(int idx)
     {
-        get_transform()->Find(BaseGameplaySetupWrapper_cs)->get_gameObject()->SetActive(idx == 0);
-        get_transform()->Find(QuestuiGameplaySetupWrapper_cs)->get_gameObject()->SetActive(idx == 1);
+        get_transform()->Find(BaseGameplaySetupWrapper)->get_gameObject()->SetActive(idx == 0);
+        get_transform()->Find(QuestuiGameplaySetupWrapper)->get_gameObject()->SetActive(idx == 1);
     }
 
     std::vector<int> GameplaySetup::get_slice()
@@ -212,11 +212,11 @@ namespace QuestUI
     {
         auto slice = get_slice();
 
-        std::vector<std::u16string> texts;
+        ArrayW<StringW> texts(slice.size());
 
-        for (auto i : slice)
+        for (int i = 0; i < slice.size(); i++)
         {
-            texts.push_back(to_utf16(currentTabs[i]->title));
+            texts[i] = currentTabs[slice[i]]->title;
         }
 
         segmentedController->set_texts(texts);
@@ -237,7 +237,7 @@ namespace QuestUI
             }
         }
 
-        if (!nextMenu->gameObject) nextMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper_cs));
+        if (!nextMenu->gameObject) nextMenu->CreateObject(get_transform()->Find(QuestuiGameplaySetupWrapper));
         nextMenu->Activate();
         currentMenu = nextMenu;
     }

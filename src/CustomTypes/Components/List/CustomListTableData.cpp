@@ -24,7 +24,7 @@ namespace QuestUI
         INVOKE_CTOR();
         set_listStyle(CustomListTableData::ListStyle::List);
         expandCell = false;
-        reuseIdentifier = il2cpp_utils::newcsstr("QuestUIListTableCell");
+        reuseIdentifier = StringW("QuestUIListTableCell");
         tableView = nullptr;
     }
     
@@ -61,7 +61,7 @@ namespace QuestUI
         if (!tableCell)
         {
             if (!songListTableCellInstance)
-                songListTableCellInstance = ArrayUtil::First(Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelListTableCell*>(), [](auto x){ return to_utf8(csstrtostr(x->get_name())) == "LevelListTableCell"; });
+                songListTableCellInstance = Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelListTableCell*>().First([](auto x){ return x->get_name() == "LevelListTableCell"; });
 
             tableCell = Instantiate(songListTableCellInstance);
         }
@@ -79,7 +79,7 @@ namespace QuestUI
         if (!tableCell)
         {
             if (!levelPackTableCellInstance)
-                levelPackTableCellInstance = ArrayUtil::First(Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelPackCell*>(), [](auto x){ return to_utf8(csstrtostr(x->get_name())) == "AnnotatedBeatmapLevelCollectionCell"; });
+                levelPackTableCellInstance = Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelPackCell*>().First([](auto x){ return x->get_name() == "AnnotatedBeatmapLevelCollectionCell"; });
             tableCell = InstantiateBoxTableCell(levelPackTableCellInstance);
         }
         tableCell->set_reuseIdentifier(reuseIdentifier);
@@ -111,7 +111,7 @@ namespace QuestUI
         if (!tableCell)
         {
             if (!simpleTextTableCellInstance)
-                simpleTextTableCellInstance = ArrayUtil::First(Resources::FindObjectsOfTypeAll<GlobalNamespace::SimpleTextTableCell*>(), [](auto x){ return to_utf8(csstrtostr(x->get_name())) == "SimpleTextTableCell"; });
+                simpleTextTableCellInstance = Resources::FindObjectsOfTypeAll<GlobalNamespace::SimpleTextTableCell*>().First([](auto x){ return x->get_name() == "SimpleTextTableCell"; });
             tableCell = Instantiate(simpleTextTableCellInstance);
         }
 
@@ -131,7 +131,7 @@ namespace QuestUI
                 tableCell->songBpmText->get_gameObject()->SetActive(false);
                 tableCell->songDurationText->get_gameObject()->SetActive(false);
                 tableCell->favoritesBadgeImage->get_gameObject()->SetActive(false);
-                static auto BpmIcon = il2cpp_utils::newcsstr<il2cpp_utils::CreationType::Manual>("BpmIcon");
+                static ConstString BpmIcon("BpmIcon");
                 tableCell->get_transform()->Find(BpmIcon)->get_gameObject()->SetActive(false);
                 
                 if (expandCell)
@@ -177,19 +177,19 @@ namespace QuestUI
         return data.size();
     }
 
-    Il2CppString* CustomListTableData::CustomCellInfo::get_text() 
+    StringW CustomListTableData::CustomCellInfo::get_text() 
     { 
-        return il2cpp_utils::newcsstr(text); 
+        return text; 
     }
 
-    Il2CppString* CustomListTableData::CustomCellInfo::get_subText() 
+    StringW CustomListTableData::CustomCellInfo::get_subText() 
     { 
-        return il2cpp_utils::newcsstr(subText); 
+        return subText; 
     }
 
-    Il2CppString* CustomListTableData::CustomCellInfo::get_combinedText()
+    StringW CustomListTableData::CustomCellInfo::get_combinedText()
     {
-        return il2cpp_utils::newcsstr(string_format("%s\n%s", text.c_str(), subText.c_str())); 
+        return string_format("%s\n%s", text.c_str(), subText.c_str()); 
     }
 
     UnityEngine::Sprite* CustomListTableData::CustomCellInfo::get_icon()

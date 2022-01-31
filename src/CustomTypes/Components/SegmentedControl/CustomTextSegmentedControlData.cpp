@@ -21,6 +21,7 @@ namespace QuestUI
     void CustomTextSegmentedControlData::ctor()
     {
         INVOKE_CTOR();
+        texts = ArrayW<StringW>(static_cast<il2cpp_array_size_t>(0));
     }
 
     void CustomTextSegmentedControlData::dtor()
@@ -30,13 +31,13 @@ namespace QuestUI
 
     int CustomTextSegmentedControlData::NumberOfCells()
     {
-        return texts.size();
+        return texts.Length();
     }
 
     HMUI::SegmentedControlCell* CustomTextSegmentedControlData::CellForCellNumber(int idx)
     {
         HMUI::TextSegmentedControlCell* result = nullptr;
-        if (texts.size() == 1)
+        if (texts.Length() == 1)
         {
             result = reinterpret_cast<HMUI::TextSegmentedControlCell*>(InstantiateCell(singleCellPrefab->get_gameObject()));
         }
@@ -44,7 +45,7 @@ namespace QuestUI
         {
             result = reinterpret_cast<HMUI::TextSegmentedControlCell*>(InstantiateCell(firstCellPrefab->get_gameObject()));
         } 
-        else if (idx == texts.size() - 1)
+        else if (idx == texts.Length() - 1)
         {
             result = reinterpret_cast<HMUI::TextSegmentedControlCell*>(InstantiateCell(lastCellPrefab->get_gameObject()));
         }
@@ -54,7 +55,7 @@ namespace QuestUI
         }
 
         result->set_fontSize(fontSize);
-        result->set_text(il2cpp_utils::newcsstr(texts[idx]));
+        result->set_text(texts[idx]);
         result->set_hideBackgroundImage(hideCellBackground);
 
         if (overrideCellSize)
@@ -64,21 +65,18 @@ namespace QuestUI
         return result;
     }
 
-    void CustomTextSegmentedControlData::set_texts(std::vector<std::u16string> list)
-    {
-        texts = std::move(list);
-        if (segmentedControl) segmentedControl->ReloadData();
-    }
-
-    void CustomTextSegmentedControlData::set_texts(std::initializer_list<std::u16string> list)
+    void CustomTextSegmentedControlData::set_texts(ArrayW<StringW> list)
     {
         texts = list;
         if (segmentedControl) segmentedControl->ReloadData();
     }
 
-    void CustomTextSegmentedControlData::add_text(std::u16string_view addedText)
+    void CustomTextSegmentedControlData::add_text(StringW addedText)
     {
-        texts.emplace_back(addedText);
+        int len = texts.Length();
+        ArrayW<StringW> newtexts(len);
+        texts = newtexts;
+        texts[len] = addedText;
         if (segmentedControl) segmentedControl->ReloadData();
     }
 

@@ -25,7 +25,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, SliderSetting, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_METHOD(void, Update);
     DECLARE_INSTANCE_METHOD(void, OnEnable);
 
-    DECLARE_INSTANCE_METHOD(Il2CppString*, TextForValue, float value);
+    DECLARE_INSTANCE_METHOD(StringW, TextForValue, float value);
     DECLARE_INSTANCE_METHOD(void, OnChange, HMUI::RangeValuesTextSlider* _, float val);
 
     public:
