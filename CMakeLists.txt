@@ -58,7 +58,7 @@ add_custom_command(TARGET ${COMPILE_ID} POST_BUILD
 
 add_custom_command(TARGET ${COMPILE_ID} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E rename lib${COMPILE_ID}.so debug/lib${COMPILE_ID}.so
-            COMMENT "Rename the lib to debug_ since it has debug symbols"
+            COMMENT "Move and rename the debug lib to debug folder since it has debug symbols"
             )
 
 add_custom_command(TARGET ${COMPILE_ID} POST_BUILD
