@@ -38,7 +38,7 @@ target_include_directories(${COMPILE_ID} PRIVATE ${INCLUDE_DIR})
 # add shared dir as include dir
 target_include_directories(${COMPILE_ID} PUBLIC ${SHARED_DIR})
 # add cppcodec folder as include folder so that it is properly cross compatible with mods that use this package
-target_include_directories(${COMPILE_ID} PRIVATE SYSTEM ${SHARED_DIR}/cppcodec)
+target_include_directories(${COMPILE_ID} PUBLIC SYSTEM ${SHARED_DIR}/cppcodec)
 # codegen includes 
 target_include_directories(${COMPILE_ID} PRIVATE ${EXTERN_DIR}/includes/${CODEGEN_ID}/include)
 
@@ -58,7 +58,7 @@ add_custom_command(TARGET ${COMPILE_ID} POST_BUILD
 
 add_custom_command(TARGET ${COMPILE_ID} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E rename lib${COMPILE_ID}.so debug/lib${COMPILE_ID}.so
-            COMMENT "Rename the lib to debug_ since it has debug symbols"
+            COMMENT "Move and rename the debug lib to debug folder since it has debug symbols"
             )
 
 add_custom_command(TARGET ${COMPILE_ID} POST_BUILD
