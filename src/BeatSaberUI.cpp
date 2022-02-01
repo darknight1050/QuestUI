@@ -791,7 +791,7 @@ namespace QuestUI::BeatSaberUI {
         static WeakPtrGO<GameObject> toggleCopy;
         if (!toggleCopy) {
             auto foundToggle = Resources::FindObjectsOfTypeAll<Toggle*>().FirstOrDefault([](auto x) { return x->get_transform()->get_parent()->get_gameObject()->get_name() == "Fullscreen"; });
-            toggleCopy = foundToggle ? foundToggle->get_gameObject() : nullptr;
+            toggleCopy = foundToggle ? foundToggle->get_transform()->get_parent()->get_gameObject() : nullptr;
         }
 
 
