@@ -703,7 +703,7 @@ namespace QuestUI::BeatSaberUI {
     /// @param values the possible string values that can be displayed
     /// @param onValueChange callback ran when the value changes
     /// @return the created dropdown
-    HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, StringW dropdownName, StringW currentValue, ArrayW<StringW> values, std::function<void(StringW)> onValueChange = nullptr);
+    HMUI::SimpleTextDropdown* CreateDropdown(UnityEngine::Transform* parent, StringW dropdownName, StringW currentValue, std::vector<StringW> values, std::function<void(StringW)> onValueChange = nullptr);
 
     /// @brief Overload for creating a dropdown menu that allows you to pass in anything that has a ->get_transform() method for the parent
     /// @param parent what to parent it to
@@ -714,7 +714,7 @@ namespace QuestUI::BeatSaberUI {
     /// @return the created dropdown
     template<HasTransform T>
     requires(!std::is_convertible_v<T, UnityEngine::Transform*>)
-    inline HMUI::SimpleTextDropdown* CreateDropdown(T parent, StringW dropdownName, StringW currentValue, ArrayW<StringW> values, std::function<void(StringW)> onValueChange = nullptr) {
+    inline HMUI::SimpleTextDropdown* CreateDropdown(T parent, StringW dropdownName, StringW currentValue, std::vector<StringW> values, std::function<void(StringW)> onValueChange = nullptr) {
         return CreateDropdown(parent->get_transform(), dropdownName, currentValue, values, onValueChange);
     }
 
