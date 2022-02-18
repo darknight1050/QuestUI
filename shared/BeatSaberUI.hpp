@@ -288,7 +288,7 @@ namespace QuestUI::BeatSaberUI {
     /// @param parent what to parent it to
     template<HasTransform T, typename ...TArgs>
     requires(!std::is_convertible_v<T, UnityEngine::Transform*>)
-    inline ClickableText* CreateUIButton(T parent, TArgs...args) {
+    inline UnityEngine::UI::Button* CreateUIButton(T parent, TArgs...args) {
         return CreateUIButton(parent->get_transform(), args...);
     }
 
@@ -312,7 +312,7 @@ namespace QuestUI::BeatSaberUI {
     /// @param parent what to parent it to
     template<HasTransform T, typename ...TArgs>
     requires(!std::is_convertible_v<T, UnityEngine::Transform*>)
-    inline ClickableText* CreateClickableImage(T parent, TArgs...args) {
+    inline ClickableImage* CreateClickableImage(T parent, TArgs...args) {
         return CreateClickableImage(parent->get_transform(), args...);
     }
 
