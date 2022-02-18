@@ -667,7 +667,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
 
-    Sprite* FileToSprite(StringW filePath)
+    Sprite* FileToSprite(std::string_view filePath)
     {
         std::ifstream instream(filePath, std::ios::in | std::ios::binary | std::ios::ate);
         unsigned long size = instream.tellg();
