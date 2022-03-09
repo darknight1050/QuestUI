@@ -1,6 +1,9 @@
 #pragma once
 #include "beatsaber-hook/shared/utils/utils.h"
 #include "beatsaber-hook/shared/utils/utils-functions.h"
+
+#include "cppcodec/base64_rfc4648.hpp"
+
 #include "ArrayUtil.hpp"
 
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
@@ -48,7 +51,6 @@
 #include <concepts>
 #include <type_traits>
 
-#include <base64_rfc4648.hpp>
 
 namespace QuestUI::BeatSaberUI {
 
