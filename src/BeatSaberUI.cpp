@@ -667,7 +667,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
 
-    Sprite* FileToSprite(StringW filePath)
+    Sprite* FileToSprite(std::string_view filePath)
     {
         std::ifstream instream(filePath, std::ios::in | std::ios::binary | std::ios::ate);
         unsigned long size = instream.tellg();
@@ -1167,7 +1167,7 @@ namespace QuestUI::BeatSaberUI {
         return dropdown;
     }
 
-    SimpleTextDropdown* CreateDropdown(Transform* parent, StringW dropdownName, StringW currentValue, ArrayW<StringW> values, std::function<void(StringW)> onValueChange)
+    SimpleTextDropdown* CreateDropdown(Transform* parent, StringW dropdownName, StringW currentValue, std::vector<StringW> values, std::function<void(StringW)> onValueChange)
     {
         List<StringW>* list = List<StringW>::New_ctor();
         int selectedIndex = 0;

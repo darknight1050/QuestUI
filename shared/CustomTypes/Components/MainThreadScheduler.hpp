@@ -10,11 +10,16 @@ DECLARE_CLASS_CODEGEN(QuestUI, MainThreadScheduler, UnityEngine::MonoBehaviour,
         static std::vector<std::function<void()>> scheduledMethods;
         static std::mutex scheduledMethodsMutex;
     public:
-
-    static void Schedule(std::function<void()> method) {
-        std::lock_guard<std::mutex> lock(scheduledMethodsMutex);
-        scheduledMethods.push_back(method);
-    }
+        static void Schedule(std::function<void()> method) {
+            using CurrentThreadIsMainThreadMethod = function_ptr_t<bool>;
+            static CurrentThreadIsMainThreadMethod currentThreadIsMainThread = reinterpret_cast<CurrentThreadIsMainThreadMethod>(il2cpp_functions::resolve_icall("UnityEngine.Object::CurrentThreadIsMainThread"));
+            if(currentThreadIsMainThread()) {
+                method();
+                return;
+            }
+            std::lock_guard<std::mutex> lock(scheduledMethodsMutex);
+            scheduledMethods.push_back(method);
+        }
     
     DECLARE_INSTANCE_METHOD(void, Update);
     
