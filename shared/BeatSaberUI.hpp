@@ -9,6 +9,7 @@
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
 #include "CustomTypes/Components/Settings/SliderSetting.hpp"
+#include "CustomTypes/Components/Settings/ColorSetting.hpp"
 #include "CustomTypes/Components/List/CustomListTableData.hpp"
 #include "CustomTypes/Components/SegmentedControl/CustomTextSegmentedControlData.hpp"
 #include "CustomTypes/Components/ModalColorPicker.hpp"
@@ -737,7 +738,7 @@ namespace QuestUI::BeatSaberUI {
     /// @param defaultColor the starting color
     /// @param onValueChange callback ran when the color is changed
     /// @return the created color picker object
-    UnityEngine::GameObject* CreateColorPicker(UnityEngine::Transform* parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr);
+    ColorSetting* CreateColorPicker(UnityEngine::Transform* parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onValueChange = nullptr);
     
     /// @brief Overload for creating a color picker that allows you to pass in anything that has a ->get_transform() method for the parent
     /// @param parent what to parent it to
@@ -747,7 +748,7 @@ namespace QuestUI::BeatSaberUI {
     /// @return the created color picker object
     template<HasTransform T>
     requires(!std::is_convertible_v<T, UnityEngine::Transform*>)
-    inline UnityEngine::GameObject* CreateColorPicker(T parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> onValueChange = nullptr) {
+    inline ColorSetting* CreateColorPicker(T parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onValueChange = nullptr) {
         return CreateColorPicker(parent->get_transform(), text, defaultColor, onValueChange);
     }
 

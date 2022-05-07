@@ -1215,78 +1215,66 @@ namespace QuestUI::BeatSaberUI {
         return gameObject;
     }
 
-    GameObject* CreateColorPicker(Transform* parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color, ColorChangeUIEventType)> onValueChange) {
-        // use QuestUI toggle as starting point to make positioning and sizing easier
-        auto fakeToggle = CreateToggle(parent, text);
-        auto gameObject = fakeToggle->get_transform()->get_parent()->get_gameObject();
-        Object::Destroy(fakeToggle->get_gameObject());
-        
-        // create element that gets toggled to contain the actual picker
-        static ConstString name("QuestUIColorPickerModal");
-        auto pickerModalGO = GameObject::New_ctor(name);
-        auto pickerModalGORect = pickerModalGO->AddComponent<RectTransform*>();
-        pickerModalGORect->set_anchorMin(UnityEngine::Vector2(1.0f, 1.0f));
-        pickerModalGORect->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
-        pickerModalGORect->set_sizeDelta(UnityEngine::Vector2(40.0f, 40.0f));
-        pickerModalGO->get_transform()->SetParent(parent, false);
-        pickerModalGO->SetActive(false);
+    ColorSetting* CreateColorPicker(Transform* parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onValueChange) {
+        auto modal = CreateColorPickerModal(parent, "QuestUIColorPickerModal", defaultColor, nullptr, nullptr, nullptr);
 
-        // initialize the color button that toggles the picker open
-        static WeakPtrGO<ColorPickerButtonController> buttonBase;
-        if (!buttonBase) {
-            buttonBase = Resources::FindObjectsOfTypeAll<ColorPickerButtonController *>().First(
-                                          [](ColorPickerButtonController *x) {
-                                              return x->get_name() == "ColorPickerButtonSecondary";
-                                          });
-        }
-        auto buttonGO = Object::Instantiate(buttonBase->get_gameObject(), gameObject->get_transform(), false);
-        static ConstString buttonGOName("QuestUIColorPickerButton");
-        buttonGO->set_name(buttonGOName);
-        auto buttonRect = buttonGO->GetComponent<RectTransform*>();
-        buttonRect->set_anchorMin(UnityEngine::Vector2(1.0f, 0.5f));
-        buttonRect->set_anchorMax(UnityEngine::Vector2(1.0f, 0.5f));
-        buttonRect->set_anchoredPosition(UnityEngine::Vector2(-1.0f, -0.5f));
-        buttonRect->set_pivot(UnityEngine::Vector2(1.0f, 0.5f));
+        auto colorImageBase = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Image*>(), [](Image* x) { return x->get_gameObject()->get_name() == "ColorImage" && x->get_sprite()->get_name() == "NoteCircle"; });
 
-        auto colorPickerButtonController = buttonGO->GetComponent<ColorPickerButtonController*>();
-        colorPickerButtonController->SetColor(defaultColor);
+        FormattedFloatListSettingsValueController* baseSetting = MonoBehaviour::Instantiate(ArrayUtil::First(Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>(), [](auto x) {
+            return x->get_name() == "VRRenderingScale";
+        }));
 
-        // initialize the picker itself
-        static WeakPtrGO<HSVPanelController> pickerBase;
-        if (!pickerBase) {
-            pickerBase = Resources::FindObjectsOfTypeAll<HSVPanelController *>().First(
-                                               [](HSVPanelController *x) {
-                                                   return x->get_name() == "HSVColorPicker";
-                                               });
-        }
-        auto pickerGO = Object::Instantiate(pickerBase->get_gameObject(), pickerModalGORect, false);
-        static ConstString pickerGOName("QuestUIColorPickerController");
-        pickerGO->set_name(pickerGOName);
-        auto hsvPanelController = pickerGO->GetComponent<HSVPanelController*>();
-        static ConstString searchName("ColorPickerButtonPrimary");
-        Object::Destroy(pickerGO->get_transform()->Find(searchName)->get_gameObject());
-        hsvPanelController->set_color(defaultColor);
-        auto pickerRect = pickerGO->GetComponent<UnityEngine::RectTransform*>();
-        pickerRect->set_pivot(UnityEngine::Vector2(0.25f, 0.77f));
-        pickerRect->set_localScale(UnityEngine::Vector3(0.75f, 0.75f, 0.75f));
+        auto go = baseSetting->get_gameObject();
+        go->SetActive(false);
+        MonoBehaviour::Destroy(baseSetting);
 
-        // event bindings
-        using DelegateType = System::Action_2<UnityEngine::Color, ColorChangeUIEventType>*;
-        hsvPanelController->add_colorDidChangeEvent(MakeDelegate(DelegateType,
-            ((std::function<void(UnityEngine::Color, ColorChangeUIEventType)>)[colorPickerButtonController, onValueChange](UnityEngine::Color color, ColorChangeUIEventType eventType) {
-                colorPickerButtonController->SetColor(color);
-                if(onValueChange)
-                    onValueChange(color, eventType);
-            })
-        ));
-        colorPickerButtonController->button->get_onClick()->AddListener(MakeDelegate(UnityAction*, 
-            (std::function<void()>)[pickerModalGO]() {
-                pickerModalGO->SetActive(!pickerModalGO->get_activeSelf());
-            }
-        ));
-        ExternalComponents* externalComponents = buttonGO->AddComponent<ExternalComponents*>();
-        externalComponents->Add(pickerModalGORect);
-        return buttonGO;
+        auto* colorSetting = go->AddComponent<ColorSetting*>();
+
+        auto* valuePick = reinterpret_cast<RectTransform *>(go->get_transform()->Find("ValuePicker"));
+        valuePick->set_sizeDelta({13, 0});
+
+        Button* decButton = valuePick->GetComponentsInChildren<Button*>().First();
+        decButton->set_enabled(false);
+        decButton->set_interactable(true);
+
+        GameObject::Destroy(decButton->get_transform()->Find("Icon")->get_gameObject());
+        GameObject::Destroy(valuePick->GetComponentsInChildren<TextMeshProUGUI*>().First()->get_gameObject());
+        colorSetting->editButton = valuePick->GetComponentsInChildren<Button*>().Last();
+
+        GameObject* nameText = go->get_transform()->Find("NameText")->get_gameObject();
+        auto* _text = nameText->GetComponent<TextMeshProUGUI*>();
+        _text->SetText(text);
+
+        auto* externalComponents = go->AddComponent<ExternalComponents*>();
+        externalComponents->Add(_text);
+        //        externalComponents.Add(localizedText);
+
+        go->GetComponent<LayoutElement*>()->set_preferredWidth(90);
+
+        Image* colorImage = Object::Instantiate(colorImageBase, valuePick, false);
+        auto* colorImageRT = reinterpret_cast<RectTransform *>(colorImage->get_gameObject()->get_transform());
+        colorImageRT->set_anchoredPosition({0,0});
+        colorImageRT->set_sizeDelta({5, 5});
+        colorImageRT->set_anchorMin({0.2f, 0.5f});
+        colorImageRT->set_anchorMax({0.2f, 0.5f});
+
+        colorSetting->colorImage = colorImage;
+
+        auto* icon = colorSetting->editButton->get_transform()->Find("Icon")->GetComponent<Image*>();
+        icon->set_name("EditIcon");
+        icon->set_sprite(GetEditIcon());
+        icon->get_rectTransform()->set_sizeDelta({4, 4});
+        colorSetting->set_interactable(true);
+
+        reinterpret_cast<RectTransform *>(colorSetting->editButton->get_transform())->set_anchorMin({0, 0});
+
+        colorSetting->Setup(modal, defaultColor, std::move(onValueChange), nullptr, nullptr);
+
+        go->get_transform()->SetParent(parent, false);
+
+        go->SetActive(true);
+
+        return colorSetting;
     }
 
     QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, StringW name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone, std::function<void()> onCancel, std::function<void(UnityEngine::Color)> onChange)
