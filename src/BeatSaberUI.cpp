@@ -1861,8 +1861,12 @@ namespace QuestUI::BeatSaberUI {
         return CreateTextSegmentedControl(parent, {0, 0}, {80, 10}, values, onCellWithIdxClicked);
     }
 
-        QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked)
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked)
     {
         return CreateTextSegmentedControl(parent, {0, 0}, {80, 10}, ArrayW<StringW>(static_cast<il2cpp_array_size_t>(0)), onCellWithIdxClicked);
+    }
+
+    QuestUI::LeaderboardComponent* CreateLeaderboard(UnityEngine::Transform* parent, UnityEngine::Vector3 position) {
+        return CreateLeaderboard(parent, position);
     }
 }

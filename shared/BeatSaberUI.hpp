@@ -14,6 +14,7 @@
 #include "CustomTypes/Components/ModalColorPicker.hpp"
 #include "CustomTypes/Components/ClickableText.hpp"
 #include "CustomTypes/Components/ClickableImage.hpp"
+#include "CustomTypes/Components/LeaderboardComponent.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
@@ -1073,5 +1074,14 @@ namespace QuestUI::BeatSaberUI {
     requires(!std::is_convertible_v<T, UnityEngine::Transform*>)
     inline QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(T parent, TArgs...args) {
         return CreateTextSegmentedControl(parent->get_transform(), args...);
+    }
+
+    /// @brief Creates a LeaderboardTableView component for use with custom leaderboards with or without the use of LeaderboardCore.
+    /// @param parent What you parent the leaderboard to
+    /// @return The created Leaderboard component
+    template<HasTransform T, typename ...TArgs>
+    requires(!std::is_convertible_v<T, UnityEngine::Transform*>)
+    QuestUI::LeaderboardComponent* CreateLeaderboard(T parent, TArgs...args) {
+        return CreateLeaderboard(parent->get_transform(), args...);
     }
 }
