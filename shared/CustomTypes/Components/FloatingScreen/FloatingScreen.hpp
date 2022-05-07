@@ -15,8 +15,9 @@
 #include "UnityEngine/Color.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/RaycastHit.hpp"
+#include "HMUI/Screen.hpp"
 
-DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreen, UnityEngine::MonoBehaviour,
+DECLARE_CLASS_CODEGEN(QuestUI, FloatingScreen, HMUI::Screen,
 
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, bgGo);
     DECLARE_INSTANCE_FIELD(UnityEngine::Vector2, screenSize);
