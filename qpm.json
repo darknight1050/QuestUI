@@ -2,7 +2,7 @@
   "sharedDir": "shared",
   "dependenciesDir": "extern",
   "info": {
-    "name": "questui",
+    "name": "QuestUI",
     "id": "questui",
     "version": "0.0.1",
     "url": "https://github.com/darknight1050/questui",

@@ -1,6 +1,6 @@
 {
   "_QPVersion": "0.1.1",
-  "name": "QuestUI",
+  "name": "${mod_name}",
   "id": "${mod_id}",
   "author": "darknight1050, RedBrumbler",
   "version": "${version}",
