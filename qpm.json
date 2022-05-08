@@ -5,7 +5,7 @@
     "name": "QuestUI",
     "id": "questui",
     "version": "0.0.1",
-    "url": "https://github.com/darknight1050/questui",
+    "url": "https://github.com/darknight1050/QuestUI",
     "additionalData": {
       "overrideSoName": "libquestui.so",
       "compileOptions": {
