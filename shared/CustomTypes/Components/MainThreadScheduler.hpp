@@ -12,7 +12,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, MainThreadScheduler, UnityEngine::MonoBehaviour,
     public:
         static void Schedule(std::function<void()> method) {
             using CurrentThreadIsMainThreadMethod = function_ptr_t<bool>;
-            static CurrentThreadIsMainThreadMethod currentThreadIsMainThread = reinterpret_cast<CurrentThreadIsMainThreadMethod>(il2cpp_functions::resolve_icall("UnityEngine.Object::CurrentThreadIsMainThread"));
+            static CurrentThreadIsMainThreadMethod currentThreadIsMainThread = il2cpp_utils::resolve_icall<bool>("UnityEngine.Object::CurrentThreadIsMainThread");
             if(currentThreadIsMainThread()) {
                 method();
                 return;

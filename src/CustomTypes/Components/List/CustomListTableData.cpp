@@ -89,8 +89,8 @@ namespace QuestUI
     QuestUIBoxTableCell* CustomListTableData::InstantiateBoxTableCell(GlobalNamespace::LevelPackCell* levelPackTableCell)
     {
         levelPackTableCell = Instantiate(levelPackTableCell);
-        ImageView* coverImage = levelPackTableCell->dyn__coverImage();
-        ImageView* selectionImage = levelPackTableCell->dyn__selectionImage();
+        ImageView* coverImage = levelPackTableCell->coverImage;
+        ImageView* selectionImage = levelPackTableCell->selectionImage;
 
         auto transform = coverImage->get_transform();
         for (int i = 0; i < transform->GetChildCount(); i++)

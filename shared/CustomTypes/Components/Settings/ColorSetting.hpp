@@ -2,7 +2,7 @@
 #include "UnityEngine/MonoBehaviour.hpp"
 
 #include "UnityEngine/UI/Button.hpp"
-#include "CustomTypes/Components/ModalColorPicker.hpp"
+#include "../ModalColorPicker.hpp"
 
 #include "custom-types/shared/macros.hpp"
 

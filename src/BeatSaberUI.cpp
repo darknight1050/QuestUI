@@ -197,7 +197,7 @@ namespace QuestUI::BeatSaberUI {
     IVRPlatformHelper* GetIVRPlatformHelper()
     {
         if (!platformHelper)
-            platformHelper = Resources::FindObjectsOfTypeAll<VRController*>().First()->dyn__vrPlatformHelper();
+            platformHelper = Resources::FindObjectsOfTypeAll<VRController*>().First()->vrPlatformHelper;
         if (!platformHelper)
             CacheNotFoundWarningLog(IVRPlatformHelper);
         return platformHelper;
@@ -390,7 +390,7 @@ namespace QuestUI::BeatSaberUI {
         try
         {
             auto menuShockWave = Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>().First();
-            auto buttonClickedSignal = menuShockWave->dyn__buttonClickEvents().Last();
+            auto buttonClickedSignal = menuShockWave->buttonClickEvents.Last();
             textMesh->buttonClickedSignal = buttonClickedSignal;
         }
         catch(const std::exception& e)
@@ -619,7 +619,7 @@ namespace QuestUI::BeatSaberUI {
         try
         {
             auto menuShockWave = Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>().First();
-            auto buttonClickedSignal = menuShockWave->dyn__buttonClickEvents().Last();
+            auto buttonClickedSignal = menuShockWave->buttonClickEvents.Last();
             image->buttonClickedSignal = buttonClickedSignal;
         }
         catch(const std::exception& e)
@@ -1026,7 +1026,7 @@ namespace QuestUI::BeatSaberUI {
         scrollView->pageDownButton = pageDownButton;
         scrollView->verticalScrollIndicator = verticalScrollIndicator;
         scrollView->viewport = viewport;
-        scrollView->dyn__platformHelper() = GetIVRPlatformHelper();
+        scrollView->platformHelper = GetIVRPlatformHelper();
 
         viewport->set_anchorMin(UnityEngine::Vector2(0.0f, 0.0f));
         viewport->set_anchorMax(UnityEngine::Vector2(1.0f, 1.0f));
