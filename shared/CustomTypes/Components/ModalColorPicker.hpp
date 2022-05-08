@@ -16,6 +16,7 @@ DECLARE_CLASS_CODEGEN(QuestUI, ModalColorPicker, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_FIELD(UnityEngine::UI::Image*, colorImage);
 
     DECLARE_INSTANCE_FIELD(UnityEngine::Color, currentColor);
+    DECLARE_INSTANCE_FIELD(UnityEngine::Color, openColor);
 
     DECLARE_INSTANCE_METHOD(UnityEngine::Color, get_color);
     DECLARE_INSTANCE_METHOD(void, set_color, UnityEngine::Color value);

@@ -37,12 +37,13 @@ namespace QuestUI
 
     void ModalColorPicker::Show()
     {
-        getLogger().info("showing modal: %p", modalView);
+        openColor = currentColor;
         if (modalView) modalView->Show(true, true, nullptr);
     }
     
     void ModalColorPicker::CancelPressed()
     {
+        set_color(openColor);
         if (onCancel) onCancel();
         if (modalView) modalView->Hide(true, nullptr);
     }

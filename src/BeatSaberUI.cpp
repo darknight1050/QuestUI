@@ -1215,7 +1215,7 @@ namespace QuestUI::BeatSaberUI {
         return gameObject;
     }
 
-    ColorSetting* CreateColorPicker(Transform* parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onValueChange) {
+    ColorSetting* CreateColorPicker(Transform* parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone, std::function<void()> onCancel, std::function<void(UnityEngine::Color)> onChange) {
         auto modal = CreateColorPickerModal(parent, "QuestUIColorPickerModal", defaultColor, nullptr, nullptr, nullptr);
 
         auto colorImageBase = ArrayUtil::First(Resources::FindObjectsOfTypeAll<Image*>(), [](Image* x) { return x->get_gameObject()->get_name() == "ColorImage" && x->get_sprite()->get_name() == "NoteCircle"; });
@@ -1268,7 +1268,7 @@ namespace QuestUI::BeatSaberUI {
 
         reinterpret_cast<RectTransform *>(colorSetting->editButton->get_transform())->set_anchorMin({0, 0});
 
-        colorSetting->Setup(modal, defaultColor, std::move(onValueChange), nullptr, nullptr);
+        colorSetting->Setup(modal, defaultColor, std::move(onChange), std::move(onDone), std::move(onCancel));
 
         go->get_transform()->SetParent(parent, false);
 

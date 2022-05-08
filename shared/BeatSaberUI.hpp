@@ -736,20 +736,24 @@ namespace QuestUI::BeatSaberUI {
     /// @param parent what to parent it to
     /// @param text the label to display
     /// @param defaultColor the starting color
-    /// @param onValueChange callback ran when the color is changed
+    /// @param onDone the callback to call when color picking is done
+    /// @param onCancel the callback to call when the user cancels
+    /// @param onChange the callback to call when the color changes at all
     /// @return the created color picker object
-    ColorSetting* CreateColorPicker(UnityEngine::Transform* parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onValueChange = nullptr);
+    ColorSetting* CreateColorPicker(UnityEngine::Transform* parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone = nullptr, std::function<void()> onCancel = nullptr, std::function<void(UnityEngine::Color)> onChange = nullptr);
     
     /// @brief Overload for creating a color picker that allows you to pass in anything that has a ->get_transform() method for the parent
     /// @param parent what to parent it to
     /// @param text the label to display
     /// @param defaultColor the starting color
-    /// @param onValueChange callback ran when the color is changed
+    /// @param onDone the callback to call when color picking is done
+    /// @param onCancel the callback to call when the user cancels
+    /// @param onChange the callback to call when the color changes at all
     /// @return the created color picker object
     template<HasTransform T>
     requires(!std::is_convertible_v<T, UnityEngine::Transform*>)
-    inline ColorSetting* CreateColorPicker(T parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onValueChange = nullptr) {
-        return CreateColorPicker(parent->get_transform(), text, defaultColor, onValueChange);
+    inline ColorSetting* CreateColorPicker(T parent, StringW text, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone = nullptr, std::function<void()> onCancel = nullptr, std::function<void(UnityEngine::Color)> onChange = nullptr) {
+        return CreateColorPicker(parent->get_transform(), text, defaultColor, onCancel, onDone, onChange);
     }
 
     /// @brief Creates a color picker modal
@@ -759,13 +763,16 @@ namespace QuestUI::BeatSaberUI {
     /// @param onDone the callback to call when color picking is done
     /// @param onCancel the callback to call when the user cancels
     /// @param onChange the callback to call when the color changes at all
+    /// @return the created color picker modal object
     QuestUI::ModalColorPicker* CreateColorPickerModal(UnityEngine::Transform* parent, StringW name, UnityEngine::Color defaultColor, std::function<void(UnityEngine::Color)> onDone = nullptr, std::function<void()> onCancel = nullptr, std::function<void(UnityEngine::Color)> onChange = nullptr);
     
     /// @brief Overload for creating a color picker modal that allows you to pass in anything that has a ->get_transform() method for the parent
     /// @param parent what to parent it to
     /// @param text the label to display
-    /// @param defaultColor the starting color
-    /// @param onValueChange callback ran when the color is changed
+    /// @param defaultColor the color to start off with
+    /// @param onDone the callback to call when color picking is done
+    /// @param onCancel the callback to call when the user cancels
+    /// @param onChange the callback to call when the color changes at all
     /// @return the created color picker modal object
     template<HasTransform T>
     requires(!std::is_convertible_v<T, UnityEngine::Transform*>)

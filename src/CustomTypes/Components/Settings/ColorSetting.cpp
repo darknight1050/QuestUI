@@ -51,14 +51,11 @@ void QuestUI::ColorSetting::Setup(ModalColorPicker* _colorPickerModal, UnityEngi
 
     editButton->get_onClick()->AddListener(MakeDelegate(UnityEngine::Events::UnityAction*, onClick));
 
-    colorPickerModal->onCancel = onCancel;
-
-    colorPickerModal->onChange = [this] (UnityEngine::Color color) {
+    colorPickerModal->onCancel = this->onCancel;
+    colorPickerModal->onChange = this->onChange;
+    colorPickerModal->onDone = [this] (UnityEngine::Color color) {
         this->set_currentColor(color);
-        if(this->onChange) {
-            this->onChange(color);
-        }
+        if(this->onDone)
+            this->onDone(color);
     };
-
-    colorPickerModal->onDone = onDone;
 }
