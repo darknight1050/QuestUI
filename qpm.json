@@ -7,7 +7,11 @@
     "version": "0.14.0",
     "url": "https://github.com/darknight1050/questui",
     "additionalData": {
+      "soLink": "https://github.com/darknight1050/questui/releases/download/v0.14.0/libquestui.so",
+      "debugSoLink": "https://github.com/darknight1050/questui/releases/download/v0.14.0/debug_libquestui.so",
       "overrideSoName": "libquestui.so",
+      "modLink": "https://github.com/darknight1050/questui/releases/download/v0.14.0/QuestUI.qmod",
+      "branchName": "version-v0.14.0",
       "compileOptions": {
         "systemIncludes": [
           "shared/cppcodec"
