@@ -60,6 +60,12 @@ namespace QuestUI {
                 static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
                 RegisterModSettings(modInfo, false, modInfo.id, csTypeOf(T), Type::FLOW_COORDINATOR);
             }
+        
+            template<class T>
+            static void RegisterModSettingsFlowCoordinator(ModInfo modInfo, std::string title, bool showModInfo = false) {
+                static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
+                RegisterModSettings(modInfo, showModInfo, title, csTypeOf(T), Type::FLOW_COORDINATOR);
+            }
 
             template<class T = HMUI::ViewController*>
             static void RegisterMainMenuModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true, DidActivateEvent didActivateEvent = nullptr) {
@@ -83,6 +89,12 @@ namespace QuestUI {
             static void RegisterMainMenuModSettingsFlowCoordinator(ModInfo modInfo) {
                 static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
                 RegisterMainMenuModSettings(modInfo, false, modInfo.id, csTypeOf(T), Type::FLOW_COORDINATOR);
+            }
+        
+            template<class T>
+            static void RegisterMainMenuModSettingsFlowCoordinator(ModInfo modInfo, std::string title, bool showModInfo = false) {
+                static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
+                RegisterMainMenuModSettings(modInfo, showModInfo, title, csTypeOf(T), Type::FLOW_COORDINATOR);
             }
 
             /// @brief Register a GameplaySetupMenu type for usage within the left menu
