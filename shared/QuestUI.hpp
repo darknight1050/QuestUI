@@ -61,19 +61,19 @@ namespace QuestUI {
                 RegisterModSettings(modInfo, false, modInfo.id, csTypeOf(T), Type::FLOW_COORDINATOR);
             }
 
-            template<class T = HMUI::ViewController*>
+            template<class T>
             static void RegisterMainMenuModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true, DidActivateEvent didActivateEvent = nullptr) {
                 static_assert(std::is_convertible<T, HMUI::ViewController*>());
                 RegisterMainMenuModSettings(modInfo, showModInfo, title, csTypeOf(T), Type::VIEW_CONTROLLER, didActivateEvent);
             }
             
-            template<class T = HMUI::ViewController*>
+            template<class T>
             static void RegisterMainMenuModSettingsViewController(ModInfo modInfo, std::string title, DidActivateEvent didActivateEvent) {
                 static_assert(std::is_convertible<T, HMUI::ViewController*>());
                 RegisterMainMenuModSettingsViewController<T>(modInfo, title, true, didActivateEvent);
             }
 
-            template<class T = HMUI::ViewController*>
+            template<class T>
             static void RegisterMainMenuModSettingsViewController(ModInfo modInfo, DidActivateEvent didActivateEvent = nullptr) {
                 static_assert(std::is_convertible<T, HMUI::ViewController*>());
                 RegisterMainMenuModSettingsViewController<T>(modInfo, modInfo.id, true, didActivateEvent);
