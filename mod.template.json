@@ -10,7 +10,9 @@
   "coverImage": "cover.png",
   "dependencies": [],
   "modFiles": [],
-  "libraryFiles": [],
+  "libraryFiles": [
+	"libbeatsaber-hook_3_8_5.so"
+  ],
   "fileCopies": [],
   "copyExtensions": []
 }
