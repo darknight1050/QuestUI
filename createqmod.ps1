@@ -27,7 +27,7 @@ foreach ($mod in $modJson.modFiles)
     {
         $path = "./extern/libs/" + $mod
     }
-    $filelist += $path
+    $filelist += ,$path
 }
 
 foreach ($lib in $modJson.libraryFiles)
@@ -37,7 +37,7 @@ foreach ($lib in $modJson.libraryFiles)
     {
         $path = "./build/" + $lib
     }
-    $filelist += $path
+    $filelist += ,$path
 }
 
 if (Test-Path "./ExtraFiles")
