@@ -214,6 +214,7 @@ namespace QuestUI::BeatSaberUI {
     }
 
     void ClearCache() {
+        getLogger().info("Clearing Cache!");
         mainFlowCoordinator = nullptr;
         mainTextFont = nullptr;
         mainUIFontMaterial = nullptr;

@@ -125,7 +125,6 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_DidActivate, &GlobalNamespace::MainFlowCoord
     if (firstActivation && MainMenuModSettingInfos::get().size() > 0)
     {
         auto vc = BeatSaberUI::CreateViewController<MainMenuModSettingsViewController*>();
-        self->providedLeftScreenViewController = vc;
     	MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
         self->providedLeftScreenViewController = vc;
         self->SetLeftScreenViewController(vc, HMUI::ViewController::AnimationType::In);

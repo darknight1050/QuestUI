@@ -27,7 +27,8 @@ UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine:
 }
 
 void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
-    if(addedToHierarchy && firstActivation) {
+    getLogger().info("ModSettingsButtonsViewController DidActivate %d %d", firstActivation, addedToHierarchy);
+    if(firstActivation && addedToHierarchy) {
         get_gameObject()->AddComponent<HMUI::Touchable*>();
         UnityEngine::GameObject* scrollView = BeatSaberUI::CreateScrollView(get_transform());
         ExternalComponents* externalComponents = scrollView->GetComponent<ExternalComponents*>();

@@ -24,9 +24,7 @@ namespace QuestUI
         {
             getLogger().info("First activation");
             showBackButton = true;
-            getLogger().info("Set Title");
             SetTitle("PlaceHolder", HMUI::ViewController::AnimationType::Out);
-            getLogger().info("replace top VC");
             placeholder = BeatSaberUI::CreateViewController<MainMenuModSettingsPlaceholderViewController*>();
             ProvideInitialViewControllers(placeholder, nullptr, nullptr, nullptr, nullptr);
         }
@@ -49,20 +47,15 @@ namespace QuestUI
         
         if (currentInfo)
         {
-            getLogger().info("Present VC: %p", currentInfo);
             if (!currentInfo->viewController) 
             {
-                getLogger().info("making view controller");
                 currentInfo->viewController = BeatSaberUI::CreateViewController(currentInfo->il2cpp_type);
                 if(currentInfo->showModInfo)
                     BeatSaberUI::AddModInfoText(*currentInfo);
                 if(currentInfo->didActivateEvent)
                     currentInfo->viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(classof(HMUI::ViewController::DidActivateDelegate*), currentInfo->viewController, currentInfo->didActivateEvent));
             }
-
-            getLogger().info("Set Title: %s", currentInfo->title.c_str());
             SetTitle(currentInfo->title, HMUI::ViewController::AnimationType::Out);
-            getLogger().info("replace top VC");
             ReplaceTopViewController(currentInfo->viewController, this, this, nullptr, HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection::Horizontal);
         }
 

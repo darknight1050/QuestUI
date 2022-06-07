@@ -52,7 +52,7 @@ namespace QuestUI
 {
     void MainMenuModSettingsViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
-        getLogger().info("main menu mod settings present");
+        getLogger().info("main menu mod settings present %d", firstActivation);
         if (!firstActivation) return;
         for (auto& info : MainMenuModSettingInfos::get()) {
             info.viewController = nullptr;
@@ -74,32 +74,32 @@ namespace QuestUI
                 layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
             BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.modInfo.id, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(36.0f, 10.0f), 
                 [this, &info] {
-                    getLogger().info("OnModSettingsButtonClick %s", info.modInfo.id.c_str());
-                    this->OnOpenModSettings(&info);
+                    getLogger().info("OnMainMenuModSettingsButtonClick %s", info.modInfo.id.c_str());
+                    this->OnOpenModSettings(info);
                 }
             );
         }
         getLogger().info("presented!");
     }
 
-    void MainMenuModSettingsViewController::OnOpenModSettings(ModSettingsInfos::ModSettingsInfo* info)
+    void MainMenuModSettingsViewController::OnOpenModSettings(ModSettingsInfos::ModSettingsInfo& info)
     {
         auto currentFlowCoordinator = BeatSaberUI::GetMainFlowCoordinator()->YoungestChildFlowCoordinatorOrSelf();
-        switch (info->type)
+        switch (info.type)
         {
             case Register::Type::VIEW_CONTROLLER: {
                 getLogger().info("View Controller, FC: %p", modSettingsFlowCoordinator);
                 if (!modSettingsFlowCoordinator)
                     modSettingsFlowCoordinator = BeatSaberUI::CreateFlowCoordinator<MainMenuModSettingsFlowCoordinator*>();
-                modSettingsFlowCoordinator->currentInfo = info;
+                modSettingsFlowCoordinator->currentInfo = &info;
                 currentFlowCoordinator->PresentFlowCoordinator(modSettingsFlowCoordinator, nullptr, ViewController::AnimationDirection::Horizontal, true, false);
                 break;
             }
             case Register::Type::FLOW_COORDINATOR: {
                 getLogger().info("Flow Coordinator");
-                if(!info->flowCoordinator)
-                    info->flowCoordinator = BeatSaberUI::CreateFlowCoordinator(info->il2cpp_type);
-                currentFlowCoordinator->PresentFlowCoordinator(info->flowCoordinator, nullptr, ViewController::AnimationDirection::Horizontal, false, false);
+                if(!info.flowCoordinator)
+                    info.flowCoordinator = BeatSaberUI::CreateFlowCoordinator(info.il2cpp_type);
+                currentFlowCoordinator->PresentFlowCoordinator(info.flowCoordinator, nullptr, ViewController::AnimationDirection::Horizontal, false, false);
                 break;
             }
         }
