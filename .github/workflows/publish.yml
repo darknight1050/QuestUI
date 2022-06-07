@@ -21,6 +21,12 @@ jobs:
         lfs: true
     
     - uses: seanmiddleditch/gha-setup-ninja@v3
+
+    - name: Setup NDK
+      id: setup-ndk
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r24
     
     - name: Create ndkpath.txt
       run: |
