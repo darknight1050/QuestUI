@@ -19,6 +19,7 @@
 #include "GlobalNamespace/HSVPanelController.hpp"
 #include "GlobalNamespace/HapticFeedbackController.hpp"
 #include "GlobalNamespace/MenuShockwave.hpp"
+#include "GlobalNamespace/LevelCollectionTableView.hpp"
 
 #include "UnityEngine/Canvas.hpp"
 #include "UnityEngine/CanvasGroup.hpp"
@@ -197,7 +198,7 @@ namespace QuestUI::BeatSaberUI {
     IVRPlatformHelper* GetIVRPlatformHelper()
     {
         if (!platformHelper)
-            platformHelper = Resources::FindObjectsOfTypeAll<VRController*>().First()->vrPlatformHelper;
+            platformHelper = Resources::FindObjectsOfTypeAll<LevelCollectionTableView*>().First()->GetComponentInChildren<ScrollView*>()->platformHelper;
         if (!platformHelper)
             CacheNotFoundWarningLog(IVRPlatformHelper);
         return platformHelper;
@@ -1000,7 +1001,7 @@ namespace QuestUI::BeatSaberUI {
     GameObject* CreateScrollView(Transform* parent) {
         static WeakPtrGO<TextPageScrollView> textScrollViewClone;
         if (!textScrollViewClone) {
-             textScrollViewClone = Resources::FindObjectsOfTypeAll<ReleaseInfoViewController *>().First()->textPageScrollView;
+            textScrollViewClone = Resources::FindObjectsOfTypeAll<ReleaseInfoViewController *>().First()->textPageScrollView;
         }
         auto textScrollView = Object::Instantiate(textScrollViewClone.getInner(), parent);
         static ConstString textScrollViewName("QuestUIScrollView");

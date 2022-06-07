@@ -52,7 +52,7 @@ namespace QuestUI
 {
     void MainMenuModSettingsViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
-        getLogger().info("main menu mod settings present %d", firstActivation);
+        getLogger().info("MainMenuModSettingsViewController DidActivate %d %d", firstActivation, addedToHierarchy); 
         if (!firstActivation) return;
         for (auto& info : MainMenuModSettingInfos::get()) {
             info.viewController = nullptr;
@@ -79,7 +79,6 @@ namespace QuestUI
                 }
             );
         }
-        getLogger().info("presented!");
     }
 
     void MainMenuModSettingsViewController::OnOpenModSettings(ModSettingsInfos::ModSettingsInfo& info)
