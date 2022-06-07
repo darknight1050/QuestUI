@@ -503,6 +503,7 @@ namespace QuestUI::BeatSaberUI {
         
         // if the original button was for some reason not interactable, now it will be
         button->set_interactable(true);
+        button->get_gameObject()->SetActive(true);
         return button;
     }
 
@@ -540,16 +541,12 @@ namespace QuestUI::BeatSaberUI {
     }
 
 
-    Toggle * CreateModifierButton(UnityEngine::Transform *parent, StringW buttonText, bool currentValue,
-                                        UnityEngine::Sprite *iconSprite, std::function<void(bool)> const &onClick,
-                                        UnityEngine::Vector2 anchoredPosition) {
-    static WeakPtrGO <GameplayModifierToggle> toggleTemplate;
-    if (!toggleTemplate)
-        toggleTemplate = Resources::FindObjectsOfTypeAll<GameplayModifierToggle *>().First(
-                                                    [](GameplayModifierToggle * x) { return x->get_name() == "InstaFail"; });
+    Toggle * CreateModifierButton(UnityEngine::Transform *parent, StringW buttonText, bool currentValue, UnityEngine::Sprite *iconSprite, std::function<void(bool)> const &onClick, UnityEngine::Vector2 anchoredPosition) {
+        static WeakPtrGO <GameplayModifierToggle> toggleTemplate;
+        if (!toggleTemplate)
+            toggleTemplate = Resources::FindObjectsOfTypeAll<GameplayModifierToggle *>().First( [](GameplayModifierToggle * x) { return x->get_name() == "InstaFail"; });
 
-        GameplayModifierToggle *baseModifier = Object::Instantiate((GameplayModifierToggle *) toggleTemplate, parent,
-                                                                false);
+        GameplayModifierToggle *baseModifier = Object::Instantiate((GameplayModifierToggle *) toggleTemplate, parent, false);
         static ConstString baseModifierName("BSMLModifier");
         baseModifier->set_name(baseModifierName);
 
