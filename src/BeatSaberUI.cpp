@@ -602,7 +602,7 @@ namespace QuestUI::BeatSaberUI {
 
         auto image = go->AddComponent<QuestUI::ClickableImage*>();
         auto mat_UINoGlow = Resources::FindObjectsOfTypeAll<Material*>().First([](Material* x)
-                                             { return x->get_name() == "UINoGlow"; });
+            { return x->get_name() == "UINoGlow"; });
         image->set_material(mat_UINoGlow);
 
         go->get_transform()->SetParent(parent, false);
@@ -1099,10 +1099,9 @@ namespace QuestUI::BeatSaberUI {
         static WeakPtrGO<InputFieldView> originalFieldView;
         if (!originalFieldView) {
             originalFieldView = Resources::FindObjectsOfTypeAll<InputFieldView *>().First(
-                                                 [](InputFieldView *x) {
-                                                     return x->get_name() == "GuestNameInputField";
-                                                 }
-            );
+            [](InputFieldView *x) {
+                return x->get_name() == "GuestNameInputField";
+            });
         }
         GameObject* gameObj = Object::Instantiate(originalFieldView->get_gameObject(), parent, false);
         static ConstString name("QuestUIStringSetting");

@@ -21,6 +21,12 @@ namespace QuestUI {
 
     class Register {
         public:
+            enum struct MenuLocation{
+                Settings = 1,
+                MainMenu = 2,
+                AllViews = Settings | MainMenu
+            };
+
             enum Type {
                 VIEW_CONTROLLER,
                 FLOW_COORDINATOR,
@@ -40,7 +46,7 @@ namespace QuestUI {
             template<class T = HMUI::ViewController*>
             static void RegisterModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true, DidActivateEvent didActivateEvent = nullptr) {
                 static_assert(std::is_convertible<T, HMUI::ViewController*>());
-                RegisterModSettings(modInfo, showModInfo, title, csTypeOf(T), Type::VIEW_CONTROLLER, didActivateEvent);
+                RegisterModSettings(modInfo, showModInfo, title, MenuLocation::Settings, csTypeOf(T), Type::VIEW_CONTROLLER, didActivateEvent);
             }
             
             template<class T = HMUI::ViewController*>
@@ -58,19 +64,19 @@ namespace QuestUI {
             template<class T>
             static void RegisterModSettingsFlowCoordinator(ModInfo modInfo) {
                 static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
-                RegisterModSettings(modInfo, false, modInfo.id, csTypeOf(T), Type::FLOW_COORDINATOR);
+                RegisterModSettings(modInfo, false, modInfo.id, MenuLocation::Settings, csTypeOf(T), Type::FLOW_COORDINATOR);
             }
         
             template<class T>
             static void RegisterModSettingsFlowCoordinator(ModInfo modInfo, std::string title, bool showModInfo = false) {
                 static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
-                RegisterModSettings(modInfo, showModInfo, title, csTypeOf(T), Type::FLOW_COORDINATOR);
+                RegisterModSettings(modInfo, showModInfo, title, MenuLocation::Settings, csTypeOf(T), Type::FLOW_COORDINATOR);
             }
 
             template<class T = HMUI::ViewController*>
             static void RegisterMainMenuModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true, DidActivateEvent didActivateEvent = nullptr) {
                 static_assert(std::is_convertible<T, HMUI::ViewController*>());
-                RegisterMainMenuModSettings(modInfo, showModInfo, title, csTypeOf(T), Type::VIEW_CONTROLLER, didActivateEvent);
+                RegisterModSettings(modInfo, showModInfo, title, MenuLocation::MainMenu, csTypeOf(T), Type::VIEW_CONTROLLER, didActivateEvent);
             }
             
             template<class T = HMUI::ViewController*>
@@ -88,13 +94,43 @@ namespace QuestUI {
             template<class T>
             static void RegisterMainMenuModSettingsFlowCoordinator(ModInfo modInfo) {
                 static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
-                RegisterMainMenuModSettings(modInfo, false, modInfo.id, csTypeOf(T), Type::FLOW_COORDINATOR);
+                RegisterModSettings(modInfo, false, modInfo.id, MenuLocation::MainMenu, csTypeOf(T), Type::FLOW_COORDINATOR);
             }
         
             template<class T>
             static void RegisterMainMenuModSettingsFlowCoordinator(ModInfo modInfo, std::string title, bool showModInfo = false) {
                 static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
-                RegisterMainMenuModSettings(modInfo, showModInfo, title, csTypeOf(T), Type::FLOW_COORDINATOR);
+                RegisterModSettings(modInfo, showModInfo, title, MenuLocation::MainMenu, csTypeOf(T), Type::FLOW_COORDINATOR);
+            }
+
+            template<class T = HMUI::ViewController*>
+            static void RegisterAllModSettingsViewController(ModInfo modInfo, std::string title, bool showModInfo = true, DidActivateEvent didActivateEvent = nullptr) {
+                static_assert(std::is_convertible<T, HMUI::ViewController*>());
+                RegisterModSettings(modInfo, showModInfo, title, MenuLocation::AllViews, csTypeOf(T), Type::VIEW_CONTROLLER, didActivateEvent);
+            }
+            
+            template<class T = HMUI::ViewController*>
+            static void RegisterAllModSettingsViewController(ModInfo modInfo, std::string title, DidActivateEvent didActivateEvent) {
+                static_assert(std::is_convertible<T, HMUI::ViewController*>());
+                RegisterAllModSettingsViewController<T>(modInfo, title, true, didActivateEvent);
+            }
+
+            template<class T = HMUI::ViewController*>
+            static void RegisterAllModSettingsViewController(ModInfo modInfo, DidActivateEvent didActivateEvent = nullptr) {
+                static_assert(std::is_convertible<T, HMUI::ViewController*>());
+                RegisterAllModSettingsViewController<T>(modInfo, modInfo.id, true, didActivateEvent);
+            }
+            
+            template<class T>
+            static void RegisterAllModSettingsFlowCoordinator(ModInfo modInfo) {
+                static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
+                RegisterModSettings(modInfo, false, modInfo.id, MenuLocation::AllViews, csTypeOf(T), Type::FLOW_COORDINATOR);
+            }
+        
+            template<class T>
+            static void RegisterAllModSettingsFlowCoordinator(ModInfo modInfo, std::string title, bool showModInfo = false) {
+                static_assert(std::is_convertible<T, HMUI::FlowCoordinator*>());
+                RegisterModSettings(modInfo, showModInfo, title, MenuLocation::AllViews, csTypeOf(T), Type::FLOW_COORDINATOR);
             }
 
             /// @brief Register a GameplaySetupMenu type for usage within the left menu
@@ -137,8 +173,7 @@ namespace QuestUI {
             }
 
         private:
-            static void RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type, DidActivateEvent didActivateEvent = nullptr);
-            static void RegisterMainMenuModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Type type, DidActivateEvent didActivateEvent = nullptr);
+            static void RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, MenuLocation location, Il2CppReflectionType* il2cpp_type, Type type, DidActivateEvent didActivateEvent = nullptr);
             static void RegisterGameplaySetupMenu(ModInfo modInfo, std::string_view title, Il2CppReflectionType* il2cpp_type, int type, GameplaySetupMenuEvent setupEvent = nullptr);
 
     };

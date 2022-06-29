@@ -1,9 +1,10 @@
 #include "CustomTypes/Components/ViewControllers/MainMenuModSettingsViewController.hpp"
+#include "ModSettingsInfos.hpp"
 
-#include "MainMenuModSettingInfos.hpp"
 #include "BeatSaberUI.hpp"
 #include "HMUI/Touchable.hpp"
 #include "HMUI/ViewController.hpp"
+#include "HMUI/FlowCoordinator.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
 #include "HMUI/CurvedCanvasSettingsHelper.hpp"
 
@@ -15,7 +16,7 @@ DEFINE_TYPE(QuestUI, MainMenuModSettingsViewController);
 extern UnityEngine::UI::HorizontalLayoutGroup* CreateHorizontalLayoutGroup(UnityEngine::Transform* parent);
 extern Logger& getLogger();
 
-TMPro::TextMeshProUGUI* AddHeader(UnityEngine::Transform* parent, std::string_view title, UnityEngine::Vector2 size, UnityEngine::Vector2 anchoredPosition, UnityEngine::Color leftColor, UnityEngine::Color rightColor)
+TMPro::TextMeshProUGUI* AddHeader(UnityEngine::Transform* parent, std::string_view title, UnityEngine::Vector2 size, UnityEngine::Vector2 anchoredPosition, UnityEngine::Color leftColor, UnityEngine::Color rightColor, float fontSize)
 {
     using namespace QuestUI::BeatSaberUI;
 	auto vertical = CreateVerticalLayoutGroup(parent);
@@ -24,11 +25,12 @@ TMPro::TextMeshProUGUI* AddHeader(UnityEngine::Transform* parent, std::string_vi
 
 
 	auto text = CreateText(horizontal->get_transform(), std::string(title), false);
-	text->set_fontSize(text->get_fontSize() * 2.0f);
+	text->set_fontSize(fontSize);
 	text->set_alignment(TMPro::TextAlignmentOptions::Center);
 
 
 	auto layoutelem = text->get_gameObject()->AddComponent<UnityEngine::UI::LayoutElement*>();
+    
 	layoutelem->set_preferredHeight(size.y);
 	layoutelem->set_preferredWidth(size.x);
 
@@ -54,30 +56,41 @@ namespace QuestUI
     {
         getLogger().info("MainMenuModSettingsViewController DidActivate %d %d", firstActivation, addedToHierarchy); 
         if (!firstActivation) return;
-        for (auto& info : MainMenuModSettingInfos::get()) {
-            info.viewController = nullptr;
-            info.flowCoordinator = nullptr;
-        }
-        float grayness = 0.5f;
-        AddHeader(get_transform(), "Mods", {50, 10}, {0, 45}, {grayness, grayness, grayness, 1.0f}, {grayness, grayness, grayness, 0.0f});
+
+        float blackness = 0.0f;
+        AddHeader(get_transform(), "Mods", {35, 14}, {-7.5, 30}, {blackness, blackness, blackness, 0.5f}, {blackness, blackness, blackness, 0.5f}, 10.0f);
         get_gameObject()->AddComponent<HMUI::Touchable*>();
         UnityEngine::GameObject* scrollView = BeatSaberUI::CreateScrollView(get_transform());
         ExternalComponents* externalComponents = scrollView->GetComponent<ExternalComponents*>();
+        
         UnityEngine::RectTransform* scrollTransform = externalComponents->Get<UnityEngine::RectTransform*>();
-        scrollTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
-        scrollTransform->set_sizeDelta(UnityEngine::Vector2(12.0f, 0.0f));
+        scrollTransform->set_anchoredPosition(UnityEngine::Vector2(-7.5f, -20.0f));
+        scrollTransform->set_sizeDelta(UnityEngine::Vector2(23.0f, 0.0f));
+        scrollTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.3f));
         UnityEngine::UI::HorizontalLayoutGroup* layoutGroup = nullptr;
-        std::vector<ModSettingsInfos::ModSettingsInfo>& infos = MainMenuModSettingInfos::get();
+        std::vector<ModSettingsInfos::ModSettingsInfo>& infos = ModSettingsInfos::get();     
+        int currentItems = 0;   
         for(int i = 0; i < infos.size(); i++) {
             ModSettingsInfos::ModSettingsInfo& info = infos[i];
-            if(i % 3 == 0)
-                layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
-            BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.modInfo.id, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(36.0f, 10.0f), 
-                [this, &info] {
-                    getLogger().info("OnMainMenuModSettingsButtonClick %s", info.modInfo.id.c_str());
-                    this->OnOpenModSettings(info);
-                }
-            );
+            if(info.location == Register::MenuLocation::AllViews || info.location == Register::MenuLocation::MainMenu){
+                if(currentItems % 3 == 0)
+                    layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
+                    auto modButton = BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.title, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(40.0f, 10.0f), 
+                    [this, &info] {
+                        getLogger().info("OnMainMenuModSettingsButtonClick %s", info.modInfo.id.c_str());
+                        this->OnOpenModSettings(info);
+                    });
+                currentItems++;
+            }
+            
+        }
+        //creates extra hidden buttons which forces a left align, because for some reason set_childAlignment(UnityEngine::TextAnchor::MiddleLeft) doesnt work for what ive tried
+
+        if((currentItems % 3) > 0)
+            for(int i = 0; i < ((currentItems % 3) - 3) * -1; i++){
+                auto emptyLeftAlignButton = BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), "", UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(40.0f, 10.0f), nullptr);
+                emptyLeftAlignButton->get_transform()->Find("BG")->get_gameObject()->SetActive(false);
+                emptyLeftAlignButton->get_transform()->Find("Underline")->get_gameObject()->SetActive(false);
         }
     }
 

@@ -4,7 +4,6 @@
 
 #include "QuestUI.hpp"
 #include "ModSettingsInfos.hpp"
-#include "MainMenuModSettingInfos.hpp"
 #include "GameplaySetupMenuTabs.hpp"
 
 #include "CustomTypes/Components/ExternalComponents.hpp"
@@ -122,7 +121,7 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_DidActivate, &GlobalNamespace::MainFlowCoord
     getLogger().info("MainFlowCoordinator_DidActivate called!");
 	// when activating, we want to provide our own view controller for the left screen, so just take whatever is activated and display ours for right
     
-    if (firstActivation && MainMenuModSettingInfos::get().size() > 0)
+    if (firstActivation)
     {
         auto vc = BeatSaberUI::CreateViewController<MainMenuModSettingsViewController*>();
     	MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
@@ -246,7 +245,7 @@ void QuestUI::Init() {
     }
 }
 
-void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type, Register::DidActivateEvent didActivateEvent) {
+void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Register::MenuLocation location, Il2CppReflectionType* il2cpp_type, Register::Type type, Register::DidActivateEvent didActivateEvent) {
     Init();
     ModSettingsInfos::ModSettingsInfo info = {};
     info.modInfo = modInfo;
@@ -257,8 +256,10 @@ void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::strin
     info.viewController = nullptr;
     info.flowCoordinator = nullptr;
     info.didActivateEvent = didActivateEvent;
+    info.location = location;
     ModSettingsInfos::add(info);
 }
+
 
 void Register::RegisterGameplaySetupMenu(ModInfo modInfo, std::string_view title, Il2CppReflectionType* il2cpp_type, int type, GameplaySetupMenuEvent setupEvent) {
     Init();
@@ -270,18 +271,4 @@ void Register::RegisterGameplaySetupMenu(ModInfo modInfo, std::string_view title
     menu->gameObject = nullptr;
     menu->gameplaySetupMenuEvent = setupEvent;
     GameplaySetupMenuTabs::add(menu);
-}
-
-void Register::RegisterMainMenuModSettings(ModInfo modInfo, bool showModInfo, std::string title, Il2CppReflectionType* il2cpp_type, Register::Type type, Register::DidActivateEvent didActivateEvent) {
-    Init();
-    ModSettingsInfos::ModSettingsInfo info = {};
-    info.modInfo = modInfo;
-    info.showModInfo = showModInfo;
-    info.title = title;
-    info.type = type;
-    info.il2cpp_type = reinterpret_cast<System::Type*>(il2cpp_type);
-    info.viewController = nullptr;
-    info.flowCoordinator = nullptr;
-    info.didActivateEvent = didActivateEvent;
-    MainMenuModSettingInfos::add(info);
 }

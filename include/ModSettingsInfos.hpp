@@ -4,7 +4,10 @@
 
 #include "QuestUI.hpp"
 
+
+
 namespace QuestUI::ModSettingsInfos {
+
     typedef struct ModSettingsInfo {
         ModInfo modInfo;
         bool showModInfo;
@@ -14,6 +17,7 @@ namespace QuestUI::ModSettingsInfos {
         HMUI::ViewController* viewController;
         HMUI::FlowCoordinator* flowCoordinator;
         Register::DidActivateEvent didActivateEvent;
+        Register::MenuLocation location;
     } ModSettingsInfo;
 
     std::vector<ModSettingsInfo>& get();
