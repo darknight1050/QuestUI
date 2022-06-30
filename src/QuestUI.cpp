@@ -120,9 +120,9 @@ MAKE_HOOK_MATCH(MainFlowCoordinator_DidActivate, &GlobalNamespace::MainFlowCoord
 {
     getLogger().info("MainFlowCoordinator_DidActivate called!");
 	// when activating, we want to provide our own view controller for the left screen, so just take whatever is activated and display ours for right
-    
-    if (firstActivation)
-    {
+    auto& vec = QuestUI::ModSettingsInfos::get();
+    auto itr = std::find_if(vec.begin(), vec.end(), [](auto& x) -> bool{ return (x.location & Register::MenuLocation::MainMenu); });
+    if (firstActivation && itr != vec.end()){
         auto vc = BeatSaberUI::CreateViewController<MainMenuModSettingsViewController*>();
     	MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
         self->providedLeftScreenViewController = vc;
