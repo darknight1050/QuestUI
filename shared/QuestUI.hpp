@@ -21,7 +21,7 @@ namespace QuestUI {
 
     class Register {
         public:
-            enum struct MenuLocation{
+            enum MenuLocation{
                 Settings = 1,
                 MainMenu = 2,
                 AllViews = Settings | MainMenu

@@ -68,30 +68,33 @@ namespace QuestUI
         scrollTransform->set_sizeDelta(UnityEngine::Vector2(23.0f, 0.0f));
         scrollTransform->set_anchorMin(UnityEngine::Vector2(0.0f, 0.3f));
         UnityEngine::UI::HorizontalLayoutGroup* layoutGroup = nullptr;
-        std::vector<ModSettingsInfos::ModSettingsInfo>& infos = ModSettingsInfos::get();     
-        int currentItems = 0;   
-        for(int i = 0; i < infos.size(); i++) {
-            ModSettingsInfos::ModSettingsInfo& info = infos[i];
-            if(info.location == Register::MenuLocation::AllViews || info.location == Register::MenuLocation::MainMenu){
-                if(currentItems % 3 == 0)
-                    layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
+
+        auto& vec = QuestUI::ModSettingsInfos::get();
+        auto itr = std::find_if(vec.begin(), vec.end(), [](auto& x) -> bool{ return (x.location & Register::MenuLocation::MainMenu); });
+        int currentItems = 0;
+        if (itr != vec.end()) {
+            for (auto& info : vec) {
+                if (info.location & Register::MenuLocation::MainMenu) {
+                    if(currentItems % 3 == 0)
+                        layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
                     auto modButton = BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.title, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(40.0f, 10.0f), 
                     [this, &info] {
                         getLogger().info("OnMainMenuModSettingsButtonClick %s", info.modInfo.id.c_str());
                         this->OnOpenModSettings(info);
                     });
-                currentItems++;
+                    currentItems++;
+                }
             }
-            
         }
-        //creates extra hidden buttons which forces a left align, because for some reason set_childAlignment(UnityEngine::TextAnchor::MiddleLeft) doesnt work for what ive tried
 
+        //creates extra hidden buttons which forces a left align, because for some reason set_childAlignment(UnityEngine::TextAnchor::MiddleLeft) doesnt work for what ive tried
         if((currentItems % 3) > 0)
             for(int i = 0; i < ((currentItems % 3) - 3) * -1; i++){
                 auto emptyLeftAlignButton = BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), "", UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(40.0f, 10.0f), nullptr);
                 emptyLeftAlignButton->get_transform()->Find("BG")->get_gameObject()->SetActive(false);
                 emptyLeftAlignButton->get_transform()->Find("Underline")->get_gameObject()->SetActive(false);
         }
+
     }
 
     void MainMenuModSettingsViewController::OnOpenModSettings(ModSettingsInfos::ModSettingsInfo& info)

@@ -8,17 +8,19 @@
 
 namespace QuestUI::ModSettingsInfos {
 
-    typedef struct ModSettingsInfo {
+    struct ModSettingsInfo {
         ModInfo modInfo;
         bool showModInfo;
         std::string title;
         Register::Type type;
         System::Type* il2cpp_type;
-        HMUI::ViewController* viewController;
-        HMUI::FlowCoordinator* flowCoordinator;
+        union {
+            HMUI::ViewController* viewController;
+            HMUI::FlowCoordinator* flowCoordinator;
+        };
         Register::DidActivateEvent didActivateEvent;
         Register::MenuLocation location;
-    } ModSettingsInfo;
+    };
 
     std::vector<ModSettingsInfo>& get();
     void add(ModSettingsInfo info);

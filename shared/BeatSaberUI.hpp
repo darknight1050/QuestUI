@@ -15,6 +15,7 @@
 #include "CustomTypes/Components/ModalColorPicker.hpp"
 #include "CustomTypes/Components/ClickableText.hpp"
 #include "CustomTypes/Components/ClickableImage.hpp"
+#include "CustomTypes/Components/ProgressBar/ProgressBar.hpp"
 
 #include "GlobalNamespace/MainFlowCoordinator.hpp"
 #include "GlobalNamespace/GameplayModifierToggle.hpp"
@@ -1082,4 +1083,32 @@ namespace QuestUI::BeatSaberUI {
     inline QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(T parent, TArgs...args) {
         return CreateTextSegmentedControl(parent->get_transform(), args...);
     }
+
+    /// @brief creates a popup rainbow loading bar thats not attatched to any UI
+    /// @param position bars position
+    /// @param rotation bars rotation
+    /// @param headerTextVal the main text, in rainbow
+    /// @param subText1 subtext 1, text above the header
+    /// @param subText2 subtext 2, text above subtext 1
+    /// @return the created progress bar
+    QuestUI::ProgressBar* CreateProgressBar(UnityEngine::Vector3 const& position, UnityEngine::Vector3 const& rotation, UnityEngine::Vector3 const& scale,  StringW headerText, StringW subText1 = "", StringW subText2 = "");
+
+    /// @brief creates a popup rainbow loading bar thats not attatched to any UI
+    /// @param position bars position
+    /// @param rotation bars rotation
+    /// @param headerTextVal the main text, in rainbow
+    /// @param subText1 subtext 1, text above the header
+    /// @param subText2 subtext 2, text above subtext 1
+    /// @return the created progress bar
+    QuestUI::ProgressBar* CreateProgressBar(UnityEngine::Vector3 const& position, UnityEngine::Vector3 const& rotation, StringW headerText, StringW subText1 = "", StringW subText2 = "");
+    
+
+    /// @brief creates a popup rainbow loading bar thats not attatched to any UI
+    /// @param position bars position
+    /// @param headerTextVal the main text, in rainbow
+    /// @param subText1 subtext 1, text above the header
+    /// @param subText2 subtext 2, text above subtext 1
+    /// @return the created progress bar
+    QuestUI::ProgressBar* CreateProgressBar(UnityEngine::Vector3 const& position, StringW headerText, StringW subText1 = "", StringW subText2 = "");
+    
 }

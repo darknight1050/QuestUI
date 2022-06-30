@@ -10,6 +10,7 @@
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
 #include "CustomTypes/Components/List/QuestUITableView.hpp"
 #include "CustomTypes/Components/WeakPtrGO.hpp"
+#include "CustomTypes/Components/ProgressBar/ProgressBar.hpp"
 
 #include "GlobalNamespace/UIKeyboardManager.hpp"
 #include "GlobalNamespace/BoolSettingsController.hpp"
@@ -327,7 +328,7 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->SetParent(parent, false);
         textMesh->set_font(GetMainTextFont());
         textMesh->set_fontSharedMaterial(GetMainUIFontMaterial());
-        if (italic) text = StringW(u"<i>" + text + u"</i>");
+        if (italic) textMesh->set_fontStyle(TMPro::FontStyles::Italic);
         textMesh->set_text(text);
         textMesh->set_fontSize(4.0f);
         textMesh->set_color(UnityEngine::Color::get_white());
@@ -1847,8 +1848,67 @@ namespace QuestUI::BeatSaberUI {
         return CreateTextSegmentedControl(parent, {0, 0}, {80, 10}, values, onCellWithIdxClicked);
     }
 
-        QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked)
+    QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, std::function<void(int)> onCellWithIdxClicked)
     {
         return CreateTextSegmentedControl(parent, {0, 0}, {80, 10}, ArrayW<StringW>(static_cast<il2cpp_array_size_t>(0)), onCellWithIdxClicked);
+    }
+
+    QuestUI::ProgressBar* CreateProgressBar(Vector3 const& position, StringW headerText, StringW subText1, StringW subText2){
+        return CreateProgressBar(position, {0,0,0}, {1,1,1}, headerText, subText1, subText2);
+    }
+    QuestUI::ProgressBar* CreateProgressBar(Vector3 const& position, Vector3 const& rotation, StringW headerText, StringW subText1, StringW subText2){
+        return CreateProgressBar(position, rotation, {1,1,1}, headerText, subText1, subText2);
+    }
+
+    QuestUI::ProgressBar* CreateProgressBar(Vector3 const& position, Vector3 const& rotation, Vector3 const& scale, StringW headerText, StringW subText1, StringW subText2){
+        auto bar = UnityEngine::GameObject::New_ctor("LoadingStatus")->AddComponent<ProgressBar*>();
+        auto barGameObject = bar->get_gameObject();
+        auto barObjectTransform = bar->get_transform();
+        barObjectTransform->set_position(position);
+        barObjectTransform->set_eulerAngles(rotation);
+        barObjectTransform->set_localScale(scale / 100);
+
+        bar->canvas = barGameObject->AddComponent<UnityEngine::Canvas*>();
+        bar->canvas->set_renderMode(UnityEngine::RenderMode::WorldSpace);
+        barGameObject->AddComponent<HMUI::CurvedCanvasSettings*>()->SetRadius(0.0f);
+
+        auto ct = bar->canvas->get_transform();
+        ct->set_position(position);
+        ct->set_localScale(scale / 100);
+
+        Vector2 LoadingBarSize = {100, 10};
+        Color BackgroundColor = {0, 0, 0, 0.2f};
+        auto rectTransform = reinterpret_cast<UnityEngine::RectTransform*>(ct);
+        rectTransform->set_sizeDelta({200, 50});
+
+        // why set everything after creating it in the first place ?
+        bar->subText2 = CreateText(ct, subText2, false, {10, 31}, {100, 20});
+        bar->subText2->set_fontSize(7.0f);
+        bar->subText1 = CreateText(ct, subText1, false, {10, 23}, {100, 20});
+        bar->subText1->set_fontSize(9.0f);
+        bar->headerText = CreateText(ct, headerText, false,{10, 15}, {100, 20});
+        bar->headerText->set_fontSize(15.0f);
+
+        bar->loadingBackground = UnityEngine::GameObject::New_ctor("Background")->AddComponent<UnityEngine::UI::Image*>();
+        rectTransform = reinterpret_cast<UnityEngine::RectTransform*>(bar->loadingBackground->get_transform());
+        rectTransform->SetParent(ct, false); 
+        rectTransform->set_sizeDelta(LoadingBarSize);
+        bar->loadingBackground->set_color(BackgroundColor);
+        
+        bar->loadingBar = UnityEngine::GameObject::New_ctor("Loading Bar")->AddComponent<UnityEngine::UI::Image*>();
+        rectTransform = reinterpret_cast<UnityEngine::RectTransform*>(bar->loadingBar->get_transform());
+        rectTransform->SetParent(ct, false);
+        rectTransform->set_sizeDelta(LoadingBarSize);
+
+        auto tex = UnityEngine::Texture2D::get_whiteTexture();
+        auto sprite = UnityEngine::Sprite::CreateSprite(tex, UnityEngine::Rect(0, 0, tex->get_width(), tex->get_height()), {0.5f, 0.5f}, 100.0f, 1, UnityEngine::SpriteMeshType::Tight, UnityEngine::Vector4::get_zero(), false);
+        bar->loadingBar->set_sprite(sprite);
+        bar->loadingBar->set_type(UnityEngine::UI::Image::Type::Filled);
+        bar->loadingBar->set_fillMethod(UnityEngine::UI::Image::FillMethod::Horizontal);
+        bar->loadingBar->set_color({1.0f, 1.0f, 1.0f, 0.5f});
+        
+        UnityEngine::Object::DontDestroyOnLoad(bar->get_gameObject());
+        bar->inited = true;
+        return bar;
     }
 }

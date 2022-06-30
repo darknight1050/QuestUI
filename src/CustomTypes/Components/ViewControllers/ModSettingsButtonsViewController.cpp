@@ -36,23 +36,25 @@ void QuestUI::ModSettingsButtonsViewController::DidActivate(bool firstActivation
         scrollTransform->set_anchoredPosition(UnityEngine::Vector2(0.0f, 0.0f));
         scrollTransform->set_sizeDelta(UnityEngine::Vector2(-28.0f, 0.0f));
         UnityEngine::UI::HorizontalLayoutGroup* layoutGroup = nullptr;
-        std::vector<ModSettingsInfos::ModSettingsInfo>& infos = ModSettingsInfos::get();
-        int currentItems = 0;
-        for(int i = 0; i < infos.size(); i++) {
-            ModSettingsInfos::ModSettingsInfo& info = infos[i];
-            if(info.location == Register::MenuLocation::AllViews || info.location == Register::MenuLocation::Settings){
-                if(currentItems % 3 == 0)
-                    layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
-                BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.title, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(36.0f, 8.0f), 
-                    [this, &info] {
-                        getLogger().info("OnModSettingsButtonClick %s", info.modInfo.id.c_str());
-                        if(this->OnOpenModSettings)
-                            this->OnOpenModSettings(info);
-                    }
-                );
-                currentItems++;
-
+        auto& vec = QuestUI::ModSettingsInfos::get();
+        auto itr = std::find_if(vec.begin(), vec.end(), [](auto& x) -> bool{ return (x.location & Register::MenuLocation::Settings); });
+        if (itr != vec.end()) {
+            int currentItems = 0;
+            for (auto& info : vec) {
+                if (info.location & Register::MenuLocation::Settings) {
+                    if(currentItems % 3 == 0)
+                        layoutGroup = CreateHorizontalLayoutGroup(scrollView->get_transform());
+                    BeatSaberUI::CreateUIButton(layoutGroup->get_transform(), info.title, UnityEngine::Vector2(0.0f, 0.0f), UnityEngine::Vector2(36.0f, 8.0f), 
+                        [this, &info] {
+                            getLogger().info("OnModSettingsButtonClick %s", info.modInfo.id.c_str());
+                            if(this->OnOpenModSettings)
+                                this->OnOpenModSettings(info);
+                        }
+                    );
+                    currentItems++;
+                }
             }
         }
-    }
+    } 
 }
+
