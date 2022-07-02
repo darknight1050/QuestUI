@@ -56,6 +56,21 @@ namespace QuestUI
     {
         getLogger().info("MainMenuModSettingsViewController DidActivate %d %d", firstActivation, addedToHierarchy); 
         if (!firstActivation) return;
+        for (auto& info : ModSettingsInfos::get()) {
+            //if (info.location & Register::MenuLocation::MainMenu) { just to be safe clear all
+                switch (info.type)
+                {
+                    case Register::Type::VIEW_CONTROLLER: {
+                        info.viewController = nullptr;
+                        break;
+                    }
+                    case Register::Type::FLOW_COORDINATOR: {
+                        info.flowCoordinator = nullptr;
+                        break;
+                    }
+                }
+            //}
+        }
 
         float blackness = 0.0f;
         AddHeader(get_transform(), "Mods", {35, 14}, {-7.5, 30}, {blackness, blackness, blackness, 0.5f}, {blackness, blackness, blackness, 0.5f}, 10.0f);
