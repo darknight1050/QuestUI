@@ -49,10 +49,6 @@ void QuestUI::ModSettingsFlowCoordinator::OnOpenModSettings(ModSettingsInfos::Mo
 
 void QuestUI::ModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     if(firstActivation) {
-        for(ModSettingsInfos::ModSettingsInfo& info : ModSettingsInfos::get()) {
-            info.viewController = nullptr;
-            info.flowCoordinator = nullptr;
-        }
         static ConstString modSettingsName("Mod Settings");
         SetTitle(modSettingsName, ViewController::AnimationType::Out);
         showBackButton = true;
