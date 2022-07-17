@@ -90,7 +90,6 @@ using namespace Zenject;
 #define MakeDelegate(DelegateType, varName) (il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), varName))
 
 using HapticPresetSO = Libraries::HM::HMLib::VR::HapticPresetSO;
-static SafePtr<HapticPresetSO> hapticFeedbackPresetSO;
 
 namespace QuestUI::BeatSaberUI {
 
@@ -215,6 +214,54 @@ namespace QuestUI::BeatSaberUI {
         return diContainer;
     }
 
+    Material* mat_UINoGlow = nullptr;
+    Material* NoGlowMaterial() {
+        if (!mat_UINoGlow) {
+            mat_UINoGlow = Resources::FindObjectsOfTypeAll<Material*>().First([](Material* x)
+                { return x->get_name() == "UINoGlow"; });
+        }
+
+        return mat_UINoGlow;
+    }
+
+    HapticPresetSO* hapticFeedbackPresetSO = nullptr;
+    HapticPresetSO* HapticPreset() {
+        if (!hapticFeedbackPresetSO)
+        {
+            hapticFeedbackPresetSO = UnityEngine::ScriptableObject::CreateInstance<HapticPresetSO*>();
+            hapticFeedbackPresetSO->duration = 0.01f;
+            hapticFeedbackPresetSO->strength = 0.75f;
+            hapticFeedbackPresetSO->frequency = 0.5f;
+        }
+        return hapticFeedbackPresetSO;
+    }
+
+    Signal* shockwaveSignal = nullptr;
+    Signal* ShockwaveSignal() {
+        if (!shockwaveSignal) {
+            try
+            {
+                auto menuShockWave = Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>().First();
+                shockwaveSignal = menuShockWave->buttonClickEvents.Last();
+                
+            }
+            catch(const std::exception& e)
+            {
+                getLogger().error("%s", e.what());
+            }
+        }
+
+        return shockwaveSignal;
+    }
+
+    HapticFeedbackController* hapticController = nullptr;
+    HapticFeedbackController* HapticController() {
+        if (!hapticController) {
+            hapticController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackController*>();
+        }
+        return hapticController;
+    }
+
     void ClearCache() {
         getLogger().info("Clearing Cache!");
         mainFlowCoordinator = nullptr;
@@ -224,6 +271,11 @@ namespace QuestUI::BeatSaberUI {
         physicsRaycaster = nullptr;
         platformHelper = nullptr;
         diContainer = nullptr;
+
+        mat_UINoGlow = nullptr;
+        hapticFeedbackPresetSO = nullptr;
+        shockwaveSignal = nullptr;
+        hapticController = nullptr;
         QuestUI::WeakPtrHolder::goComponentMap.clear();
     }
 
@@ -401,17 +453,8 @@ namespace QuestUI::BeatSaberUI {
             getLogger().error("%s", e.what());
         }
 
-        if (!hapticFeedbackPresetSO)
-        {
-            hapticFeedbackPresetSO.emplace(UnityEngine::ScriptableObject::CreateInstance<HapticPresetSO*>());
-            hapticFeedbackPresetSO->duration = 0.02f;
-            hapticFeedbackPresetSO->strength = 1.0f;
-            hapticFeedbackPresetSO->frequency = 0.2f;
-        }
-
-        auto hapticFeedbackController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackController*>();
-        textMesh->hapticFeedbackController = hapticFeedbackController;
-        textMesh->hapticFeedbackPresetSO = (HapticPresetSO*)hapticFeedbackPresetSO;
+        textMesh->hapticFeedbackController = HapticController();
+        textMesh->hapticFeedbackPresetSO = HapticPreset();
 
         gameObj->SetActive(true);
         return textMesh;
@@ -497,7 +540,7 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_pivot(UnityEngine::Vector2(0.5f, 0.5f));
 
-        SetButtonText(button, buttonText);
+        textMesh->set_text(buttonText);
 
         HorizontalLayoutGroup* horiztonalLayoutGroup = button->GetComponentInChildren<HorizontalLayoutGroup*>();
         if (horiztonalLayoutGroup != nullptr)
@@ -602,13 +645,14 @@ namespace QuestUI::BeatSaberUI {
         auto go = GameObject::New_ctor(name);
 
         auto image = go->AddComponent<QuestUI::ClickableImage*>();
-        auto mat_UINoGlow = Resources::FindObjectsOfTypeAll<Material*>().First([](Material* x)
-            { return x->get_name() == "UINoGlow"; });
-        image->set_material(mat_UINoGlow);
+        
+        image->set_material(NoGlowMaterial());
 
         go->get_transform()->SetParent(parent, false);
-        image->get_rectTransform()->set_sizeDelta(sizeDelta);
-        image->get_rectTransform()->set_anchoredPosition(anchoredPosition);
+
+        auto rectTransform = image->get_rectTransform();
+        rectTransform->set_sizeDelta(sizeDelta);
+        rectTransform->set_anchoredPosition(anchoredPosition);
         image->set_sprite(sprite);
 
         go->AddComponent<LayoutElement*>();
@@ -616,28 +660,9 @@ namespace QuestUI::BeatSaberUI {
         if (onClick)
             image->get_onPointerClickEvent() += [onClick](auto _){ onClick(); };
         
-        try
-        {
-            auto menuShockWave = Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>().First();
-            auto buttonClickedSignal = menuShockWave->buttonClickEvents.Last();
-            image->buttonClickedSignal = buttonClickedSignal;
-        }
-        catch(const std::exception& e)
-        {
-            getLogger().error("%s", e.what());
-        }
-
-        if (!hapticFeedbackPresetSO)
-        {
-            hapticFeedbackPresetSO.emplace(UnityEngine::ScriptableObject::CreateInstance<HapticPresetSO*>());
-            hapticFeedbackPresetSO->duration = 0.01f;
-            hapticFeedbackPresetSO->strength = 0.75f;
-            hapticFeedbackPresetSO->frequency = 0.5f;
-        }
-
-        auto hapticFeedbackController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackController*>();
-        image->hapticFeedbackController = hapticFeedbackController;
-        image->hapticFeedbackPresetSO = (HapticPresetSO*)hapticFeedbackPresetSO;
+        image->buttonClickedSignal = ShockwaveSignal();
+        image->hapticFeedbackController = HapticController();
+        image->hapticFeedbackPresetSO = HapticPreset();
 
         return image;
     }
@@ -651,9 +676,8 @@ namespace QuestUI::BeatSaberUI {
     ImageView* CreateImage(Transform* parent, Sprite* sprite, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta) {
         static ConstString name("QuestUIImage");
         GameObject* gameObj = GameObject::New_ctor(name);
-        auto mat_UINoGlow = Resources::FindObjectsOfTypeAll<Material*>().FirstOrDefault([](Material* x) { return x->get_name() == "UINoGlow"; });
         ImageView* image = gameObj->AddComponent<ImageView*>();
-        image->set_material(mat_UINoGlow);
+        image->set_material(NoGlowMaterial());
         image->get_transform()->SetParent(parent, false);
         image->set_sprite(sprite);
         RectTransform* rectTransform = (RectTransform*)image->get_transform();
