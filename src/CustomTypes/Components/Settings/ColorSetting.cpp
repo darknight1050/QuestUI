@@ -2,9 +2,11 @@
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "UnityEngine/UI/Button_ButtonClickedEvent.hpp"
 
+#include "custom-types/shared/delegate.hpp"
+
 #include <utility>
 
-#define MakeDelegate(DelegateType, varName) (il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), varName))
+#define MakeDelegate(DelegateType, varName) (custom_types::MakeDelegate<DelegateType>(classof(DelegateType), varName))
 
 DEFINE_TYPE(QuestUI, ColorSetting);
 

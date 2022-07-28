@@ -1,4 +1,5 @@
 #include "CustomTypes/Components/Settings/SliderSetting.hpp"
+#include "custom-types/shared/delegate.hpp"
 
 #include "UnityEngine/Time.hpp"
 #include "System/Action_2.hpp"
@@ -41,7 +42,7 @@ namespace QuestUI
         slider->set_numberOfSteps(numSteps);
 
         std::function<void(HMUI::RangeValuesTextSlider*, float)> fun = std::bind(&SliderSetting::OnChange, this, std::placeholders::_1, std::placeholders::_2);
-        slider->add_valueDidChangeEvent(il2cpp_utils::MakeDelegate<System::Action_2<HMUI::RangeValuesTextSlider*, float>*>(classof(System::Action_2<HMUI::RangeValuesTextSlider*, float>*), fun));
+        slider->add_valueDidChangeEvent(custom_types::MakeDelegate<System::Action_2<HMUI::RangeValuesTextSlider*, float>*>(classof(System::Action_2<HMUI::RangeValuesTextSlider*, float>*), fun));
 
         timerResetValue = applyTime;
 

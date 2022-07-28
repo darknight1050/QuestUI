@@ -77,6 +77,8 @@
 #include "Sprites/carats.hpp"
 #define DEFAULT_BUTTONTEMPLATE "PracticeButton"
 
+#include "custom-types/shared/delegate.hpp"
+
 using namespace GlobalNamespace;
 using namespace UnityEngine;
 using namespace UnityEngine::UI;
@@ -87,7 +89,7 @@ using namespace Polyglot;
 using namespace VRUIControls;
 using namespace Zenject;
 
-#define MakeDelegate(DelegateType, varName) (il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), varName))
+#define MakeDelegate(DelegateType, varName) (custom_types::MakeDelegate<DelegateType>(classof(DelegateType), varName))
 
 using HapticPresetSO = Libraries::HM::HMLib::VR::HapticPresetSO;
 
@@ -1343,7 +1345,7 @@ namespace QuestUI::BeatSaberUI {
         colorPicker->rgbPanel = rgbController;
         
         std::function<void(UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType)> OnChange = std::bind(&ModalColorPicker::OnChange, colorPicker, std::placeholders::_1, std::placeholders::_2);
-        auto delegate = il2cpp_utils::MakeDelegate<System::Action_2<UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType>*>(classof(System::Action_2<UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType>*), OnChange);
+        auto delegate = custom_types::MakeDelegate<System::Action_2<UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType>*>(classof(System::Action_2<UnityEngine::Color, GlobalNamespace::ColorChangeUIEventType>*), OnChange);
         rgbController->add_colorDidChangeEvent(delegate);
 
         auto hsvController = Object::Instantiate(hsvTemplate.getInner(), gameObject->get_transform(), false);
@@ -1610,7 +1612,7 @@ namespace QuestUI::BeatSaberUI {
             std::function<void(HMUI::TableView*, int)> fun = [onCellWithIdxClicked](HMUI::TableView*, int idx){
                 onCellWithIdxClicked(idx);
             };
-            auto delegate = il2cpp_utils::MakeDelegate<DelegateType*>(classof(DelegateType*), fun);
+            auto delegate = custom_types::MakeDelegate<DelegateType*>(classof(DelegateType*), fun);
             tableView->add_didSelectCellWithIdxEvent(delegate);
         }
 
@@ -1755,7 +1757,7 @@ namespace QuestUI::BeatSaberUI {
             std::function<void(HMUI::TableView*, int)> fun = [onCellWithIdxClicked](HMUI::TableView*, int idx){
                 onCellWithIdxClicked(idx);
             };
-            auto delegate = il2cpp_utils::MakeDelegate<DelegateType*>(classof(DelegateType*), fun);
+            auto delegate = custom_types::MakeDelegate<DelegateType*>(classof(DelegateType*), fun);
             tableView->add_didSelectCellWithIdxEvent(delegate);
         }
 
@@ -1846,7 +1848,7 @@ namespace QuestUI::BeatSaberUI {
         if (onCellWithIdxClicked)
         {
             std::function<void(HMUI::SegmentedControl*, int)> fun = [onCellWithIdxClicked](HMUI::SegmentedControl* cell, int idx){ onCellWithIdxClicked(idx); };
-            auto delegate = il2cpp_utils::MakeDelegate<System::Action_2<HMUI::SegmentedControl*, int>*>(classof(System::Action_2<HMUI::SegmentedControl*, int>*), fun);
+            auto delegate = custom_types::MakeDelegate<System::Action_2<HMUI::SegmentedControl*, int>*>(classof(System::Action_2<HMUI::SegmentedControl*, int>*), fun);
             control->add_didSelectCellEvent(delegate);
         }
 
