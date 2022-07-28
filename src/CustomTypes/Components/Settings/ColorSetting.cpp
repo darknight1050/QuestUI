@@ -2,9 +2,9 @@
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "UnityEngine/UI/Button_ButtonClickedEvent.hpp"
 
-#include <utility>
+#include "custom-types/shared/delegate.hpp"
 
-#define MakeDelegate(DelegateType, varName) (il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), varName))
+#include <utility>
 
 DEFINE_TYPE(QuestUI, ColorSetting);
 
@@ -49,7 +49,7 @@ void QuestUI::ColorSetting::Setup(ModalColorPicker* _colorPickerModal, UnityEngi
         colorPickerModal->Show();
     };
 
-    editButton->get_onClick()->AddListener(MakeDelegate(UnityEngine::Events::UnityAction*, onClick));
+    editButton->get_onClick()->AddListener(custom_types::MakeDelegate<UnityEngine::Events::UnityAction*>(onClick));
 
     colorPickerModal->onCancel = this->onCancel;
     colorPickerModal->onChange = this->onChange;

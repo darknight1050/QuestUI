@@ -1,4 +1,5 @@
 #include "CustomTypes/Components/FlowCoordinators/MainMenuModSettingsFlowCoordinator.hpp"
+#include "custom-types/shared/delegate.hpp"
 
 #include "ModSettingsInfos.hpp"
 #include "BeatSaberUI.hpp"
@@ -53,7 +54,7 @@ namespace QuestUI
                 if(currentInfo->showModInfo)
                     BeatSaberUI::AddModInfoText(*currentInfo);
                 if(currentInfo->didActivateEvent)
-                    currentInfo->viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(classof(HMUI::ViewController::DidActivateDelegate*), currentInfo->viewController, currentInfo->didActivateEvent));
+                    currentInfo->viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(currentInfo->viewController, currentInfo->didActivateEvent));
             }
             SetTitle(currentInfo->title, HMUI::ViewController::AnimationType::Out);
             ReplaceTopViewController(currentInfo->viewController, this, this, nullptr, HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection::Horizontal);
