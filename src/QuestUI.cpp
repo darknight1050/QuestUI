@@ -106,8 +106,9 @@ MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsView
             UnityEngine::Transform* AvatarParent = self->get_transform()->Find(wrapperStr);
             button->get_transform()->SetParent(AvatarParent, false);
             button->get_transform()->SetAsFirstSibling();
-            button->get_onClick()->AddListener(custom_types::MakeDelegate<UnityEngine::Events::UnityAction*>(classof(UnityEngine::Events::UnityAction*), (Il2CppObject*)nullptr, OnMenuModSettingsButtonClick));
-            
+            std::function<void(UnityEngine::UI::Button * button)> onClick = OnMenuModSettingsButtonClick;
+            button->get_onClick()->AddListener(custom_types::MakeDelegate<UnityEngine::Events::UnityAction *>(onClick));
+
             UnityEngine::Object::Destroy(button->GetComponentInChildren<Polyglot::LocalizedTextMeshProUGUI*>());
 
             button->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(modSettingsStr);

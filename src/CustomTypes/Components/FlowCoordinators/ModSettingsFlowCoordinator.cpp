@@ -31,7 +31,7 @@ void QuestUI::ModSettingsFlowCoordinator::OnOpenModSettings(ModSettingsInfos::Mo
                 if(info.showModInfo)
                     BeatSaberUI::AddModInfoText(info);
                 if(info.didActivateEvent)
-                    info.viewController->add_didActivateEvent(custom_types::MakeDelegate<ViewController::DidActivateDelegate*>(classof(ViewController::DidActivateDelegate*), info.viewController, info.didActivateEvent));
+                    info.viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<ViewController::DidActivateDelegate*>(info.viewController, info.didActivateEvent));
             }
             SetTitle(info.title, ViewController::AnimationType::In);
             ReplaceTopViewController(info.viewController, this, this, nullptr, ViewController::AnimationType::In, ViewController::AnimationDirection::Horizontal);

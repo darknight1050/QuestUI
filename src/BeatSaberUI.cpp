@@ -89,7 +89,7 @@ using namespace Polyglot;
 using namespace VRUIControls;
 using namespace Zenject;
 
-#define MakeDelegate(DelegateType, varName) (custom_types::MakeDelegate<DelegateType>(classof(DelegateType), varName))
+#define MakeDelegate(DelegateType, varName) (custom_types::MakeDelegate<DelegateType>(varName))
 
 using HapticPresetSO = Libraries::HM::HMLib::VR::HapticPresetSO;
 
