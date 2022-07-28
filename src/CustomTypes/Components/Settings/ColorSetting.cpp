@@ -6,8 +6,6 @@
 
 #include <utility>
 
-#define MakeDelegate(DelegateType, varName) (custom_types::MakeDelegate<DelegateType>(classof(DelegateType), varName))
-
 DEFINE_TYPE(QuestUI, ColorSetting);
 
 UnityEngine::Color QuestUI::ColorSetting::get_currentColor() {
@@ -51,7 +49,7 @@ void QuestUI::ColorSetting::Setup(ModalColorPicker* _colorPickerModal, UnityEngi
         colorPickerModal->Show();
     };
 
-    editButton->get_onClick()->AddListener(MakeDelegate(UnityEngine::Events::UnityAction*, onClick));
+    editButton->get_onClick()->AddListener(custom_types::MakeDelegate<UnityEngine::Events::UnityAction*>(onClick));
 
     colorPickerModal->onCancel = this->onCancel;
     colorPickerModal->onChange = this->onChange;

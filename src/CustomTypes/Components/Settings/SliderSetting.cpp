@@ -42,7 +42,7 @@ namespace QuestUI
         slider->set_numberOfSteps(numSteps);
 
         std::function<void(HMUI::RangeValuesTextSlider*, float)> fun = std::bind(&SliderSetting::OnChange, this, std::placeholders::_1, std::placeholders::_2);
-        slider->add_valueDidChangeEvent(custom_types::MakeDelegate<System::Action_2<HMUI::RangeValuesTextSlider*, float>*>(classof(System::Action_2<HMUI::RangeValuesTextSlider*, float>*), fun));
+        slider->add_valueDidChangeEvent(custom_types::MakeDelegate<System::Action_2<HMUI::RangeValuesTextSlider*, float>*>(fun));
 
         timerResetValue = applyTime;
 
