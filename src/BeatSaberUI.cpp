@@ -149,135 +149,145 @@ namespace QuestUI::BeatSaberUI {
 
     #define CacheNotFoundWarningLog(type) getLogger().warning("Can't find '" #type "'! (This shouldn't happen and can cause unexpected behaviour)")
 
-    MainFlowCoordinator* mainFlowCoordinator = nullptr;
+    static SafePtrUnity<MainFlowCoordinator> mainFlowCoordinator;
     MainFlowCoordinator* GetMainFlowCoordinator() {
-        if(!mainFlowCoordinator)
-            mainFlowCoordinator = Object::FindObjectOfType<MainFlowCoordinator*>();
-        if(!mainFlowCoordinator)
+        if(!mainFlowCoordinator) mainFlowCoordinator.emplace(Object::FindObjectOfType<MainFlowCoordinator*>());
+        if(!mainFlowCoordinator) {
             CacheNotFoundWarningLog(MainFlowCoordinator);
-        return mainFlowCoordinator;
+            return nullptr;
+        }
+        return mainFlowCoordinator.ptr();
     }
 
-    TMP_FontAsset* mainTextFont = nullptr;
+    static SafePtrUnity<TMP_FontAsset> mainTextFont;
     TMP_FontAsset* GetMainTextFont() {
-        if(!mainTextFont)
-            mainTextFont = Resources::FindObjectsOfTypeAll<TMP_FontAsset*>().FirstOrDefault([](TMP_FontAsset* x) { return x->get_name() == "Teko-Medium SDF"; });
-        if(!mainTextFont)
+        if(!mainTextFont) mainTextFont.emplace(Resources::FindObjectsOfTypeAll<TMP_FontAsset*>().FirstOrDefault([](TMP_FontAsset* x) { return x->get_name() == "Teko-Medium SDF"; }));
+        if(!mainTextFont) {
             CacheNotFoundWarningLog(MainTextFont);
-        return mainTextFont;
+            return nullptr;
+        }
+        return mainTextFont.ptr();
     }
 
-    Material* mainUIFontMaterial = nullptr;
-    Material* GetMainUIFontMaterial()
-    {
-        if(!mainUIFontMaterial)
-            mainUIFontMaterial = Resources::FindObjectsOfTypeAll<Material*>().FirstOrDefault([](Material* x) { return x->get_name() == "Teko-Medium SDF Curved Softer"; });
-        if(!mainUIFontMaterial)
+    static SafePtrUnity<Material> mainUIFontMaterial;
+    Material* GetMainUIFontMaterial() {
+        if(!mainUIFontMaterial) mainUIFontMaterial.emplace(Resources::FindObjectsOfTypeAll<Material*>().FirstOrDefault([](Material* x) { return x->get_name() == "Teko-Medium SDF Curved Softer"; }));
+        if(!mainUIFontMaterial) {
             CacheNotFoundWarningLog(MainUIFontMaterial);
-        return mainUIFontMaterial;
+            return nullptr;
+        }
+        return mainUIFontMaterial.ptr();
     }
 
-    Sprite* editIcon = nullptr;
+    static SafePtrUnity<Sprite> editIcon;
     Sprite* GetEditIcon() {
-        if(!editIcon)
-            editIcon = Resources::FindObjectsOfTypeAll<Image*>().First([](Image* x) { return x->get_sprite() && x->get_sprite()->get_name() == "EditIcon"; })->get_sprite();
-        if(!editIcon)
+        if(!editIcon) editIcon.emplace(Resources::FindObjectsOfTypeAll<Image*>().First([](Image* x) { return x->get_sprite() && x->get_sprite()->get_name() == "EditIcon"; })->get_sprite());
+        if(!editIcon) {
             CacheNotFoundWarningLog(EditIcon);
-        return editIcon;
+            return nullptr;
+        }
+        return editIcon.ptr();
     }
 
-    PhysicsRaycasterWithCache* physicsRaycaster = nullptr;
+    static PhysicsRaycasterWithCache* physicsRaycaster = nullptr;
     PhysicsRaycasterWithCache* GetPhysicsRaycasterWithCache()
     {
-        if(!physicsRaycaster)
-            physicsRaycaster = Resources::FindObjectsOfTypeAll<MainMenuViewController*>().First()->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster;
-        if(!physicsRaycaster)
+        if(!physicsRaycaster) physicsRaycaster = Resources::FindObjectsOfTypeAll<MainMenuViewController*>().First()->GetComponent<VRGraphicRaycaster*>()->physicsRaycaster;
+        if(!physicsRaycaster) {
             CacheNotFoundWarningLog(PhysicsRaycasterWithCache);
+            return nullptr;
+        }
         return physicsRaycaster;
     }
 
-    IVRPlatformHelper* platformHelper = nullptr;
+    static IVRPlatformHelper* platformHelper = nullptr;
     IVRPlatformHelper* GetIVRPlatformHelper()
     {
-        if (!platformHelper)
-            platformHelper = Resources::FindObjectsOfTypeAll<LevelCollectionTableView*>().First()->GetComponentInChildren<ScrollView*>()->platformHelper;
-        if (!platformHelper)
+        if(!platformHelper) platformHelper = Resources::FindObjectsOfTypeAll<LevelCollectionTableView*>().First()->GetComponentInChildren<ScrollView*>()->platformHelper;
+        if(!platformHelper) {
             CacheNotFoundWarningLog(IVRPlatformHelper);
+            return nullptr;
+        }
         return platformHelper;
     }
 
-    DiContainer* diContainer = nullptr;
+    static DiContainer* diContainer = nullptr;
     DiContainer* GetDiContainer()
     {
-        if(!diContainer)
-            diContainer = Resources::FindObjectsOfTypeAll<TextSegmentedControl*>().FirstOrDefault([](TextSegmentedControl* x) { return x->get_transform()->get_parent()->get_name() == "PlayerStatisticsViewController" && x->container; })->container;
-        if(!diContainer)
+        if(!diContainer) diContainer = Resources::FindObjectsOfTypeAll<TextSegmentedControl*>().FirstOrDefault([](TextSegmentedControl* x) { return x->get_transform()->get_parent()->get_name() == "PlayerStatisticsViewController" && x->container; })->container;
+        if(!diContainer) {
             CacheNotFoundWarningLog(DiContainer);
+            return nullptr;
+        }
         return diContainer;
     }
 
-    Material* mat_UINoGlow = nullptr;
+    static SafePtrUnity<Material> mat_UINoGlow;
     Material* NoGlowMaterial() {
-        if (!mat_UINoGlow) {
-            mat_UINoGlow = Resources::FindObjectsOfTypeAll<Material*>().First([](Material* x)
-                { return x->get_name() == "UINoGlow"; });
+        if(!mat_UINoGlow) mat_UINoGlow.emplace(Resources::FindObjectsOfTypeAll<Material*>().First([](Material* x) { return x->get_name() == "UINoGlow"; }));
+        if(!mat_UINoGlow) {
+            CacheNotFoundWarningLog(Material);
+            return nullptr;
         }
 
-        return mat_UINoGlow;
+        return mat_UINoGlow.ptr();
     }
 
-    HapticPresetSO* hapticFeedbackPresetSO = nullptr;
+    static SafePtrUnity<HapticPresetSO> hapticFeedbackPresetSO;
     HapticPresetSO* HapticPreset() {
         if (!hapticFeedbackPresetSO)
         {
-            hapticFeedbackPresetSO = UnityEngine::ScriptableObject::CreateInstance<HapticPresetSO*>();
-            hapticFeedbackPresetSO->duration = 0.01f;
-            hapticFeedbackPresetSO->strength = 0.75f;
-            hapticFeedbackPresetSO->frequency = 0.5f;
+            hapticFeedbackPresetSO.emplace(UnityEngine::ScriptableObject::CreateInstance<HapticPresetSO*>());
+
+            if (hapticFeedbackPresetSO) {
+                hapticFeedbackPresetSO->duration = 0.01f;
+                hapticFeedbackPresetSO->strength = 0.75f;
+                hapticFeedbackPresetSO->frequency = 0.5f;
+            }
         }
-        return hapticFeedbackPresetSO;
+        if (!hapticFeedbackPresetSO) {
+            CacheNotFoundWarningLog(HapticPresetSO);
+            return nullptr;
+        }
+        return hapticFeedbackPresetSO.ptr();
     }
 
-    Signal* shockwaveSignal = nullptr;
+    static SafePtrUnity<Signal> shockwaveSignal;
     Signal* ShockwaveSignal() {
-        if (!shockwaveSignal) {
+        if(!shockwaveSignal) {
             try
             {
                 auto menuShockWave = Resources::FindObjectsOfTypeAll<GlobalNamespace::MenuShockwave*>().First();
-                shockwaveSignal = menuShockWave->buttonClickEvents.Last();
-                
+                shockwaveSignal.emplace(menuShockWave->buttonClickEvents.Last());
             }
             catch(const std::exception& e)
             {
                 getLogger().error("%s", e.what());
             }
         }
+        if(!shockwaveSignal) {
+            CacheNotFoundWarningLog(Signal);
+            return nullptr;
+        }
 
-        return shockwaveSignal;
+        return shockwaveSignal.ptr();
     }
 
-    HapticFeedbackController* hapticController = nullptr;
+    static SafePtrUnity<HapticFeedbackController> hapticController;
     HapticFeedbackController* HapticController() {
-        if (!hapticController) {
-            hapticController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackController*>();
+        if(!hapticController) hapticController.emplace(UnityEngine::Object::FindObjectOfType<GlobalNamespace::HapticFeedbackController*>());
+        if(!hapticController) {
+            CacheNotFoundWarningLog(HapticFeedbackController);
+            return nullptr;
         }
-        return hapticController;
+        return hapticController.ptr();
     }
 
     void ClearCache() {
         getLogger().info("Clearing Cache!");
-        mainFlowCoordinator = nullptr;
-        mainTextFont = nullptr;
-        mainUIFontMaterial = nullptr;
-        editIcon = nullptr;
-        physicsRaycaster = nullptr;
-        platformHelper = nullptr;
         diContainer = nullptr;
-
-        mat_UINoGlow = nullptr;
-        hapticFeedbackPresetSO = nullptr;
-        shockwaveSignal = nullptr;
-        hapticController = nullptr;
+        platformHelper = nullptr;
+        physicsRaycaster = nullptr;
         QuestUI::WeakPtrHolder::goComponentMap.clear();
     }
 
@@ -542,7 +552,9 @@ namespace QuestUI::BeatSaberUI {
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_pivot(UnityEngine::Vector2(0.5f, 0.5f));
 
-        textMesh->set_text(buttonText);
+        if (textMesh) {
+            textMesh->set_text(buttonText);
+        }
 
         HorizontalLayoutGroup* horiztonalLayoutGroup = button->GetComponentInChildren<HorizontalLayoutGroup*>();
         if (horiztonalLayoutGroup != nullptr)
