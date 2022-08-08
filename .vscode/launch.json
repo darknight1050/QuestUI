@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "fb-lldb",
+            "request": "launch",
+            "name": "Beatsaber",
+            "android": {
+                "application": {
+                    "package": "com.beatgames.beatsaber",
+                    "activity": "com.unity3d.player.UnityPlayerActivity"
+                },
+                "lldbConfig": {
+                    "sourceMaps": [
+                        ". ${workspaceFolder}"
+                    ],
+                    "librarySearchPaths": [
+                        "${workspaceFolder}/build/debug"
+                    ]
+                }
+            },
+            "preLaunchTask": "Powershell Build and Copy Debug" 
+        }
+    ]
+}
