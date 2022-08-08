@@ -545,16 +545,13 @@ namespace QuestUI::BeatSaberUI {
         {
             textMesh->set_richText(true);
             textMesh->set_alignment(TextAlignmentOptions::Center);
+            textMesh->set_text(buttonText);
             externalComponents->Add(textMesh);
         }
         RectTransform* rectTransform = (RectTransform*)button->get_transform();
         rectTransform->set_anchorMin(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_anchorMax(UnityEngine::Vector2(0.5f, 0.5f));
         rectTransform->set_pivot(UnityEngine::Vector2(0.5f, 0.5f));
-
-        if (textMesh) {
-            textMesh->set_text(buttonText);
-        }
 
         HorizontalLayoutGroup* horiztonalLayoutGroup = button->GetComponentInChildren<HorizontalLayoutGroup*>();
         if (horiztonalLayoutGroup != nullptr)
