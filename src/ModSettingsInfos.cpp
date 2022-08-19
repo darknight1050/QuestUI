@@ -27,7 +27,7 @@ void QuestUI::ModSettingsInfos::add(ModSettingsInfo info) {
     modSettingsInfos.push_back(info);
     
     if ((info.location & QuestUI::Register::MenuLocation::MainMenu) == QuestUI::Register::MenuLocation::MainMenu) {
-        auto btn = BSML::MenuButton::Make_new(info.title, info.modInfo.id, 
+        BSML::Register::RegisterMenuButton(info.title, info.modInfo.id, 
         [idx = modSettingsInfos.size() - 1](){
             auto fc = BeatSaberUI::GetMainFlowCoordinator()->YoungestChildFlowCoordinatorOrSelf();
             auto& info = modSettingsInfos[idx];
@@ -49,7 +49,6 @@ void QuestUI::ModSettingsInfos::add(ModSettingsInfo info) {
             }
         });
 
-        BSML::RegisterMenuButton(btn);
     }
 
     if ((info.location & QuestUI::Register::MenuLocation::Settings) == QuestUI::Register::MenuLocation::Settings) {
