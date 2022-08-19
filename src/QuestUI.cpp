@@ -121,21 +121,6 @@ MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsView
     }
 }
 
-MAKE_HOOK_MATCH(MainFlowCoordinator_DidActivate, &GlobalNamespace::MainFlowCoordinator::DidActivate, void, GlobalNamespace::MainFlowCoordinator* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
-{
-    getLogger().info("MainFlowCoordinator_DidActivate called!");
-	// when activating, we want to provide our own view controller for the left screen, so just take whatever is activated and display ours for right
-    auto& vec = QuestUI::ModSettingsInfos::get();
-    auto itr = std::find_if(vec.begin(), vec.end(), [](auto& x) -> bool{ return (x.location & Register::MenuLocation::MainMenu); });
-    if (firstActivation && itr != vec.end()){
-        auto vc = BeatSaberUI::CreateViewController<MainMenuModSettingsViewController*>();
-    	MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-        self->providedLeftScreenViewController = vc;
-        self->SetLeftScreenViewController(vc, HMUI::ViewController::AnimationType::In);
-    }
-    else MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-}
-
 MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespace::MainFlowCoordinator::TopViewControllerWillChange, void, GlobalNamespace::MainFlowCoordinator* self, HMUI::ViewController* oldViewController, HMUI::ViewController* newViewController, HMUI::ViewController::AnimationType animationType)
 {
     // doesnt call orig!
@@ -287,7 +272,6 @@ void QuestUI::Init() {
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
         INSTALL_HOOK(getLogger(), GameplaySetupViewController_DidActivate);
-        INSTALL_HOOK(getLogger(), MainFlowCoordinator_DidActivate);
         INSTALL_HOOK_ORIG(getLogger(), MainFlowCoordinator_TopViewControllerWillChange);
         INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
         INSTALL_HOOK(getLogger(), ModalView_Show);

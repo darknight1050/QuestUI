@@ -18,6 +18,14 @@ extern Logger& getLogger();
 
 namespace QuestUI
 {
+    SafePtrUnity<MainMenuModSettingsFlowCoordinator> MainMenuModSettingsFlowCoordinator::instance;
+    MainMenuModSettingsFlowCoordinator* MainMenuModSettingsFlowCoordinator::get_instance() {
+        if (!instance) {
+            instance = BeatSaberUI::CreateFlowCoordinator<MainMenuModSettingsFlowCoordinator*>();
+        }
+        return instance.ptr();
+    }
+
     void MainMenuModSettingsFlowCoordinator::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
         getLogger().info("MainMenuModSettingsFlowCoordinator activation");

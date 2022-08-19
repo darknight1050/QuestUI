@@ -17,7 +17,10 @@ DECLARE_CLASS_CODEGEN(QuestUI, MainMenuModSettingsFlowCoordinator, HMUI::FlowCoo
     DECLARE_OVERRIDE_METHOD(void, BackButtonWasPressed, il2cpp_utils::il2cpp_type_check::MetadataGetter<&HMUI::FlowCoordinator::BackButtonWasPressed>::get(), HMUI::ViewController* topViewController);
     DECLARE_INSTANCE_FIELD(HMUI::ViewController*, placeholder);
     public:
+        static MainMenuModSettingsFlowCoordinator* get_instance();
         ModSettingsInfos::ModSettingsInfo* currentInfo = nullptr;
         //void MyReplaceTopViewController(HMUI::ViewController* viewController, HMUI::FlowCoordinator* originalOwnerFlowCoordinator, HMUI::FlowCoordinator* newOwnerFlowCoordinator, System::Action* finishedCallback = nullptr, HMUI::ViewController::AnimationType animationType = HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection animationDirection = HMUI::ViewController::AnimationDirection::Horizontal);
         custom_types::Helpers::Coroutine EndOfFramePresentVC();
+    private:
+        static SafePtrUnity<MainMenuModSettingsFlowCoordinator> instance;
 )
