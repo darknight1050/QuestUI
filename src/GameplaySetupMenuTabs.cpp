@@ -4,6 +4,10 @@
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/Transform.hpp"
 
+#include "bsml/shared/BSML.hpp"
+#include "bsml/shared/BSML/GameplaySetup/GameplaySetupMenu.hpp"
+#include "CustomTypes/Data/TabHost.hpp"
+
 namespace QuestUI::GameplaySetupMenuTabs {
     std::vector<GameplaySetupMenu*> all = {};
     std::vector<GameplaySetupMenu*> solo = {};
@@ -36,6 +40,12 @@ namespace QuestUI::GameplaySetupMenuTabs {
         if (menu->type & Register::MenuType::Online) online.push_back(menu);
         if (menu->type & Register::MenuType::Campaign) campaign.push_back(menu);
         if (menu->type & Register::MenuType::Custom) custom.push_back(menu);
+
+        BSML::MenuType t = static_cast<BSML::MenuType>(static_cast<int>(menu->type));
+    	auto host = TabHost::New_ctor();
+        host->menu = menu;
+
+        BSML::Register::RegisterGameplaySetupTab(menu->title, MOD_ID "_gameplay", host, t);
     }
 
     void GameplaySetupMenu::CreateObject(UnityEngine::Transform* parent)
@@ -53,7 +63,7 @@ namespace QuestUI::GameplaySetupMenuTabs {
 
     UnityEngine::Component* GameplaySetupMenu::GetComponent()
     {
-        if (!il2cpp_type || !gameObject) return nullptr;
+        if (!il2cpp_type || !gameObject || !gameObject->m_CachedPtr.m_value) return nullptr;
         return gameObject->GetComponent(il2cpp_type);
     }
 

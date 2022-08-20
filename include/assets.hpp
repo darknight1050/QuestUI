@@ -44,5 +44,6 @@ struct IncludedAsset {
 namespace IncludedAssets {
 
 	DECLARE_FILE(SettingsHost_bsml)
+	DECLARE_FILE(TabHost_bsml)
 
 }
