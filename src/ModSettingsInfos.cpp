@@ -7,7 +7,9 @@
 #include "CustomTypes/Components/FlowCoordinators/MainMenuModSettingsFlowCoordinator.hpp"
 #include "CustomTypes/Data/SettingsHost.hpp"
 
+#include "custom-types/shared/delegate.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
+#include "HMUI/ViewController_DidActivateDelegate.hpp"
 
 using namespace QuestUI::ModSettingsInfos;
 
@@ -21,33 +23,42 @@ inline QuestUI::Register::MenuLocation operator&(const QuestUI::Register::MenuLo
     return static_cast<QuestUI::Register::MenuLocation>(static_cast<int>(lhs) & static_cast<int>(rhs));
 }
 
+void QuestUI::ModSettingsInfos::ModSettingsInfo::Present() {
+    auto fc = BeatSaberUI::GetMainFlowCoordinator()->YoungestChildFlowCoordinatorOrSelf();
+
+    if (type == QuestUI::Register::Type::FLOW_COORDINATOR) {
+        if (!flowCoordinator || !flowCoordinator->m_CachedPtr.m_value) {
+            flowCoordinator = BeatSaberUI::CreateFlowCoordinator(il2cpp_type);
+        }
+
+        fc->PresentFlowCoordinator(flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
+    } else if (type == QuestUI::Register::Type::VIEW_CONTROLLER) {
+        if (!viewController || !viewController->m_CachedPtr.m_value) {
+            viewController = BeatSaberUI::CreateViewController(il2cpp_type);
+            if (didActivateEvent) {
+                std::function<void(bool, bool, bool)> fun = 
+                [vc = viewController, mptr = didActivateEvent]
+                (bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+                    mptr(vc, firstActivation, addedToHierarchy, screenSystemEnabling);
+                };
+                auto didActivateDelegate = custom_types::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(fun);
+                viewController->add_didActivateEvent(didActivateDelegate);
+            }
+        }
+
+        auto modSettingsFlowCoordinator = QuestUI::MainMenuModSettingsFlowCoordinator::get_instance();
+        modSettingsFlowCoordinator->currentInfo = this;
+        fc->PresentFlowCoordinator(modSettingsFlowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, true, false);
+    }
+}
+
+
 void QuestUI::ModSettingsInfos::add(ModSettingsInfo info) {
     getLogger().info("Added ModSettingsInfo(%s|v%s, %d)", info.modInfo.id.c_str(), info.modInfo.version.c_str(), info.type);
     modSettingsInfos.push_back(info);
     
     if ((info.location & QuestUI::Register::MenuLocation::MainMenu) == QuestUI::Register::MenuLocation::MainMenu) {
-        BSML::Register::RegisterMenuButton(info.title, info.modInfo.id, 
-        [idx = modSettingsInfos.size() - 1](){
-            auto fc = BeatSaberUI::GetMainFlowCoordinator()->YoungestChildFlowCoordinatorOrSelf();
-            auto& info = modSettingsInfos[idx];
-
-            if (info.type == QuestUI::Register::Type::FLOW_COORDINATOR) {
-                if (!info.flowCoordinator || !info.flowCoordinator->m_CachedPtr.m_value) {
-                    info.flowCoordinator = BeatSaberUI::CreateFlowCoordinator(info.il2cpp_type);
-                }
-
-                fc->PresentFlowCoordinator(info.flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
-            } else if (info.type == QuestUI::Register::Type::VIEW_CONTROLLER) {
-                if (!info.viewController || !info.viewController->m_CachedPtr.m_value) {
-                    info.viewController = BeatSaberUI::CreateViewController(info.il2cpp_type);
-                }
-
-                auto modSettingsFlowCoordinator = QuestUI::MainMenuModSettingsFlowCoordinator::get_instance();
-                modSettingsFlowCoordinator->currentInfo = &info;
-                fc->PresentFlowCoordinator(modSettingsFlowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, true, false);
-            }
-        });
-
+        BSML::Register::RegisterMenuButton(info.title, info.modInfo.id, std::bind(&ModSettingsInfo::Present, &modSettingsInfos.back()));
     }
 
     if ((info.location & QuestUI::Register::MenuLocation::Settings) == QuestUI::Register::MenuLocation::Settings) {

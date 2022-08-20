@@ -3,7 +3,9 @@
 #include "BeatSaberUI.hpp"
 #include "CustomTypes/Components/FlowCoordinators/MainMenuModSettingsFlowCoordinator.hpp"
 
+#include "custom-types/shared/delegate.hpp"
 #include "HMUI/ViewController_AnimationDirection.hpp"
+#include "HMUI/ViewController_DidActivateDelegate.hpp"
 
 DEFINE_TYPE(QuestUI, SettingsHost);
 DEFINE_TYPE(QuestUI, SubSettingsHost);
@@ -45,23 +47,6 @@ namespace QuestUI {
     }
     
     void SubSettingsHost::Open() {
-        auto fc = BeatSaberUI::GetMainFlowCoordinator()->YoungestChildFlowCoordinatorOrSelf();
-        auto& info = ModSettingsInfos::get()[index];
-
-        if (info.type == Register::Type::FLOW_COORDINATOR) {
-            if (!info.flowCoordinator || !info.flowCoordinator->m_CachedPtr.m_value) {
-                info.flowCoordinator = BeatSaberUI::CreateFlowCoordinator(info.il2cpp_type);
-            }
-
-            fc->PresentFlowCoordinator(info.flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
-        } else {
-            if (!info.viewController || !info.viewController->m_CachedPtr.m_value) {
-                info.viewController = BeatSaberUI::CreateViewController(info.il2cpp_type);
-            }
-
-            auto modSettingsFlowCoordinator = QuestUI::MainMenuModSettingsFlowCoordinator::get_instance();
-            modSettingsFlowCoordinator->currentInfo = &info;
-            fc->PresentFlowCoordinator(modSettingsFlowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, true, false);
-        }
+        ModSettingsInfos::get()[index].Present();
     }
 }
