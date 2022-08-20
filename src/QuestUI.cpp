@@ -88,41 +88,6 @@ void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
     BeatSaberUI::GetMainFlowCoordinator()->PresentFlowCoordinator(flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
 }
 
-MAKE_HOOK_MATCH(GameplaySetupViewController_DidActivate, &GlobalNamespace::GameplaySetupViewController::DidActivate, void, GlobalNamespace::GameplaySetupViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
-{
-    GameplaySetupViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    
-    auto gameplaySetup = self->GetComponent<QuestUI::GameplaySetup*>();
-    if (!gameplaySetup) gameplaySetup = self->get_gameObject()->AddComponent<QuestUI::GameplaySetup*>();
-    gameplaySetup->Activate(firstActivation);
-}
-
-MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsViewController::DidActivate, void, GlobalNamespace::OptionsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
-    OptionsViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    if(firstActivation) {
-        flowCoordinator = nullptr;
-        if(GetModsCount() > 0) {
-            UnityEngine::UI::Button* avatarButton = self->settingsButton;
-            UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
-            static ConstString modSettingsStr("Mod Settings");
-            button->set_name(modSettingsStr);
-            static ConstString wrapperStr("Wrapper");
-            UnityEngine::Transform* AvatarParent = self->get_transform()->Find(wrapperStr);
-            button->get_transform()->SetParent(AvatarParent, false);
-            button->get_transform()->SetAsFirstSibling();
-            button->get_onClick()->AddListener(custom_types::MakeDelegate<UnityEngine::Events::UnityAction*>((std::function<void(UnityEngine::UI::Button*)>)OnMenuModSettingsButtonClick));
-
-            UnityEngine::Object::Destroy(button->GetComponentInChildren<Polyglot::LocalizedTextMeshProUGUI*>());
-
-            button->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(modSettingsStr);
-            HMUI::ButtonSpriteSwap* spriteSwap = button->get_gameObject()->GetComponent<HMUI::ButtonSpriteSwap*>();
-            spriteSwap->normalStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Normal);
-            spriteSwap->disabledStateSprite = spriteSwap->normalStateSprite;
-            spriteSwap->highlightStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Highlight);
-            spriteSwap->pressedStateSprite = spriteSwap->highlightStateSprite;
-        }
-    }
-}
 
 MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespace::MainFlowCoordinator::TopViewControllerWillChange, void, GlobalNamespace::MainFlowCoordinator* self, HMUI::ViewController* oldViewController, HMUI::ViewController* newViewController, HMUI::ViewController::AnimationType animationType)
 {
