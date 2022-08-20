@@ -1,0 +1,17 @@
+<settings-container xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <macro.if value='anySettings'>
+        <grid cell-size-x='28' spacing-x='3' cell-size-y='10' spacing-y='2'>
+            <macro.for-each hosts='settings'>
+                <button text='~title' hover-hint='~message' on-click='Open' pref-width='30' pref-height='9'/>
+            </macro.for-each>
+        </grid>
+    </macro.if>
+    <macro.if value='!anySettings'>
+        <horizontal preferred-width="90">
+            <text 
+                align="Center"
+                word-wrapping="true"
+                text='Sorry, there were no settings registered...'/>
+        </horizontal>
+    </macro.if>
+</settings-container>

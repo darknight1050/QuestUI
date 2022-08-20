@@ -5,6 +5,7 @@
 #include "BSML/shared/BSML.hpp"
 #include "BeatSaberUI.hpp"
 #include "CustomTypes/Components/FlowCoordinators/MainMenuModSettingsFlowCoordinator.hpp"
+#include "CustomTypes/Data/SettingsHost.hpp"
 
 #include "HMUI/ViewController_AnimationDirection.hpp"
 
@@ -19,8 +20,6 @@ std::vector<ModSettingsInfo>& QuestUI::ModSettingsInfos::get() {
 inline QuestUI::Register::MenuLocation operator&(const QuestUI::Register::MenuLocation& lhs, const QuestUI::Register::MenuLocation& rhs) {
     return static_cast<QuestUI::Register::MenuLocation>(static_cast<int>(lhs) & static_cast<int>(rhs));
 }
-
-
 
 void QuestUI::ModSettingsInfos::add(ModSettingsInfo info) {
     getLogger().info("Added ModSettingsInfo(%s|v%s, %d)", info.modInfo.id.c_str(), info.modInfo.version.c_str(), info.type);
@@ -52,6 +51,11 @@ void QuestUI::ModSettingsInfos::add(ModSettingsInfo info) {
     }
 
     if ((info.location & QuestUI::Register::MenuLocation::Settings) == QuestUI::Register::MenuLocation::Settings) {
-        // todo
+        SettingsHost::get_instance()->AddSubSetting(modSettingsInfos.size() - 1);
+        static bool registered = false;
+        if (!registered) {
+            registered = true;
+            BSML::Register::RegisterSettingsMenu("QuestUI", MOD_ID "_settings", SettingsHost::get_instance(), false);
+        }
     }
 }
