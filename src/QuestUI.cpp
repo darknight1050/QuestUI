@@ -185,31 +185,7 @@ MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &GlobalNamespace::MenuTransit
     MenuTransitionsHelper_RestartGame(self, finishCallback);
 }
 
-MAKE_HOOK_MATCH(ModalView_Show, &HMUI::ModalView::Show, void, HMUI::ModalView* self, bool animated, bool moveToCenter, System::Action* finishedCallback)
-{
-	ModalView_Show(self, animated, moveToCenter, finishedCallback); 
-	auto cb = self->blockerGO->get_gameObject()->GetComponent<UnityEngine::Canvas*>();
-	auto screen = self->get_transform()->get_parent()->get_gameObject()->GetComponentInParent<HMUI::Screen*>();
-	auto canvases = screen->get_gameObject()->GetComponentsInChildren<UnityEngine::Canvas*>();
 
-	int highest = 0;
-	for (auto& canvas : canvases) {
-		if (canvas->get_sortingLayerID() == cb->get_sortingLayerID()) {
-			// if highest lower than current, assign
-			if (highest < canvas->get_sortingOrder()) {
-				highest = canvas->get_sortingOrder();
-			}
-		}
-	}
-
-	highest ++;
-	cb->set_overrideSorting(true);
-	cb->set_sortingOrder(highest);
-
-	auto cm = self->get_gameObject()->GetComponent<UnityEngine::Canvas*>();
-	cm->set_overrideSorting(true); 
-	cm->set_sortingOrder(highest + 1);
-}
 
 bool didInit = false;
 
@@ -232,7 +208,6 @@ void QuestUI::Init() {
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
         INSTALL_HOOK_ORIG(getLogger(), MainFlowCoordinator_TopViewControllerWillChange);
         INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
-        INSTALL_HOOK(getLogger(), ModalView_Show);
         
     }
 }
