@@ -179,14 +179,23 @@ MAKE_HOOK_MATCH(UIKeyboardManager_OpenKeyboardFor, &GlobalNamespace::UIKeyboardM
 
 MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &GlobalNamespace::MenuTransitionsHelper::RestartGame, void, GlobalNamespace::MenuTransitionsHelper* self, System::Action_1<Zenject::DiContainer*>* finishCallback)
 {
+    getLogger().info("Restart Game hook");
     for (auto& info : ModSettingsInfos::get()) {
-        if (info.viewController) {
+        if (info.viewController && info.viewController->m_CachedPtr.m_value) {
             // we destroy the attached GO first, and we cast to element to prevent logs from bs hook trying to find the method on the wrong type,
             // since they are at the same offset
             UnityEngine::Object::DestroyImmediate(((UnityEngine::Component*)info.viewController)->get_gameObject());
         }
         // since viewcontroller is at the same offset as flowcoordinator we do not need to check what it is
         info.viewController = nullptr;
+    }
+
+    // we should also clear the tabs
+    for (auto& tab : GameplaySetupMenuTabs::get()) {
+        if (tab->gameObject && tab->gameObject->m_CachedPtr.m_value) {
+            UnityEngine::Object::DestroyImmediate((tab->gameObject));
+        }
+        tab->gameObject = nullptr;
     }
 
     // everything has been destroyed, clear cache!

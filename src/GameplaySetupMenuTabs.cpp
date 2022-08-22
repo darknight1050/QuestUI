@@ -63,7 +63,8 @@ namespace QuestUI::GameplaySetupMenuTabs {
 
     UnityEngine::Component* GameplaySetupMenu::GetComponent()
     {
-        if (!il2cpp_type || !gameObject || !gameObject->m_CachedPtr.m_value) return nullptr;
+        if (!il2cpp_type) return nullptr;
+        if (!gameObject || !gameObject->m_CachedPtr.m_value) return nullptr;
         return gameObject->GetComponent(il2cpp_type);
     }
 
