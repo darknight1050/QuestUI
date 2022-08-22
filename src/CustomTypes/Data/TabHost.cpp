@@ -12,9 +12,12 @@ namespace QuestUI {
         if (!root || !root->m_CachedPtr.m_value) {
             return;
         }
+
         auto activator = root->get_gameObject()->AddComponent<TabActivator*>();
         activator->tabHost = this;
+    }
 
+    void TabHost::OptionallyCreateObject() {
         auto c = menu->GetComponent();
         if (!c && menu->il2cpp_type) {
             menu->CreateObject(root);
@@ -22,6 +25,7 @@ namespace QuestUI {
     }
 
     void TabActivator::OnEnable() {
+        tabHost->OptionallyCreateObject();
         tabHost->menu->Activate();
     }
 

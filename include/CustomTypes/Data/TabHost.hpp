@@ -7,6 +7,7 @@
 DECLARE_CLASS_CODEGEN(QuestUI, TabHost, Il2CppObject,
     DECLARE_INSTANCE_FIELD(UnityEngine::Transform*, root);
     DECLARE_INSTANCE_METHOD(void, PostParse);
+    DECLARE_INSTANCE_METHOD(void, OptionallyCreateObject);
     public:
         QuestUI::GameplaySetupMenuTabs::GameplaySetupMenu* menu;
         DECLARE_DEFAULT_CTOR();
