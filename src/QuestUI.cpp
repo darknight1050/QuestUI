@@ -9,13 +9,10 @@
 
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Data/CustomDataType.hpp"
-#include "CustomTypes/Components/GameplaySetup.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
-#include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
-#include "CustomTypes/Components/ViewControllers/MainMenuModSettingsViewController.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenMoverPointer.hpp"
@@ -71,23 +68,9 @@ Logger& getLogger() {
     return *logger;
 }
 
-ModSettingsFlowCoordinator* flowCoordinator = nullptr;
-
-HMUI::FlowCoordinator* QuestUI::GetModSettingsFlowCoordinator() {
-    return flowCoordinator;
-}
-
 int QuestUI::GetModsCount() {
     return ModSettingsInfos::get().size();
 }
-
-void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
-    getLogger().info("MenuModSettingsButtonClick");
-    if(!flowCoordinator)
-        flowCoordinator = BeatSaberUI::CreateFlowCoordinator<ModSettingsFlowCoordinator*>();
-    BeatSaberUI::GetMainFlowCoordinator()->PresentFlowCoordinator(flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
-}
-
 
 MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespace::MainFlowCoordinator::TopViewControllerWillChange, void, GlobalNamespace::MainFlowCoordinator* self, HMUI::ViewController* oldViewController, HMUI::ViewController* newViewController, HMUI::ViewController::AnimationType animationType)
 {

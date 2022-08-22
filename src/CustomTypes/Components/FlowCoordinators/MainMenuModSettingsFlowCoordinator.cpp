@@ -34,7 +34,7 @@ namespace QuestUI
             getLogger().info("First activation");
             showBackButton = true;
             SetTitle("PlaceHolder", HMUI::ViewController::AnimationType::Out);
-            placeholder = BeatSaberUI::CreateViewController<MainMenuModSettingsPlaceholderViewController*>();
+            placeholder = BeatSaberUI::CreateViewController<HMUI::ViewController*>();
             ProvideInitialViewControllers(placeholder, nullptr, nullptr, nullptr, nullptr);
         }
 
@@ -42,11 +42,6 @@ namespace QuestUI
     }
 
     void MainMenuModSettingsFlowCoordinator::BackButtonWasPressed(HMUI::ViewController* topViewController) {
-        /*
-        if (topViewController != placeholder) {
-            ReplaceTopViewController(placeholder, this, this, nullptr, HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection::Horizontal);
-        }
-        */
         parentFlowCoordinator->DismissFlowCoordinator(this, HMUI::ViewController::AnimationDirection::Horizontal, nullptr, false);
     }
 
@@ -70,39 +65,4 @@ namespace QuestUI
 
         co_return;
     }
-
-    /*
-    void MyReplaceTopViewController(HMUI::ViewController* viewController, HMUI::FlowCoordinator* originalOwnerFlowCoordinator, HMUI::FlowCoordinator* newOwnerFlowCoordinator, System::Action* finishedCallback = nullptr, HMUI::ViewController::AnimationType animationType = HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection animationDirection = HMUI::ViewController::AnimationDirection::Horizontal)
-    {
-        int count = 
-        auto originalTopViewController = originalOwnerFlowCoordinator->mainScreenViewControllers->items->values[originalOwnerFlowCoordinator->mainScreenViewControllers->get_Count() - 1];
-		if (originalTopViewController)
-        originalOwnerFlowCoordinator._mainScreenViewControllers.Remove(originalTopViewController);
-		newOwnerFlowCoordinator._mainScreenViewControllers.Add(viewController);
-		if (animationType != ViewController.AnimationType.None)
-		{
-			this.SetGlobalUserInteraction(false);
-		}
-		if (!originalTopViewController.isInTransition && !this._isInTransition)
-		{
-			this.TransitionDidStart();
-		}
-		originalTopViewController.__ReplaceViewController(viewController, delegate
-		{
-			if (animationType != ViewController.AnimationType.None)
-			{
-				this.SetGlobalUserInteraction(true);
-			}
-			Action finishedCallback2 = finishedCallback;
-			if (finishedCallback2 != null)
-			{
-				finishedCallback2();
-			}
-			if (!originalTopViewController.isInTransition && this._isInTransition)
-			{
-				this.TransitionDidFinish();
-			}
-		}, animationType, animationDirection);
-    }
-    */
 }

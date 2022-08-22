@@ -1,5 +1,4 @@
 #include "GameplaySetupMenuTabs.hpp"
-#include "CustomTypes/Components/GameplaySetup.hpp"
 
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/Transform.hpp"
@@ -58,7 +57,6 @@ namespace QuestUI::GameplaySetupMenuTabs {
         {
             gameObject->AddComponent(il2cpp_type);
         }
-        gameObject->AddComponent<GameplaySetupTabMB*>()->Init(this);
     }
 
     UnityEngine::Component* GameplaySetupMenu::GetComponent()
