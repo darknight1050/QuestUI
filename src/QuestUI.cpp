@@ -72,51 +72,6 @@ int QuestUI::GetModsCount() {
     return ModSettingsInfos::get().size();
 }
 
-MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespace::MainFlowCoordinator::TopViewControllerWillChange, void, GlobalNamespace::MainFlowCoordinator* self, HMUI::ViewController* oldViewController, HMUI::ViewController* newViewController, HMUI::ViewController::AnimationType animationType)
-{
-    // doesnt call orig!
-    if (newViewController->Equals(self->mainMenuViewController))
-	{
-		self->SetLeftScreenViewController(self->providedLeftScreenViewController, animationType);
-		self->SetRightScreenViewController(self->providedRightScreenViewController, animationType);
-		self->SetBottomScreenViewController(nullptr, animationType);
-	}
-	else
-	{
-		self->SetLeftScreenViewController(nullptr, animationType);
-		self->SetRightScreenViewController(nullptr, animationType);
-		self->SetBottomScreenViewController(nullptr, animationType);
-	}
-    
-    /*
-	if (newViewController->Equals(self->howToPlayViewController))
-	{
-        static ConstString LABEL_HOW_TO_PLAY("LABEL_HOW_TO_PLAY");
-        self->SetTitle(Polyglot::Localization::Get(LABEL_HOW_TO_PLAY), animationType);
-		self->SetBottomScreenViewController(self->playerStatisticsViewController, animationType);
-        self->set_showBackButton(true);
-		return;
-	}
-    */
-
-	if (newViewController->Equals(self->playerOptionsViewController))
-	{
-        static ConstString BUTTON_PLAYER_OPTIONS("BUTTON_PLAYER_OPTIONS");
-        self->SetTitle(Polyglot::Localization::Get(BUTTON_PLAYER_OPTIONS), animationType);
-        self->set_showBackButton(true);
-		return;
-	}
-	if (newViewController->Equals(self->optionsViewController))
-	{
-        static ConstString LABEL_OPTIONS("LABEL_OPTIONS");
-        self->SetTitle(Polyglot::Localization::Get(LABEL_OPTIONS), animationType);
-        self->set_showBackButton(true);
-		return;
-	}
-	self->SetTitle("", animationType);
-    self->set_showBackButton(false);
-}
-
 MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
     SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
     BeatSaberUI::ClearCache();
@@ -206,7 +161,6 @@ void QuestUI::Init() {
         custom_types::Register::AutoRegister();
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
-        INSTALL_HOOK_ORIG(getLogger(), MainFlowCoordinator_TopViewControllerWillChange);
         INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
         
     }
