@@ -58,7 +58,11 @@ void QuestUI::ModSettingsInfos::add(ModSettingsInfo info) {
     modSettingsInfos.push_back(info);
     
     if ((info.location & QuestUI::Register::MenuLocation::MainMenu) == QuestUI::Register::MenuLocation::MainMenu) {
-        BSML::Register::RegisterMenuButton(info.title, info.modInfo.id, std::bind(&ModSettingsInfo::Present, &modSettingsInfos.back()));
+        BSML::Register::RegisterMenuButton(info.title, info.modInfo.id,
+            [idx = modSettingsInfos.size() - 1](){
+                ModSettingsInfos::get()[idx].Present();
+            }
+        );
     }
 
     if ((info.location & QuestUI::Register::MenuLocation::Settings) == QuestUI::Register::MenuLocation::Settings) {
