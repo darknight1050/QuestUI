@@ -131,9 +131,10 @@ MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &GlobalNamespace::MenuTransit
     // we should also clear the tabs
     for (auto& tab : GameplaySetupMenuTabs::get()) {
         if (tab->gameObject && tab->gameObject->m_CachedPtr.m_value) {
-            UnityEngine::Object::DestroyImmediate((tab->gameObject));
+            UnityEngine::Object::DestroyImmediate(tab->gameObject);
         }
         tab->gameObject = nullptr;
+        tab->activatedBefore = false;
     }
 
     // everything has been destroyed, clear cache!
