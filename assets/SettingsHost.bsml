@@ -1,6 +1,6 @@
 <settings-container xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
     <macro.if value='anySettings'>
-        <grid cell-size-x='29' spacing-x='1.5' cell-size-y='9' spacing-y='1'>
+        <grid pref-width='90' horizontal-fit='PreferredSize' cell-size-x='30' spacing-x='0' cell-size-y='10' spacing-y='0'>
             <macro.for-each hosts='settings'>
                 <button text='~title' hover-hint='~message' on-click='Open' pref-width='28' pref-height='9'/>
             </macro.for-each>

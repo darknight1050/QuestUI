@@ -4,8 +4,6 @@
 
 #include "QuestUI.hpp"
 
-
-
 namespace QuestUI::ModSettingsInfos {
 
     struct ModSettingsInfo {
