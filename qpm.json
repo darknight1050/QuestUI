@@ -4,12 +4,14 @@
   "info": {
     "name": "QuestUI",
     "id": "questui",
-    "version": "0.0.1",
+    "version": "0.16.5",
     "url": "https://github.com/darknight1050/QuestUI",
     "additionalData": {
       "overrideSoName": "libquestui.so",
       "compileOptions": {
-        "systemIncludes": ["shared/cppcodec"]
+        "systemIncludes": [
+          "shared/cppcodec"
+        ]
       }
     }
   },
