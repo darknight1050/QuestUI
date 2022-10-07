@@ -2,7 +2,7 @@
 #include "ModSettingsInfos.hpp"
 #include "customlogger.hpp"
 
-#include "BSML/shared/BSML.hpp"
+#include "bsml/shared/BSML.hpp"
 #include "BeatSaberUI.hpp"
 #include "CustomTypes/Components/FlowCoordinators/MainMenuModSettingsFlowCoordinator.hpp"
 #include "CustomTypes/Data/SettingsHost.hpp"
