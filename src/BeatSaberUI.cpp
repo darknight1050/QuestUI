@@ -9,7 +9,6 @@
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
 #include "CustomTypes/Components/List/QuestUITableView.hpp"
-#include "CustomTypes/Components/WeakPtrGO.hpp"
 #include "CustomTypes/Components/ProgressBar/ProgressBar.hpp"
 
 #include "GlobalNamespace/UIKeyboardManager.hpp"
@@ -288,7 +287,6 @@ namespace QuestUI::BeatSaberUI {
         diContainer = nullptr;
         platformHelper = nullptr;
         physicsRaycaster = nullptr;
-        QuestUI::WeakPtrHolder::goComponentMap.clear();
     }
 
     GameObject* CreateCanvas() {
@@ -314,7 +312,7 @@ namespace QuestUI::BeatSaberUI {
         return go;
     }
 
-    static WeakPtrGO<Canvas> innerCanvasTemplate;
+    static SafePtrUnity<Canvas> innerCanvasTemplate;
 
     static Canvas* getCanvasTemplate() {
         if (!innerCanvasTemplate)
@@ -322,7 +320,7 @@ namespace QuestUI::BeatSaberUI {
                 return x->get_name() == "DropdownTableView";
             });
 
-        return innerCanvasTemplate.getInner();
+        return innerCanvasTemplate.ptr();
     }
 
     ViewController* CreateViewController(System::Type* type) {
@@ -522,13 +520,13 @@ namespace QuestUI::BeatSaberUI {
     }
 
     Button* CreateUIButton(Transform* parent, StringW buttonText, std::string_view buttonTemplate, std::function<void()> onClick) {
-        static std::unordered_map<std::string, WeakPtrGO<Button>> buttonCopyMap;
+        static std::unordered_map<std::string, SafePtrUnity<Button>> buttonCopyMap;
         auto& buttonCopy = buttonCopyMap[std::string(buttonTemplate)];
         if (!buttonCopy) {
             buttonCopy = Resources::FindObjectsOfTypeAll<Button*>().LastOrDefault([&buttonTemplate](auto* x) { return x->get_name() == buttonTemplate; });
         }
 
-        Button* button = Object::Instantiate(buttonCopy.getInner(), parent, false);
+        Button* button = Object::Instantiate(buttonCopy.ptr(), parent, false);
         button->set_onClick(Button::ButtonClickedEvent::New_ctor());
         static ConstString name("QuestUIButton");
         button->set_name(name);
@@ -598,7 +596,7 @@ namespace QuestUI::BeatSaberUI {
 
 
     Toggle * CreateModifierButton(UnityEngine::Transform *parent, StringW buttonText, bool currentValue, UnityEngine::Sprite *iconSprite, std::function<void(bool)> const &onClick, UnityEngine::Vector2 anchoredPosition) {
-        static WeakPtrGO <GameplayModifierToggle> toggleTemplate;
+        static SafePtrUnity<GameplayModifierToggle> toggleTemplate;
         if (!toggleTemplate)
             toggleTemplate = Resources::FindObjectsOfTypeAll<GameplayModifierToggle *>().First( [](GameplayModifierToggle * x) { return x->get_name() == "InstaFail"; });
 
@@ -823,14 +821,14 @@ namespace QuestUI::BeatSaberUI {
     
     Toggle* CreateToggle(Transform* parent, StringW text, bool currentValue, UnityEngine::Vector2 anchoredPosition, std::function<void(bool)> onValueChange)
     {
-        static WeakPtrGO<GameObject> toggleCopy;
+        static SafePtrUnity<GameObject> toggleCopy;
         if (!toggleCopy) {
             auto foundToggle = Resources::FindObjectsOfTypeAll<Toggle*>().FirstOrDefault([](auto x) { return x->get_transform()->get_parent()->get_gameObject()->get_name() == "Fullscreen"; });
             toggleCopy = foundToggle ? foundToggle->get_transform()->get_parent()->get_gameObject() : nullptr;
         }
 
 
-        GameObject* gameObject = Object::Instantiate(toggleCopy.getInner(), parent, false);
+        GameObject* gameObject = Object::Instantiate(toggleCopy.ptr(), parent, false);
         static ConstString nameTextName("NameText");
         GameObject* nameText = gameObject->get_transform()->Find(nameTextName)->get_gameObject();
         Object::Destroy(gameObject->GetComponent<BoolSettingsController*>());
@@ -878,12 +876,12 @@ namespace QuestUI::BeatSaberUI {
         HoverHint* hoverHint = gameObject->AddComponent<HoverHint*>();
         hoverHint->set_text(text);
 
-        static WeakPtrGO<HoverHintController> hoverHintController;
+        static SafePtrUnity<HoverHintController> hoverHintController;
         if (!hoverHintController) {
             hoverHintController = Resources::FindObjectsOfTypeAll<HoverHintController*>().First();
         }
 
-        hoverHint->hoverHintController = hoverHintController;
+        hoverHint->hoverHintController = hoverHintController.ptr();
         return hoverHint;
     }
 
@@ -903,14 +901,14 @@ namespace QuestUI::BeatSaberUI {
         return CreateIncrementSetting(parent, text, decimals, increment, currentValue, true, true, minValue, maxValue, anchoredPosition, onValueChange);
     }
 
-    static WeakPtrGO<FormattedFloatListSettingsValueController> innerFormattedListSettingsValueController;
+    static SafePtrUnity<FormattedFloatListSettingsValueController> innerFormattedListSettingsValueController;
 
     FormattedFloatListSettingsValueController* getValueTemplate() {
         if (!innerFormattedListSettingsValueController) {
             innerFormattedListSettingsValueController = Resources::FindObjectsOfTypeAll<FormattedFloatListSettingsValueController*>().First([](FormattedFloatListSettingsValueController* x){ return x->get_name() == "VRRenderingScale"; });
         }
 
-        return innerFormattedListSettingsValueController.getInner();
+        return innerFormattedListSettingsValueController.ptr();
     }
 
     IncrementSetting* CreateIncrementSetting(Transform* parent, StringW text, int decimals, float increment, float currentValue, bool hasMin, bool hasMax, float minValue, float maxValue, UnityEngine::Vector2 anchoredPosition, std::function<void(float)> onValueChange) {
@@ -988,7 +986,7 @@ namespace QuestUI::BeatSaberUI {
         static ConstString ValuePicker_cs("ValuePicker");
         Object::Destroy(gameObject->get_transform()->Find(ValuePicker_cs)->get_gameObject());
 
-        static WeakPtrGO<TimeSlider> timeSliderTemplate;
+        static SafePtrUnity<TimeSlider> timeSliderTemplate;
 
         if (!timeSliderTemplate) {
             timeSliderTemplate = Resources::FindObjectsOfTypeAll<TimeSlider *>().First([](auto s) {
@@ -999,7 +997,7 @@ namespace QuestUI::BeatSaberUI {
             });
         }
 
-        sliderSetting->slider = Object::Instantiate(timeSliderTemplate.getInner(), gameObject->get_transform(), false);
+        sliderSetting->slider = Object::Instantiate(timeSliderTemplate.ptr(), gameObject->get_transform(), false);
         sliderSetting->Setup(minValue, maxValue, value, increment, applyValueTime, std::move(onValueChange));
         static ConstString QuestUISlider_cs("QuestUISlider");
         sliderSetting->slider->set_name(QuestUISlider_cs);
@@ -1035,11 +1033,11 @@ namespace QuestUI::BeatSaberUI {
     }
 
     GameObject* CreateScrollView(Transform* parent) {
-        static WeakPtrGO<TextPageScrollView> textScrollViewClone;
+        static SafePtrUnity<TextPageScrollView> textScrollViewClone;
         if (!textScrollViewClone) {
             textScrollViewClone = Resources::FindObjectsOfTypeAll<ReleaseInfoViewController *>().First()->textPageScrollView;
         }
-        auto textScrollView = Object::Instantiate(textScrollViewClone.getInner(), parent);
+        auto textScrollView = Object::Instantiate(textScrollViewClone.ptr(), parent);
         static ConstString textScrollViewName("QuestUIScrollView");
         textScrollView->set_name(textScrollViewName);
         Button* pageUpButton = textScrollView->pageUpButton;
@@ -1132,7 +1130,7 @@ namespace QuestUI::BeatSaberUI {
     }
     
     InputFieldView* CreateStringSetting(Transform* parent, StringW settingsName, StringW currentValue, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector3 keyboardPositionOffset, std::function<void(StringW)> onValueChange) {
-        static WeakPtrGO<InputFieldView> originalFieldView;
+        static SafePtrUnity<InputFieldView> originalFieldView;
         if (!originalFieldView) {
             originalFieldView = Resources::FindObjectsOfTypeAll<InputFieldView *>().First(
             [](InputFieldView *x) {
@@ -1326,9 +1324,9 @@ namespace QuestUI::BeatSaberUI {
         colorPicker->Setup(defaultColor, onChange, onDone, onCancel);
         colorPicker->modalView = modal;
 
-        static WeakPtrGO<RGBPanelController> rgbTemplate;
-        static WeakPtrGO<HSVPanelController> hsvTemplate;
-        static WeakPtrGO<ImageView> currentColorTemplate;
+        static SafePtrUnity<RGBPanelController> rgbTemplate;
+        static SafePtrUnity<HSVPanelController> hsvTemplate;
+        static SafePtrUnity<ImageView> currentColorTemplate;
 
         if (!rgbTemplate)
             rgbTemplate = Resources::FindObjectsOfTypeAll<RGBPanelController*>().First([](auto x){ return x->get_name() == "RGBColorPicker"; });
@@ -1344,7 +1342,7 @@ namespace QuestUI::BeatSaberUI {
             return parent->get_name() == "ColorSchemeView";
         });
 
-        auto rgbController = Object::Instantiate(rgbTemplate.getInner(), gameObject->get_transform(), false);
+        auto rgbController = Object::Instantiate(rgbTemplate.ptr(), gameObject->get_transform(), false);
         static ConstString QuestUIRGBPanel_cs("QuestUIRGBPanel");
         rgbController->set_name(QuestUIRGBPanel_cs);
         auto rectTransform = reinterpret_cast<RectTransform*>(rgbController->get_transform());
@@ -1358,7 +1356,7 @@ namespace QuestUI::BeatSaberUI {
         auto delegate = MakeDelegate(DelegateType, OnChange);
         rgbController->add_colorDidChangeEvent(delegate);
 
-        auto hsvController = Object::Instantiate(hsvTemplate.getInner(), gameObject->get_transform(), false);
+        auto hsvController = Object::Instantiate(hsvTemplate.ptr(), gameObject->get_transform(), false);
         static ConstString QuestUIHSVPanel_cs("QuestUIHSVPanel");
         hsvController->set_name(QuestUIHSVPanel_cs);
         rectTransform = reinterpret_cast<RectTransform*>(hsvController->get_transform());
@@ -1369,7 +1367,7 @@ namespace QuestUI::BeatSaberUI {
         
         hsvController->add_colorDidChangeEvent(delegate);
 
-        auto colorImage = Object::Instantiate(currentColorTemplate.getInner(), gameObject->get_transform(), false);
+        auto colorImage = Object::Instantiate(currentColorTemplate.ptr(), gameObject->get_transform(), false);
         static ConstString QuestUICurrentColor_cs("QuestUICurrentColor");
         colorImage->set_name(QuestUICurrentColor_cs);
         rectTransform = reinterpret_cast<RectTransform*>(colorImage->get_transform());
@@ -1824,7 +1822,7 @@ namespace QuestUI::BeatSaberUI {
 
     QuestUI::CustomTextSegmentedControlData* CreateTextSegmentedControl(UnityEngine::Transform* parent, UnityEngine::Vector2 anchoredPosition, UnityEngine::Vector2 sizeDelta, ArrayW<StringW> values, std::function<void(int)> onCellWithIdxClicked)
     {
-        static WeakPtrGO<TextSegmentedControl> segmentedControlTemplate;
+        static SafePtrUnity<TextSegmentedControl> segmentedControlTemplate;
         if (!segmentedControlTemplate)
             segmentedControlTemplate = Resources::FindObjectsOfTypeAll<HMUI::TextSegmentedControl*>().First([](auto x){
             if (x->get_name() != "TextSegmentedControl") return false;
