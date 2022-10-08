@@ -4,8 +4,6 @@
 
 #include "QuestUI.hpp"
 
-
-
 namespace QuestUI::ModSettingsInfos {
 
     struct ModSettingsInfo {
@@ -20,6 +18,7 @@ namespace QuestUI::ModSettingsInfos {
         };
         Register::DidActivateEvent didActivateEvent;
         Register::MenuLocation location;
+        void Present();
     };
 
     std::vector<ModSettingsInfo>& get();

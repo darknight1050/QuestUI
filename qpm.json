@@ -9,7 +9,9 @@
     "additionalData": {
       "overrideSoName": "libquestui.so",
       "compileOptions": {
-        "systemIncludes": ["shared/cppcodec"]
+        "systemIncludes": [
+          "shared/cppcodec"
+        ]
       }
     }
   },
@@ -25,7 +27,7 @@
     },
     {
       "id": "codegen",
-      "versionRange": "^0.26.2",
+      "versionRange": "^0.27.0",
       "additionalData": {}
     },
     {
@@ -36,6 +38,11 @@
     {
       "id": "modloader",
       "versionRange": "^1.2.3",
+      "additionalData": {}
+    },
+    {
+      "id": "bsml",
+      "versionRange": "^0.2.0",
       "additionalData": {}
     }
   ],

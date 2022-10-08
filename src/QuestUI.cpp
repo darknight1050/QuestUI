@@ -9,13 +9,10 @@
 
 #include "CustomTypes/Components/ExternalComponents.hpp"
 #include "CustomTypes/Data/CustomDataType.hpp"
-#include "CustomTypes/Components/GameplaySetup.hpp"
 #include "CustomTypes/Components/Backgroundable.hpp"
 #include "CustomTypes/Components/ScrollViewContent.hpp"
 #include "CustomTypes/Components/MainThreadScheduler.hpp"
 #include "CustomTypes/Components/Settings/IncrementSetting.hpp"
-#include "CustomTypes/Components/FlowCoordinators/ModSettingsFlowCoordinator.hpp"
-#include "CustomTypes/Components/ViewControllers/MainMenuModSettingsViewController.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenManager.hpp"
 #include "CustomTypes/Components/FloatingScreen/FloatingScreenMoverPointer.hpp"
@@ -61,6 +58,9 @@
 
 #include "customlogger.hpp"
 
+#include "bsml/shared/BSMLDataCache.hpp"
+#include "assets.hpp"
+
 using namespace QuestUI;
 
 Logger& getLogger() {
@@ -68,117 +68,8 @@ Logger& getLogger() {
     return *logger;
 }
 
-ModSettingsFlowCoordinator* flowCoordinator = nullptr;
-
-HMUI::FlowCoordinator* QuestUI::GetModSettingsFlowCoordinator() {
-    return flowCoordinator;
-}
-
 int QuestUI::GetModsCount() {
     return ModSettingsInfos::get().size();
-}
-
-void OnMenuModSettingsButtonClick(UnityEngine::UI::Button* button) {
-    getLogger().info("MenuModSettingsButtonClick");
-    if(!flowCoordinator)
-        flowCoordinator = BeatSaberUI::CreateFlowCoordinator<ModSettingsFlowCoordinator*>();
-    BeatSaberUI::GetMainFlowCoordinator()->PresentFlowCoordinator(flowCoordinator, nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false);
-}
-
-MAKE_HOOK_MATCH(GameplaySetupViewController_DidActivate, &GlobalNamespace::GameplaySetupViewController::DidActivate, void, GlobalNamespace::GameplaySetupViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
-{
-    GameplaySetupViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    
-    auto gameplaySetup = self->GetComponent<QuestUI::GameplaySetup*>();
-    if (!gameplaySetup) gameplaySetup = self->get_gameObject()->AddComponent<QuestUI::GameplaySetup*>();
-    gameplaySetup->Activate(firstActivation);
-}
-
-MAKE_HOOK_MATCH(OptionsViewController_DidActivate, &GlobalNamespace::OptionsViewController::DidActivate, void, GlobalNamespace::OptionsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
-    OptionsViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    if(firstActivation) {
-        flowCoordinator = nullptr;
-        if(GetModsCount() > 0) {
-            UnityEngine::UI::Button* avatarButton = self->settingsButton;
-            UnityEngine::UI::Button* button = UnityEngine::Object::Instantiate(avatarButton);
-            static ConstString modSettingsStr("Mod Settings");
-            button->set_name(modSettingsStr);
-            static ConstString wrapperStr("Wrapper");
-            UnityEngine::Transform* AvatarParent = self->get_transform()->Find(wrapperStr);
-            button->get_transform()->SetParent(AvatarParent, false);
-            button->get_transform()->SetAsFirstSibling();
-            button->get_onClick()->AddListener(custom_types::MakeDelegate<UnityEngine::Events::UnityAction*>((std::function<void(UnityEngine::UI::Button*)>)OnMenuModSettingsButtonClick));
-
-            UnityEngine::Object::Destroy(button->GetComponentInChildren<Polyglot::LocalizedTextMeshProUGUI*>());
-
-            button->GetComponentInChildren<TMPro::TextMeshProUGUI*>()->SetText(modSettingsStr);
-            HMUI::ButtonSpriteSwap* spriteSwap = button->get_gameObject()->GetComponent<HMUI::ButtonSpriteSwap*>();
-            spriteSwap->normalStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Normal);
-            spriteSwap->disabledStateSprite = spriteSwap->normalStateSprite;
-            spriteSwap->highlightStateSprite = BeatSaberUI::Base64ToSprite(ModSettingsButtonSprite_Highlight);
-            spriteSwap->pressedStateSprite = spriteSwap->highlightStateSprite;
-        }
-    }
-}
-
-MAKE_HOOK_MATCH(MainFlowCoordinator_DidActivate, &GlobalNamespace::MainFlowCoordinator::DidActivate, void, GlobalNamespace::MainFlowCoordinator* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
-{
-    getLogger().info("MainFlowCoordinator_DidActivate called!");
-	// when activating, we want to provide our own view controller for the left screen, so just take whatever is activated and display ours for right
-    auto& vec = QuestUI::ModSettingsInfos::get();
-    auto itr = std::find_if(vec.begin(), vec.end(), [](auto& x) -> bool{ return (x.location & Register::MenuLocation::MainMenu); });
-    if (firstActivation && itr != vec.end()){
-        auto vc = BeatSaberUI::CreateViewController<MainMenuModSettingsViewController*>();
-    	MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-        self->providedLeftScreenViewController = vc;
-        self->SetLeftScreenViewController(vc, HMUI::ViewController::AnimationType::In);
-    }
-    else MainFlowCoordinator_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-}
-
-MAKE_HOOK_MATCH(MainFlowCoordinator_TopViewControllerWillChange, &GlobalNamespace::MainFlowCoordinator::TopViewControllerWillChange, void, GlobalNamespace::MainFlowCoordinator* self, HMUI::ViewController* oldViewController, HMUI::ViewController* newViewController, HMUI::ViewController::AnimationType animationType)
-{
-    // doesnt call orig!
-    if (newViewController->Equals(self->mainMenuViewController))
-	{
-		self->SetLeftScreenViewController(self->providedLeftScreenViewController, animationType);
-		self->SetRightScreenViewController(self->providedRightScreenViewController, animationType);
-		self->SetBottomScreenViewController(nullptr, animationType);
-	}
-	else
-	{
-		self->SetLeftScreenViewController(nullptr, animationType);
-		self->SetRightScreenViewController(nullptr, animationType);
-		self->SetBottomScreenViewController(nullptr, animationType);
-	}
-    
-    /*
-	if (newViewController->Equals(self->howToPlayViewController))
-	{
-        static ConstString LABEL_HOW_TO_PLAY("LABEL_HOW_TO_PLAY");
-        self->SetTitle(Polyglot::Localization::Get(LABEL_HOW_TO_PLAY), animationType);
-		self->SetBottomScreenViewController(self->playerStatisticsViewController, animationType);
-        self->set_showBackButton(true);
-		return;
-	}
-    */
-
-	if (newViewController->Equals(self->playerOptionsViewController))
-	{
-        static ConstString BUTTON_PLAYER_OPTIONS("BUTTON_PLAYER_OPTIONS");
-        self->SetTitle(Polyglot::Localization::Get(BUTTON_PLAYER_OPTIONS), animationType);
-        self->set_showBackButton(true);
-		return;
-	}
-	if (newViewController->Equals(self->optionsViewController))
-	{
-        static ConstString LABEL_OPTIONS("LABEL_OPTIONS");
-        self->SetTitle(Polyglot::Localization::Get(LABEL_OPTIONS), animationType);
-        self->set_showBackButton(true);
-		return;
-	}
-	self->SetTitle("", animationType);
-    self->set_showBackButton(false);
 }
 
 MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
@@ -226,8 +117,9 @@ MAKE_HOOK_MATCH(UIKeyboardManager_OpenKeyboardFor, &GlobalNamespace::UIKeyboardM
 
 MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &GlobalNamespace::MenuTransitionsHelper::RestartGame, void, GlobalNamespace::MenuTransitionsHelper* self, System::Action_1<Zenject::DiContainer*>* finishCallback)
 {
+    getLogger().info("Restart Game hook");
     for (auto& info : ModSettingsInfos::get()) {
-        if (info.viewController) {
+        if (info.viewController && info.viewController->m_CachedPtr.m_value) {
             // we destroy the attached GO first, and we cast to element to prevent logs from bs hook trying to find the method on the wrong type,
             // since they are at the same offset
             UnityEngine::Object::DestroyImmediate(((UnityEngine::Component*)info.viewController)->get_gameObject());
@@ -236,35 +128,20 @@ MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &GlobalNamespace::MenuTransit
         info.viewController = nullptr;
     }
 
+    // we should also clear the tabs
+    for (auto& tab : GameplaySetupMenuTabs::get()) {
+        if (tab->gameObject && tab->gameObject->m_CachedPtr.m_value) {
+            UnityEngine::Object::DestroyImmediate(tab->gameObject);
+        }
+        tab->gameObject = nullptr;
+        tab->activatedBefore = false;
+    }
+
     // everything has been destroyed, clear cache!
     MenuTransitionsHelper_RestartGame(self, finishCallback);
 }
 
-MAKE_HOOK_MATCH(ModalView_Show, &HMUI::ModalView::Show, void, HMUI::ModalView* self, bool animated, bool moveToCenter, System::Action* finishedCallback)
-{
-	ModalView_Show(self, animated, moveToCenter, finishedCallback); 
-	auto cb = self->blockerGO->get_gameObject()->GetComponent<UnityEngine::Canvas*>();
-	auto screen = self->get_transform()->get_parent()->get_gameObject()->GetComponentInParent<HMUI::Screen*>();
-	auto canvases = screen->get_gameObject()->GetComponentsInChildren<UnityEngine::Canvas*>();
 
-	int highest = 0;
-	for (auto& canvas : canvases) {
-		if (canvas->get_sortingLayerID() == cb->get_sortingLayerID()) {
-			// if highest lower than current, assign
-			if (highest < canvas->get_sortingOrder()) {
-				highest = canvas->get_sortingOrder();
-			}
-		}
-	}
-
-	highest ++;
-	cb->set_overrideSorting(true);
-	cb->set_sortingOrder(highest);
-
-	auto cm = self->get_gameObject()->GetComponent<UnityEngine::Canvas*>();
-	cm->set_overrideSorting(true); 
-	cm->set_sortingOrder(highest + 1);
-}
 
 bool didInit = false;
 
@@ -283,14 +160,9 @@ void QuestUI::Init() {
         il2cpp_functions::Class_Init(classof(HMUI::CurvedTextMeshPro*));
 
         custom_types::Register::AutoRegister();
-        INSTALL_HOOK(getLogger(), OptionsViewController_DidActivate);
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
-        INSTALL_HOOK(getLogger(), GameplaySetupViewController_DidActivate);
-        INSTALL_HOOK(getLogger(), MainFlowCoordinator_DidActivate);
-        INSTALL_HOOK_ORIG(getLogger(), MainFlowCoordinator_TopViewControllerWillChange);
         INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
-        INSTALL_HOOK(getLogger(), ModalView_Show);
         
     }
 }
@@ -321,4 +193,13 @@ void Register::RegisterGameplaySetupMenu(ModInfo modInfo, std::string_view title
     menu->gameObject = nullptr;
     menu->gameplaySetupMenuEvent = setupEvent;
     GameplaySetupMenuTabs::add(menu);
+}
+
+
+BSML_DATACACHE(settings) {
+    return IncludedAssets::SettingsHost_bsml;
+}
+
+BSML_DATACACHE(gameplay) {
+    return IncludedAssets::TabHost_bsml;
 }
