@@ -18,8 +18,7 @@ namespace QuestUI {
     }
 
     void TabHost::OptionallyCreateObject() {
-        auto c = menu->GetComponent();
-        if (!c && menu->il2cpp_type && root && root->m_CachedPtr.m_value) {
+        if (!menu->gameObject || !menu->gameObject->m_CachedPtr.m_value && root && root->m_CachedPtr.m_value) {
             menu->CreateObject(root);
         }
     }
