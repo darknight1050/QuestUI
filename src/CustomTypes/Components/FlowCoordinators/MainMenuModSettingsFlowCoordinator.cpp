@@ -60,7 +60,11 @@ namespace QuestUI
                     currentInfo->viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(currentInfo->viewController, currentInfo->didActivateEvent));
             }
             SetTitle(currentInfo->title, HMUI::ViewController::AnimationType::Out);
-            ReplaceTopViewController(currentInfo->viewController, this, this, nullptr, HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection::Horizontal);
+            if (!mainScreenViewControllers->Contains(currentInfo->viewController)) {
+                ReplaceTopViewController(currentInfo->viewController, this, this, nullptr, HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection::Horizontal);
+            } else {
+                currentInfo->viewController->__Activate(false, false);
+            }
         }
 
         co_return;
