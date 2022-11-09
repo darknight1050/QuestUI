@@ -1825,7 +1825,7 @@ namespace QuestUI::BeatSaberUI {
         static SafePtrUnity<TextSegmentedControl> segmentedControlTemplate;
         if (!segmentedControlTemplate)
             segmentedControlTemplate = Resources::FindObjectsOfTypeAll<HMUI::TextSegmentedControl*>().FirstOrDefault([](auto x){
-                return x->get_name() != "TextSegmentedControl" ? false : true;
+                return x->get_name() == "TextSegmentedControl";
         });
 
         auto segmentedControlObj = Object::Instantiate(segmentedControlTemplate->get_gameObject(), parent, false);
