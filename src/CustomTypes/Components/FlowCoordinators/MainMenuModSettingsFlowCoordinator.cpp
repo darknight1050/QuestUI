@@ -48,16 +48,16 @@ namespace QuestUI
     custom_types::Helpers::Coroutine MainMenuModSettingsFlowCoordinator::EndOfFramePresentVC()
     {
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(UnityEngine::WaitForEndOfFrame::New_ctor());
-        
+
         if (currentInfo)
         {
-            if (!currentInfo->viewController) 
+            if (!currentInfo->viewController)
             {
                 currentInfo->viewController = BeatSaberUI::CreateViewController(currentInfo->il2cpp_type);
                 if(currentInfo->showModInfo)
                     BeatSaberUI::AddModInfoText(*currentInfo);
                 if(currentInfo->didActivateEvent)
-                    currentInfo->viewController->add_didActivateEvent(il2cpp_utils::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(currentInfo->viewController, currentInfo->didActivateEvent));
+                    currentInfo->viewController->add_didActivateEvent(custom_types::MakeDelegate<HMUI::ViewController::DidActivateDelegate*>(currentInfo->viewController, std::function<void(HMUI::ViewController*, bool, bool, bool)>(currentInfo->didActivateEvent)));
             }
             SetTitle(currentInfo->title, HMUI::ViewController::AnimationType::Out);
             if (!mainScreenViewControllers->Contains(currentInfo->viewController)) {
