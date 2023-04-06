@@ -82,6 +82,7 @@ MAKE_HOOK_MATCH(RichPresenceManager_HandleGameScenesManagerTransitionDidFinish, 
     RichPresenceManager_HandleGameScenesManagerTransitionDidFinish(self, setupData, container);
 
     if (shouldClear) {
+        shouldClear = false;
         BeatSaberUI::ClearCache();
         if (hasInited) {
             hasInited = false;
@@ -96,14 +97,15 @@ MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneMan
     bool prevValid = prevScene.IsValid(), nextValid = nextScene.IsValid();
 
     if (prevValid && nextValid) {
-        std::u16string_view prevSceneName(prevScene.get_name());
-        std::u16string_view nextSceneName(nextScene.get_name());
+        std::string prevSceneName(prevScene.get_name());
+        std::string nextSceneName(nextScene.get_name());
+        getLogger().info("Scene change from %s to %s", prevSceneName.c_str(), nextSceneName.c_str());
 
-        static bool hasInited = false;
-        if (prevSceneName == u"QuestInit") hasInited = true;
+        if (prevSceneName == "QuestInit") hasInited = true;
 
         // if we just inited, and aren't already going to clear, check the next scene name for the menu
-        if (hasInited && !shouldClear && nextSceneName.find(u"Menu") != std::u16string::npos) {
+        if (hasInited && !shouldClear && nextSceneName.find("Menu") != std::u16string::npos) {
+            getLogger().info("Queueing up a clear");
             shouldClear = true;
         }
     } else if (prevValid) {
