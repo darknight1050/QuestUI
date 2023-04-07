@@ -35,6 +35,8 @@
 #include "GlobalNamespace/PlayerOptionsViewController.hpp"
 #include "GlobalNamespace/PlayerStatisticsViewController.hpp"
 
+#include "GlobalNamespace/RichPresenceManager.hpp"
+
 #include "GlobalNamespace/MenuTransitionsHelper.hpp"
 #include "System/Action_1.hpp"
 #include "Zenject/DiContainer.hpp"
@@ -72,30 +74,46 @@ int QuestUI::GetModsCount() {
     return ModSettingsInfos::get().size();
 }
 
-MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
-    SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
-    BeatSaberUI::ClearCache();
-    if(prevScene.IsValid() && nextScene.IsValid()) {
-        std::string prevSceneName(prevScene.get_name());
-        std::string nextSceneName(nextScene.get_name());
-        getLogger().info("Scene change from %s to %s", prevSceneName.c_str(), nextSceneName.c_str());
-        static bool hasInited = false;
-        if(prevSceneName == "QuestInit"){
-            hasInited = true;
-        }
-        if(hasInited && prevSceneName == "EmptyTransition" && nextSceneName.find("Menu") != std::string::npos) {
+static bool hasInited = false;
+static bool shouldClear = false;
+
+// do things with the scene transition stuff
+MAKE_HOOK_MATCH(RichPresenceManager_HandleGameScenesManagerTransitionDidFinish, &GlobalNamespace::RichPresenceManager::HandleGameScenesManagerTransitionDidFinish, void, GlobalNamespace::RichPresenceManager* self, GlobalNamespace::ScenesTransitionSetupDataSO* setupData, Zenject::DiContainer* container) {
+    RichPresenceManager_HandleGameScenesManagerTransitionDidFinish(self, setupData, container);
+
+    if (shouldClear) {
+        shouldClear = false;
+        BeatSaberUI::ClearCache();
+        if (hasInited) {
             hasInited = false;
             BeatSaberUI::SetupPersistentObjects();
         }
-    } else {
-        if(prevScene.IsValid()) {
-            std::string prevSceneName(prevScene.get_name());
-            getLogger().info("Scene change from %s to null", prevSceneName.c_str());
-        } 
-        if(nextScene.IsValid()) {
-            std::string nextSceneName(nextScene.get_name());
-            getLogger().info("Scene change from null to %s", nextSceneName.c_str());
+    }
+}
+
+// Here we just check if we should be doing things after all the scene transitions are done:
+MAKE_HOOK_MATCH(SceneManager_Internal_ActiveSceneChanged, &UnityEngine::SceneManagement::SceneManager::Internal_ActiveSceneChanged, void, UnityEngine::SceneManagement::Scene prevScene, UnityEngine::SceneManagement::Scene nextScene) {
+    SceneManager_Internal_ActiveSceneChanged(prevScene, nextScene);
+    bool prevValid = prevScene.IsValid(), nextValid = nextScene.IsValid();
+
+    if (prevValid && nextValid) {
+        std::string prevSceneName(prevScene.get_name());
+        std::string nextSceneName(nextScene.get_name());
+        getLogger().info("Scene change from %s to %s", prevSceneName.c_str(), nextSceneName.c_str());
+
+        if (prevSceneName == "QuestInit") hasInited = true;
+
+        // if we just inited, and aren't already going to clear, check the next scene name for the menu
+        if (hasInited && !shouldClear && nextSceneName.find("Menu") != std::u16string::npos) {
+            getLogger().info("Queueing up a clear");
+            shouldClear = true;
         }
+    } else if (prevValid) {
+        std::string prevSceneName(prevScene.get_name());
+        getLogger().info("Scene change from %s to null", prevSceneName.c_str());
+    } else if (nextValid) {
+        std::string nextSceneName(nextScene.get_name());
+        getLogger().info("Scene change from null to %s", nextSceneName.c_str());
     }
 }
 
@@ -162,8 +180,9 @@ void QuestUI::Init() {
         custom_types::Register::AutoRegister();
         INSTALL_HOOK(getLogger(), SceneManager_Internal_ActiveSceneChanged);
         INSTALL_HOOK(getLogger(), UIKeyboardManager_OpenKeyboardFor);
+        INSTALL_HOOK(getLogger(), RichPresenceManager_HandleGameScenesManagerTransitionDidFinish);
         INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
-        
+
     }
 }
 
