@@ -19,12 +19,7 @@
 
 #include "beatsaber-hook/shared/utils/typedefs-wrappers.hpp"
 
-#define TextInterfaces                                                                                                                                                                                                                           \
-    {                                                                                                                                                                                                                                            \
-        classof(UnityEngine::EventSystems::IPointerClickHandler*), classof(UnityEngine::EventSystems::IPointerEnterHandler*), classof(UnityEngine::EventSystems::IPointerExitHandler*), classof(UnityEngine::EventSystems::IEventSystemHandler*) \
-    }
-
-___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, ClickableText, Il2CppTypeEnum::IL2CPP_TYPE_CLASS, HMUI::CurvedTextMeshPro, "QuestUI", TextInterfaces, 0, nullptr,
+DECLARE_CLASS_CODEGEN_INTERFACES(QuestUI, ClickableText, HMUI::CurvedTextMeshPro, std::vector<Il2CppClass*>({classof(UnityEngine::EventSystems::IPointerClickHandler*), classof(UnityEngine::EventSystems::IPointerEnterHandler*), classof(UnityEngine::EventSystems::IPointerExitHandler*), classof(UnityEngine::EventSystems::IEventSystemHandler*)}),
         DECLARE_INSTANCE_METHOD(void, set_highlightColor, UnityEngine::Color color);
         DECLARE_INSTANCE_METHOD(UnityEngine::Color, get_highlightColor);
         DECLARE_INSTANCE_METHOD(void, set_defaultColor, UnityEngine::Color color);
@@ -43,7 +38,7 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, ClickableText, Il2CppTypeEnum::IL2C
         DECLARE_INSTANCE_FIELD(Libraries::HM::HMLib::VR::HapticPresetSO*, hapticFeedbackPresetSO);
 
         DECLARE_CTOR(ctor);
-    public: 
+    public:
         using OnPointerClickEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
         using OnPointerEnterEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
         using OnPointerExitEvent = UnorderedEventCallback<UnityEngine::EventSystems::PointerEventData*>;
