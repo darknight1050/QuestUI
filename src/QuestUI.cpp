@@ -66,7 +66,7 @@
 using namespace QuestUI;
 
 Logger& getLogger() {
-    static auto logger = new Logger(ModInfo{"questui", VERSION}, LoggerOptions(false, true));
+    static auto logger = new Logger(modloader::ModInfo{"questui", VERSION, GIT_COMMIT}, LoggerOptions(false, true));
     return *logger;
 }
 
@@ -186,7 +186,7 @@ void QuestUI::Init() {
     }
 }
 
-void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::string title, Register::MenuLocation location, Il2CppReflectionType* il2cpp_type, Register::Type type, Register::DidActivateEvent didActivateEvent) {
+void Register::RegisterModSettings(modloader::ModInfo modInfo, bool showModInfo, std::string title, Register::MenuLocation location, Il2CppReflectionType* il2cpp_type, Register::Type type, Register::DidActivateEvent didActivateEvent) {
     Init();
     ModSettingsInfos::ModSettingsInfo info = {};
     info.modInfo = modInfo;
@@ -202,7 +202,7 @@ void Register::RegisterModSettings(ModInfo modInfo, bool showModInfo, std::strin
 }
 
 
-void Register::RegisterGameplaySetupMenu(ModInfo modInfo, std::string_view title, Il2CppReflectionType* il2cpp_type, int type, GameplaySetupMenuEvent setupEvent) {
+void Register::RegisterGameplaySetupMenu(modloader::ModInfo modInfo, std::string_view title, Il2CppReflectionType* il2cpp_type, int type, GameplaySetupMenuEvent setupEvent) {
     Init();
     GameplaySetupMenuTabs::GameplaySetupMenu* menu = new GameplaySetupMenuTabs::GameplaySetupMenu();
     menu->modInfo = modInfo;

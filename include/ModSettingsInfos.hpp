@@ -7,7 +7,7 @@
 namespace QuestUI::ModSettingsInfos {
 
     struct ModSettingsInfo {
-        ModInfo modInfo;
+        modloader::ModInfo modInfo =  { "", "", 0 };
         bool showModInfo;
         std::string title;
         Register::Type type;

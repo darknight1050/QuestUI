@@ -1,6 +1,5 @@
 #include "CustomTypes/Components/List/CustomListTableData.hpp"
 
-#include "GlobalNamespace/LayoutWidthLimiter.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/Texture2D.hpp"
 #include "UnityEngine/SpriteMeshType.hpp"
@@ -138,8 +137,6 @@ namespace QuestUI
                 // new stuff in 1.28.0 that needs to be disabled
                 tableCell->updatedBadgeGo->SetActive(false);
                 tableCell->promoBadgeGo->SetActive(false);
-                tableCell->promoBackgroundGo->SetActive(false);
-                tableCell->layoutWidthLimiter->set_limitWidth(false);
 
                 if (expandCell)
                 {
