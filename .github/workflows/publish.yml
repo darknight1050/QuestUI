@@ -2,7 +2,7 @@ name: Publish QPM Package
 
 env:
     module_id: questui
-    qmodName: QuestUI
+    qmod_name: QuestUI
     
 on:
   push:
@@ -46,17 +46,17 @@ jobs:
         tag: ${{ steps.get_tag_version.outputs.TAG }}
         qpm_release_bin: true
         qpm_debug_bin: true
-        qpm_mod: ${{ env.qmod_name }}
+        qpm_mod: ${{ env.qmod_name }}.qmod
         
     - name: Build
       run: |
         cd ${GITHUB_WORKSPACE}
-        ./QPM/qpm-rust qmod build --isLibrary=true
+        qpm qmod build --isLibrary=true
         pwsh -Command ./build.ps1
     
     - name: Create Qmod
       run: |
-        pwsh -Command ./createqmod.ps1 ${{env.qmodName}}
+        pwsh -Command ./createqmod.ps1 ${{env.qmod_name}}
 
     # Get release that was created for this tag
     - name: Get Release
@@ -116,7 +116,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-        asset_path: ./${{ env.qmodName }}.qmod
-        asset_name: ${{ env.qmodName }}.qmod
+        asset_path: ./${{ env.qmod_name }}.qmod
+        asset_name: ${{ env.qmod_name }}.qmod
         asset_content_type: application/octet-stream
-        

@@ -2,7 +2,7 @@ name: NDK build
 
 env:
     module_id: questui
-    qmodName: QuestUI
+    qmod_name: QuestUI
 
 on:
   workflow_dispatch:
@@ -45,7 +45,7 @@ jobs:
 
     - name: Create Qmod
       run: |
-        pwsh -Command ./createqmod.ps1 ${{env.qmodName}}
+        pwsh -Command ./createqmod.ps1 ${{env.qmod_name}}
 
     - name: Get Library Name
       id: libname
@@ -72,6 +72,6 @@ jobs:
     - name: Upload qmod artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ${{env.qmodName}}.qmod
-        path: ./${{ env.qmodName }}.qmod
+        name: ${{env.qmod_name}}.qmod
+        path: ./${{ env.qmod_name }}.qmod
         if-no-files-found: error

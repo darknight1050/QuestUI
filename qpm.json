@@ -45,10 +45,8 @@
     },
     {
       "id": "bsml",
-      "versionRange": "^0.3.5",
+      "versionRange": "^0.3.8",
       "additionalData": {
-        "private": true,
-        "includeQmod": false
       }
     }
   ],
