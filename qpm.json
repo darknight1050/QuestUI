@@ -33,19 +33,22 @@
     },
     {
       "id": "custom-types",
-      "versionRange": "^0.15.26",
+      "versionRange": "^0.15.27",
       "additionalData": {}
     },
     {
       "id": "scotland2",
       "versionRange": "^0.1.2",
-      "additionalData": {}
+      "additionalData": {
+        "includeQmod": false
+      }
     },
     {
       "id": "bsml",
       "versionRange": "^0.3.5",
       "additionalData": {
-        "private": true
+        "private": true,
+        "includeQmod": false
       }
     }
   ],
