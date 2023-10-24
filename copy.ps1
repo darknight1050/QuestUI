@@ -7,9 +7,9 @@ param (
 
 & ./build.ps1
 if ($useDebug.IsPresent) {
-    & adb push build/debug/libquestui.so /sdcard/Android/data/com.beatgames.beatsaber/files/libs/libquestui.so
+    & adb push build/debug/libquestui.so /sdcard/ModData/com.beatgames.beatsaber/Modloader/libs/libquestui.so
 } else {
-    & adb push build/libquestui.so /sdcard/Android/data/com.beatgames.beatsaber/files/libs/libquestui.so
+    & adb push build/libquestui.so /sdcard/ModData/com.beatgames.beatsaber/Modloader/libs/libquestui.so
 }
 
 & adb shell am force-stop com.beatgames.beatsaber
