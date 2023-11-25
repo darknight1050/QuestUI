@@ -3,7 +3,7 @@ name: Publish QPM Package
 env:
     module_id: questui
     qmod_name: QuestUI
-    
+
 on:
   push:
     tags:
@@ -12,16 +12,16 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
       name: Checkout
       with:
         submodules: true
         lfs: true
-    
+
     - uses: seanmiddleditch/gha-setup-ninja@v3
-    
+
     - name: Create ndkpath.txt
       run: |
         echo "$ANDROID_NDK_LATEST_HOME" > ${GITHUB_WORKSPACE}/ndkpath.txt
@@ -41,19 +41,19 @@ jobs:
         restore: true
         cache: true
         publish: true
-        publish_token: ${{ secrets.QPM_KEY }}
+        publish_token: ${{ secrets.QPM_PUBLISH_KEY }}
         version: ${{ steps.get_tag_version.outputs.VERSION }}
         tag: ${{ steps.get_tag_version.outputs.TAG }}
         qpm_release_bin: true
         qpm_debug_bin: true
         qpm_qmod: ${{ env.qmod_name }}.qmod
-        
+
     - name: Build
       run: |
         cd ${GITHUB_WORKSPACE}
         qpm qmod build --isLibrary=true
         pwsh -Command ./build.ps1
-    
+
     - name: Create Qmod
       run: |
         pwsh -Command ./createqmod.ps1 ${{env.qmod_name}}
@@ -67,7 +67,7 @@ jobs:
           repository: ${{ github.repository }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Get Release Upload URL
       id: get_upload_url
       run: |
@@ -75,7 +75,7 @@ jobs:
         echo $url
         echo "upload_url=$url" >> ${GITHUB_OUTPUT}
 
-      env: 
+      env:
           response:  ${{ steps.get_release.outputs.data }}
 
     - name: Get Library Name
