@@ -11,7 +11,7 @@
 #include <vector>
 #include <string>
 
-___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomTextSegmentedControlData, Il2CppTypeEnum::IL2CPP_TYPE_CLASS, UnityEngine::MonoBehaviour, "QuestUI", { classof(HMUI::SegmentedControl::IDataSource*) }, 0, nullptr,
+DECLARE_CLASS_CODEGEN_INTERFACES(QuestUI, CustomTextSegmentedControlData, UnityEngine::MonoBehaviour, classof(HMUI::SegmentedControl::IDataSource*),
     DECLARE_INSTANCE_FIELD(HMUI::SegmentedControl*, segmentedControl);
 
     DECLARE_INSTANCE_FIELD(HMUI::SegmentedControlCell*, firstCellPrefab);
@@ -27,7 +27,7 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomTextSegmentedControlData, Il2
     public:
         void set_texts(ArrayW<StringW> list);
         void add_text(StringW addedText);
-        
+
         float fontSize = 4.0f;
         bool hideCellBackground = false;
         bool overrideCellSize = false;

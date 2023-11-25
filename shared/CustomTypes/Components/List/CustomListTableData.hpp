@@ -22,7 +22,7 @@ namespace GlobalNamespace {
     using LevelPackCell = AnnotatedBeatmapLevelCollectionCell;
 }
 
-___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomListTableData, Il2CppTypeEnum::IL2CPP_TYPE_CLASS, UnityEngine::MonoBehaviour, "QuestUI", { classof(HMUI::TableView::IDataSource*) }, 0, nullptr,
+DECLARE_CLASS_CODEGEN_INTERFACES(QuestUI, CustomListTableData, UnityEngine::MonoBehaviour, classof(HMUI::TableView::IDataSource*),
     public:
     enum ListStyle {
         List,
@@ -37,7 +37,7 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomListTableData, Il2CppTypeEnum
 
         CustomCellInfo(std::string text = "", std::string subText = "", UnityEngine::Sprite* icon = nullptr) : text(text), subText(subText), icon(icon) {};
         CustomCellInfo(std::string text, UnityEngine::Sprite* icon) : text(text), subText(""), icon(icon) {};
-        
+
         StringW get_text();
         StringW get_subText();
         StringW get_combinedText();
@@ -52,14 +52,14 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(QuestUI, CustomListTableData, Il2CppTypeEnum
     DECLARE_INSTANCE_FIELD(float, cellSize);
     DECLARE_INSTANCE_FIELD(HMUI::TableView*, tableView);
     DECLARE_INSTANCE_FIELD(bool, expandCell);
-    
+
     DECLARE_CTOR(ctor);
     DECLARE_DTOR(dtor);
 
     DECLARE_OVERRIDE_METHOD(HMUI::TableCell*, CellForIdx, il2cpp_utils::il2cpp_type_check::MetadataGetter<&HMUI::TableView::IDataSource::CellForIdx>::get(), HMUI::TableView* tableView, int idx);
     DECLARE_OVERRIDE_METHOD(float, CellSize, il2cpp_utils::il2cpp_type_check::MetadataGetter<&HMUI::TableView::IDataSource::CellSize>::get());
     DECLARE_OVERRIDE_METHOD(int, NumberOfCells, il2cpp_utils::il2cpp_type_check::MetadataGetter<&HMUI::TableView::IDataSource::NumberOfCells>::get());
-    
+
     private:
         ListStyle listStyle = ListStyle::List;
     public:
