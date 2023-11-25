@@ -12,13 +12,14 @@
         "systemIncludes": [
           "shared/cppcodec"
         ]
-      }
+      },
+      "cmake": true
     }
   },
   "dependencies": [
     {
       "id": "beatsaber-hook",
-      "versionRange": "^3.14.0",
+      "versionRange": "^4.0.0",
       "additionalData": {
         "extraFiles": [
           "src/inline-hook"
@@ -27,24 +28,25 @@
     },
     {
       "id": "codegen",
-      "versionRange": "^0.33.0",
+      "versionRange": "^0.34.1",
       "additionalData": {}
     },
     {
       "id": "custom-types",
-      "versionRange": "^0.15.22",
+      "versionRange": "^0.15.27",
       "additionalData": {}
     },
     {
-      "id": "modloader",
-      "versionRange": "^1.2.3",
-      "additionalData": {}
+      "id": "scotland2",
+      "versionRange": "^0.1.2",
+      "additionalData": {
+        "includeQmod": false
+      }
     },
     {
       "id": "bsml",
-      "versionRange": "^0.3.1",
+      "versionRange": "^0.3.8",
       "additionalData": {
-        "private": true
       }
     }
   ],

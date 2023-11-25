@@ -7,7 +7,7 @@
 
 namespace QuestUI::GameplaySetupMenuTabs {
     struct GameplaySetupMenu {
-        ModInfo modInfo;
+        modloader::ModInfo modInfo = { "", "", 0 };
         std::string title;
         int type;
         System::Type* il2cpp_type;
