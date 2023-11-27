@@ -4,6 +4,8 @@ include(qpm_defines.cmake)
 cmake_minimum_required(VERSION 3.22)
 project(${COMPILE_ID})
 
+include(${EXTERN_DIR}/includes/kaleb/shared/cmake/assets.cmake)
+
 # c++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED 20)
