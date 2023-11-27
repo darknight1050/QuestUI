@@ -216,9 +216,9 @@ void Register::RegisterGameplaySetupMenu(modloader::ModInfo modInfo, std::string
 
 
 BSML_DATACACHE(settings) {
-    return IncludedAssets::SettingsHost_bsml;
+    return Assets::SettingsHost_bsml;
 }
 
 BSML_DATACACHE(gameplay) {
-    return IncludedAssets::TabHost_bsml;
+    return Assets::TabHost_bsml;
 }
